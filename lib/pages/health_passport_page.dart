@@ -281,7 +281,7 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
                 bottomRight: Radius.circular(24),
               ),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+            padding: const EdgeInsets.only(top: 12, bottom: 40, left: 24, right: 24),
             child: Column(
               children: [
                 SizedBox(
