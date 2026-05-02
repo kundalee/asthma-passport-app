@@ -121,4 +121,22 @@ class ApiService {
       throw Exception('Weather API error: $e');
     }
   }
+
+  static Future<List<Map<String, dynamic>>> getTodayTests() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/api/today-tests'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final tests = List<Map<String, dynamic>>.from(data['tests'] ?? []);
+        return tests;
+      } else {
+        throw Exception('Failed to fetch today tests');
+      }
+    } catch (e) {
+      throw Exception('Today tests API error: $e');
+    }
+  }
 }

@@ -17,12 +17,14 @@ class _HomePageState extends State<HomePage> {
   double temperature = 0;
   int humidity = 0;
   double pm25 = 0;
+  List<Map<String, dynamic>> todayTests = [];
 
   @override
   void initState() {
     super.initState();
     _loadUserName();
     _loadWeatherData();
+    _loadTodayTests();
   }
 
   Future<void> _loadUserName() async {
@@ -44,6 +46,17 @@ class _HomePageState extends State<HomePage> {
       });
     } catch (e) {
       // Weather data failed to load, keep default values
+    }
+  }
+
+  Future<void> _loadTodayTests() async {
+    try {
+      final tests = await ApiService.getTodayTests();
+      setState(() {
+        todayTests = tests;
+      });
+    } catch (e) {
+      // Today tests failed to load, keep empty list
     }
   }
 
@@ -250,6 +263,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildTodayTestsSection() {
+    final testItems = [
+      {'name': '氣喘日記', 'icon': 'assets/icons/note.svg'},
+      {'name': '尖峰呼氣流量', 'icon': 'assets/icons/wind.svg'},
+      {'name': '氣喘控制測驗', 'icon': 'assets/icons/exam.svg'},
+    ];
+
+    final allTestsDone = todayTests.isNotEmpty && todayTests.every((test) => test['status'] == 1);
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -276,17 +297,28 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           const SizedBox(height: 8),
-          _buildTestItem('氣喘日記', 'assets/icons/note.svg'),
-          const SizedBox(height: 8),
-          _buildTestItem('尖峰呼氣流量', 'assets/icons/wind.svg'),
-          const SizedBox(height: 8),
-          _buildTestItem('氣喘控制測驗', 'assets/icons/exam.svg'),
+          if (allTestsDone)
+            _buildTestItem('太棒了，今日檢測皆已完成！', '', 1, showArrow: false)
+          else
+            ...List.generate(
+              todayTests.length,
+              (index) => Padding(
+                padding: EdgeInsets.only(bottom: index < todayTests.length - 1 ? 8 : 0),
+                child: _buildTestItem(
+                  todayTests[index]['name'] ?? '',
+                  todayTests[index]['icon'] ?? testItems[index % 3]['icon'] ?? '',
+                  todayTests[index]['status'] ?? 0,
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildTestItem(String title, String iconPath) {
+  Widget _buildTestItem(String title, String iconPath, int status, {bool showArrow = true}) {
+    final isDone = status == 1;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
@@ -302,29 +334,31 @@ class _HomePageState extends State<HomePage> {
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
+                  color: isDone ? AppColors.primaryGreen : Colors.transparent,
                   border: Border.all(color: AppColors.primaryGreen, width: 2),
                   borderRadius: BorderRadius.circular(40),
                 ),
                 child: SvgPicture.asset(
-                  iconPath,
+                  isDone ? 'assets/icons/check.svg' : iconPath,
                   width: 24,
                   height: 24,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(isDone ? Colors.white : AppColors.primaryGreen, BlendMode.srcIn),
                 ),
               ),
               const SizedBox(width: 12),
               Text(
                 title,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
             ],
           ),
-          SvgPicture.asset(
-            'assets/icons/arrow-right.svg',
-            width: 24,
-            height: 24,
-            colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
-          ),
+          if (showArrow)
+            SvgPicture.asset(
+              'assets/icons/arrow-right.svg',
+              width: 24,
+              height: 24,
+              colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+            ),
         ],
       ),
     );
