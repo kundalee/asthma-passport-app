@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'pages/login_page.dart';
 import 'pages/home_page.dart';
-import 'pages/health_passport_page.dart';
+import 'pages/health_passport/health_passport_page.dart';
 import 'theme/app_colors.dart';
 
 void main() {

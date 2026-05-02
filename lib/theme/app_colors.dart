@@ -23,6 +23,8 @@ class AppColors {
   static const Color menuIconColor = Color(0xFF155DFC);
   static const Color menuSubtitle = Color(0xFF4A5565);
   static const Color logoutButtonBg = Color(0xFFE7000B);
+  static const Color reportTitle = Color(0xFF101828);
+  static const Color controlStatusBg = Color(0xFFF0FDF4);
 
   // Passport Card Gradient Colors
   static const Color passportCardGradientStart = Color(0xFF004D2C);

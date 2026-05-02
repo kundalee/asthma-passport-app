@@ -10,6 +10,7 @@ class CustomButton extends StatelessWidget {
   final Widget? icon;
   final BorderSide? border;
   final bool isLoading;
+  final double? height;
 
   const CustomButton({
     super.key,
@@ -22,6 +23,7 @@ class CustomButton extends StatelessWidget {
     this.icon,
     this.border,
     this.isLoading = false,
+    this.height,
   });
 
   @override
@@ -29,11 +31,11 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
-        minimumSize: Size.zero,
+        minimumSize: height != null ? Size(double.infinity, height!) : Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         backgroundColor: backgroundColor,
         foregroundColor: foregroundColor,
-        padding: padding,
+        padding: height != null ? EdgeInsets.zero : padding,
         side: border,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius),
