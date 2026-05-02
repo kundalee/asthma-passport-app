@@ -4,6 +4,7 @@ import 'custom_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'custom_button.dart';
 import '../services/api_service.dart';
+import '../pages/home_page.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
@@ -56,8 +57,8 @@ class _RegisterFormState extends State<RegisterForm> {
         confirmPasswordController.text,
       );
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('註冊成功')),
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomePage()),
         );
       }
     } catch (e) {

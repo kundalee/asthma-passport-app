@@ -4,6 +4,8 @@ import 'dart:convert';
 
 class ApiService {
   static const String _tokenKey = 'auth_token';
+  static const String _userNameKey = 'user_name';
+  static const String _userEmailKey = 'user_email';
   static const String _baseUrl = 'http://localhost:8000';
 
   static Future<String> login(String email, String password) async {
@@ -20,7 +22,12 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final token = data['token'];
+        final name = data['name'];
         await saveToken(token);
+        await saveUserEmail(email);
+        if (name != null) {
+          await saveUserName(name);
+        }
         return token;
       } else {
         final data = jsonDecode(response.body);
@@ -49,6 +56,8 @@ class ApiService {
         // Handle case where token might not be in response
         final token = data['token'] ?? 'token_${DateTime.now().millisecondsSinceEpoch}';
         await saveToken(token);
+        await saveUserName(name);
+        await saveUserEmail(email);
         return token;
       } else {
         final data = jsonDecode(response.body);
@@ -69,8 +78,47 @@ class ApiService {
     return prefs.getString(_tokenKey);
   }
 
+  static Future<void> saveUserName(String name) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userNameKey, name);
+  }
+
+  static Future<String?> getUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_userNameKey);
+  }
+
+  static Future<void> saveUserEmail(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userEmailKey, email);
+  }
+
+  static Future<String?> getUserEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_userEmailKey);
+  }
+
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_tokenKey);
+    await prefs.remove(_userNameKey);
+    await prefs.remove(_userEmailKey);
+  }
+
+  static Future<Map<String, dynamic>> getWeather(String location) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/api/weather?location=$location'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data;
+      } else {
+        throw Exception('Failed to fetch weather data');
+      }
+    } catch (e) {
+      throw Exception('Weather API error: $e');
+    }
   }
 }

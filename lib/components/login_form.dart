@@ -4,6 +4,7 @@ import 'custom_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'custom_button.dart';
 import '../services/api_service.dart';
+import '../pages/home_page.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -37,8 +38,8 @@ class _LoginFormState extends State<LoginForm> {
     try {
       await ApiService.login(emailController.text, passwordController.text);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('登入成功')),
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomePage()),
         );
       }
     } catch (e) {
