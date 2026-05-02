@@ -10,6 +10,23 @@ class AppColors {
   static const Color inputBackground = Color(0xFFF2F4F8);
   static const Color inputBorder = Color(0xFFE5E7EB);
   static const Color cardBackground = Color(0xFFF9FAFB);
+  static const Color passportAccent = Color(0xFFFDC700);
+  static const Color passportAccentLight = Color(0xFFFEF5DB);
+  static const Color passportAccent70 = Color(0xB3FDC700);
+  static const Color passportCardBorder = Color(0xFFFEE685);
+  static const Color photoBorder = Color(0xFF973C00);
+  static const Color photoBackground = Color(0xFFD9D9D9);
+  static const Color infoLabel = Color(0xFF7B3306);
+  static const Color passportCardBgColor = Color(0xFFFFFBEB);
+  static const Color passportDivider = Color(0xFFFFD230);
+  static const Color barcodeBg = Color(0xFFFEF3C6);
+  static const Color menuIconColor = Color(0xFF155DFC);
+  static const Color menuSubtitle = Color(0xFF4A5565);
+  static const Color logoutButtonBg = Color(0xFFE7000B);
+
+  // Passport Card Gradient Colors
+  static const Color passportCardGradientStart = Color(0xFF004D2C);
+  static const Color passportCardGradientEnd = Color(0xFF006D37);
 
   // Feature Button Gradient Colors
   static const Color healthPassportGradientStart = Color(0xFF008242);

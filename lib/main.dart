@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'pages/login_page.dart';
+import 'pages/home_page.dart';
+import 'pages/health_passport_page.dart';
 import 'theme/app_colors.dart';
 
 void main() {
@@ -24,7 +26,12 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      home: const HomePage(),
+      routes: {
+        '/login': (context) => const LoginPage(),
+        '/home': (context) => const HomePage(),
+        '/health-passport': (context) => const HealthPassportPage(),
+      },
     );
   }
 }

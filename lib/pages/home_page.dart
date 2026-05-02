@@ -13,6 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String userName = '';
+  bool isLoggedIn = false;
   int aqi = 0;
   double temperature = 0;
   int humidity = 0;
@@ -22,16 +23,23 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _checkLoginStatus();
     _loadUserName();
     _loadWeatherData();
     _loadTodayTests();
   }
 
+  Future<void> _checkLoginStatus() async {
+    final token = await ApiService.getToken();
+    setState(() {
+      isLoggedIn = token != null;
+    });
+  }
+
   Future<void> _loadUserName() async {
     final name = await ApiService.getUserName();
-    final email = await ApiService.getUserEmail();
     setState(() {
-      userName = name ?? email ?? 'User';
+      userName = name ?? '';
     });
   }
 
@@ -95,26 +103,30 @@ class _HomePageState extends State<HomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.primaryGreen,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                  'assets/icons/user.svg',
-                  width: 24,
-                  height: 24,
-                  colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  userName,
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-                ),
-              ],
+          GestureDetector(
+            onTap: isLoggedIn ? null : () => Navigator.of(context).pushReplacementNamed('/login'),
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.primaryGreen,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  if (isLoggedIn)
+                    SvgPicture.asset(
+                      'assets/icons/user.svg',
+                      width: 24,
+                      height: 24,
+                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                    ),
+                  if (isLoggedIn) const SizedBox(width: 12),
+                  Text(
+                    isLoggedIn ? userName : '登入',
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -316,50 +328,53 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildTestItem(String title, String iconPath, int status, {bool showArrow = true}) {
+  Widget _buildTestItem(String title, String iconPath, int status, {bool showArrow = true, VoidCallback? onTap}) {
     final isDone = status == 1;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        border: Border.all(color: AppColors.inputBorder, width: 1),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: isDone ? AppColors.primaryGreen : Colors.transparent,
-                  border: Border.all(color: AppColors.primaryGreen, width: 2),
-                  borderRadius: BorderRadius.circular(40),
+    return GestureDetector(
+      onTap: isLoggedIn ? onTap : () => Navigator.of(context).pushReplacementNamed('/login'),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          color: AppColors.cardBackground,
+          border: Border.all(color: AppColors.inputBorder, width: 1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: isDone ? AppColors.primaryGreen : Colors.transparent,
+                    border: Border.all(color: AppColors.primaryGreen, width: 2),
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  child: SvgPicture.asset(
+                    isDone ? 'assets/icons/check.svg' : iconPath,
+                    width: 24,
+                    height: 24,
+                    colorFilter: ColorFilter.mode(isDone ? Colors.white : AppColors.primaryGreen, BlendMode.srcIn),
+                  ),
                 ),
-                child: SvgPicture.asset(
-                  isDone ? 'assets/icons/check.svg' : iconPath,
-                  width: 24,
-                  height: 24,
-                  colorFilter: ColorFilter.mode(isDone ? Colors.white : AppColors.primaryGreen, BlendMode.srcIn),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
-          if (showArrow)
-            SvgPicture.asset(
-              'assets/icons/arrow-right.svg',
-              width: 24,
-              height: 24,
-              colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+              ],
             ),
-        ],
+            if (showArrow)
+              SvgPicture.asset(
+                'assets/icons/arrow-right.svg',
+                width: 24,
+                height: 24,
+                colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -383,6 +398,7 @@ class _HomePageState extends State<HomePage> {
                   fontSize: 32,
                   fontWeight: FontWeight.w500,
                 ),
+                onTap: () => Navigator.of(context).pushNamed('/health-passport'),
               ),
             ),
             const SizedBox(width: 12),
@@ -472,40 +488,46 @@ class _HomePageState extends State<HomePage> {
     required Gradient gradient,
     required TextStyle textStyle,
     EdgeInsets padding = const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+    VoidCallback? onTap,
   }) {
-    return Container(
-      height: 140,
-      padding: padding,
-      decoration: BoxDecoration(
-        gradient: gradient,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 56,
-            height: 56,
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(40),
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                iconPath,
-                width: 40,
-                height: 40,
+    return GestureDetector(
+      onTap: isLoggedIn
+          ? onTap
+          : () => Navigator.of(context).pushReplacementNamed('/login'),
+      child: Container(
+        height: 140,
+        padding: padding,
+        decoration: BoxDecoration(
+          gradient: gradient,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(40),
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  iconPath,
+                  width: 40,
+                  height: 40,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: textStyle,
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: textStyle,
+            ),
+          ],
+        ),
       ),
     );
   }

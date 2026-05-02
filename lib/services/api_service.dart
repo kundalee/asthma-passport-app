@@ -139,4 +139,21 @@ class ApiService {
       throw Exception('Today tests API error: $e');
     }
   }
+
+  static Future<Map<String, dynamic>> getPassport() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/api/passport'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data['data'] ?? {};
+      } else {
+        throw Exception('Failed to fetch passport data');
+      }
+    } catch (e) {
+      throw Exception('Passport API error: $e');
+    }
+  }
 }
