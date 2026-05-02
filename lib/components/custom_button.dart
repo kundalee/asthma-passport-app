@@ -11,12 +11,14 @@ class CustomButton extends StatelessWidget {
   final BorderSide? border;
   final bool isLoading;
   final double? height;
+  final MainAxisAlignment iconAlignment;
+  final Gradient? gradient;
 
   const CustomButton({
     super.key,
     required this.text,
     required this.onPressed,
-    required this.backgroundColor,
+    this.backgroundColor = Colors.blue,
     this.foregroundColor = Colors.white,
     this.borderRadius = 4.0,
     this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -24,10 +26,63 @@ class CustomButton extends StatelessWidget {
     this.border,
     this.isLoading = false,
     this.height,
+    this.iconAlignment = MainAxisAlignment.center,
+    this.gradient,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (gradient != null) {
+      return Container(
+        decoration: BoxDecoration(
+          gradient: gradient,
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: isLoading ? null : onPressed,
+            borderRadius: BorderRadius.circular(borderRadius),
+            child: Container(
+              constraints: BoxConstraints(
+                minHeight: height ?? 0,
+                minWidth: height != null ? double.infinity : 0,
+              ),
+              padding: height != null ? EdgeInsets.zero : padding,
+              child: Center(
+                child: isLoading
+                    ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
+                        ),
+                      )
+                    : (icon != null
+                        ? Row(
+                            mainAxisAlignment: iconAlignment,
+                            mainAxisSize: iconAlignment == MainAxisAlignment.center ? MainAxisSize.min : MainAxisSize.max,
+                            children: [
+                              icon!,
+                              const SizedBox(width: 8),
+                              Text(
+                                text,
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: foregroundColor),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            text,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: foregroundColor),
+                          )),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
@@ -53,8 +108,8 @@ class CustomButton extends StatelessWidget {
             )
           : (icon != null
               ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: iconAlignment,
+                  mainAxisSize: iconAlignment == MainAxisAlignment.center ? MainAxisSize.min : MainAxisSize.max,
                   children: [
                     icon!,
                     const SizedBox(width: 8),

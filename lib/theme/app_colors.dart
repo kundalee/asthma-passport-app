@@ -26,6 +26,14 @@ class AppColors {
   static const Color reportTitle = Color(0xFF101828);
   static const Color controlStatusBg = Color(0xFFF0FDF4);
 
+  // Result section colors
+  static const Color resultGoodBg = Color(0xFFF0FDF4);
+  static const Color resultModerateBg = Color(0xFFFEFCE8);
+  static const Color resultSevereBg = Color(0xFFFEF2F2);
+  static const Color resultGoodIcon = Color(0xFF006D37);
+  static const Color resultModerateIcon = Color(0xFFA65F00);
+  static const Color resultSevereIcon = Color(0xFFDC2626);
+
   // Passport Card Gradient Colors
   static const Color passportCardGradientStart = Color(0xFF004D2C);
   static const Color passportCardGradientEnd = Color(0xFF006D37);

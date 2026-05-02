@@ -4,6 +4,7 @@ import '../../services/api_service.dart';
 import '../../components/app_page_container.dart';
 import 'views/passport_view.dart';
 import 'views/report_view.dart';
+import 'views/new_plan_view.dart';
 
 class HealthPassportPage extends StatefulWidget {
   const HealthPassportPage({super.key});
@@ -14,7 +15,7 @@ class HealthPassportPage extends StatefulWidget {
 
 class _HealthPassportPageState extends State<HealthPassportPage> {
   late Future<Map<String, dynamic>> passportData;
-  int currentView = 0; // 0: passport, 1: report
+  int currentView = 0; // 0: passport, 1: report, 2: new_plan
 
   @override
   void initState() {
@@ -38,9 +39,13 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
           }
 
           final data = snapshot.data ?? {};
-          return currentView == 0
-              ? HealthPassportView(data: data, onLogout: () => _logout(context), onMenuTap: _switchView)
-              : HealthReportView(data: data, onSwitchView: _switchView);
+          if (currentView == 0) {
+            return HealthPassportView(data: data, onLogout: () => _logout(context), onMenuTap: _switchView);
+          } else if (currentView == 1) {
+            return HealthReportView(data: data, onSwitchView: _switchView);
+          } else {
+            return NewPlanView(data: data, onSwitchView: _switchView);
+          }
         },
       ),
     );
@@ -65,7 +70,7 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
               if (currentView == 0) {
                 Navigator.pop(context);
               } else {
-                _switchView(0);
+                _switchView(currentView - 1);
               }
             },
             child: SvgPicture.asset(

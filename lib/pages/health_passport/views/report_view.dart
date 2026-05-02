@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/custom_button.dart';
+import '../../../components/card_container.dart';
 
 class HealthReportView extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -20,13 +21,7 @@ class HealthReportView extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.inputBorder, width: 1),
-        ),
-        padding: const EdgeInsets.all(12),
+      child: CardContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -100,8 +95,8 @@ class HealthReportView extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: CustomButton(
-                text: '填寫新計書',
-                onPressed: () {},
+                text: '填寫新計畫',
+                onPressed: () => onSwitchView(2),
                 backgroundColor: AppColors.primaryGreen,
                 padding: const EdgeInsets.all(12),
                 borderRadius: 4,
@@ -112,7 +107,7 @@ class HealthReportView extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: CustomButton(
-                text: '查看已指派計書',
+                text: '查看已指派計畫',
                 onPressed: () => onSwitchView(0),
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.black,
