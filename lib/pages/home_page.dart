@@ -106,27 +106,32 @@ class _HomePageState extends State<HomePage> {
         children: [
           GestureDetector(
             onTap: isLoggedIn ? null : () => Navigator.of(context).pushReplacementNamed('/login'),
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.primaryGreen,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  if (isLoggedIn)
-                    SvgPicture.asset(
-                      'assets/icons/user.svg',
-                      width: 24,
-                      height: 24,
-                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+            child: SizedBox(
+              width: isLoggedIn ? null : 64,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryGreen,
+                  borderRadius: BorderRadius.circular(isLoggedIn ? 8 : 24),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (isLoggedIn)
+                      SvgPicture.asset(
+                        'assets/icons/user.svg',
+                        width: 24,
+                        height: 24,
+                        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                      ),
+                    if (isLoggedIn) const SizedBox(width: 12),
+                    Text(
+                      isLoggedIn ? userName : '登入',
+                      style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500, height: 1.0),
                     ),
-                  if (isLoggedIn) const SizedBox(width: 12),
-                  Text(
-                    isLoggedIn ? userName : '登入',
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -137,7 +142,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildAQICard() {
     return SizedBox(
-      height: 240,
+      height: 200,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
@@ -151,6 +156,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // AQI
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -167,15 +173,16 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         const Text(
                           'AQI',
-                          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.black),
+                          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.black, height: 1.71),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           '$aqi',
                           style: const TextStyle(
                             fontSize: 24,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.bold,
                             color: AppColors.primaryGreen,
+                            height: 1.5,
                           ),
                         ),
                       ],
@@ -184,6 +191,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
+            // temperature, humidity, pm2.5
             Container(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               decoration: BoxDecoration(
@@ -200,7 +208,7 @@ class _HomePageState extends State<HomePage> {
                     child: _buildWeatherItem('濕度', '$humidity', '%'),
                   ),
                   Expanded(
-                    child: _buildWeatherItem('PM2.5', pm25.toStringAsFixed(1), 'μg/m3', unitStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12, color: AppColors.primaryGreen)),
+                    child: _buildWeatherItem('PM2.5', pm25.toStringAsFixed(1), 'μg/m3', unitStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 10, color: AppColors.primaryGreen, height: 2.25)),
                   ),
                 ],
               ),
@@ -220,7 +228,7 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.black)),
+        Text(label, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.black, height: 1.71)),
         const SizedBox(height: 4),
         if (unitStyle != null)
           RichText(
@@ -230,15 +238,16 @@ class _HomePageState extends State<HomePage> {
                   text: value,
                   style: const TextStyle(
                     fontSize: 24,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.bold,
                     color: AppColors.primaryGreen,
+                    height: 1.5,
                   ),
                 ),
                 WidgetSpan(
                   alignment: PlaceholderAlignment.baseline,
                   baseline: TextBaseline.alphabetic,
                   child: Transform.translate(
-                    offset: const Offset(0, 6),
+                    offset: const Offset(0, 4),
                     child: Text(
                       unit,
                       style: unitStyle,
@@ -257,16 +266,18 @@ class _HomePageState extends State<HomePage> {
                 value,
                 style: const TextStyle(
                   fontSize: 24,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.bold,
                   color: AppColors.primaryGreen,
+                  height: 1.5,
                 ),
               ),
               Text(
                 unit,
                 style: const TextStyle(
                   fontSize: 24,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.bold,
                   color: AppColors.primaryGreen,
+                  height: 1.5,
                 ),
               ),
             ],
@@ -281,8 +292,6 @@ class _HomePageState extends State<HomePage> {
       {'name': '尖峰呼氣流量', 'icon': 'assets/icons/wind.svg'},
       {'name': '氣喘控制測驗', 'icon': 'assets/icons/exam.svg'},
     ];
-
-    final allTestsDone = todayTests.isNotEmpty && todayTests.every((test) => test['status'] == 1);
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -305,25 +314,22 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(width: 8),
               const Text(
                 '今日檢測',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          if (allTestsDone)
-            _buildTestItem('太棒了，今日檢測皆已完成！', '', 1, showArrow: false)
-          else
-            ...List.generate(
-              todayTests.length,
-              (index) => Padding(
-                padding: EdgeInsets.only(bottom: index < todayTests.length - 1 ? 8 : 0),
-                child: _buildTestItem(
-                  todayTests[index]['name'] ?? '',
-                  todayTests[index]['icon'] ?? testItems[index % 3]['icon'] ?? '',
-                  todayTests[index]['status'] ?? 0,
-                ),
+          ...List.generate(
+            todayTests.length,
+            (index) => Padding(
+              padding: EdgeInsets.only(bottom: index < todayTests.length - 1 ? 8 : 0),
+              child: _buildTestItem(
+                todayTests[index]['name'] ?? '',
+                todayTests[index]['icon'] ?? testItems[index % 3]['icon'] ?? '',
+                todayTests[index]['status'] ?? 0,
               ),
             ),
+          ),
         ],
       ),
     );
@@ -335,7 +341,7 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: isLoggedIn ? onTap : () => Navigator.of(context).pushReplacementNamed('/login'),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
           color: AppColors.cardBackground,
           border: Border.all(color: AppColors.inputBorder, width: 1),
@@ -347,23 +353,22 @@ class _HomePageState extends State<HomePage> {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     color: isDone ? AppColors.primaryGreen : Colors.transparent,
                     border: Border.all(color: AppColors.primaryGreen, width: 2),
                     borderRadius: BorderRadius.circular(40),
                   ),
                   child: SvgPicture.asset(
-                    isDone ? 'assets/icons/check.svg' : iconPath,
+                    isDone ? 'assets/icons/check-fill.svg' : iconPath,
                     width: 24,
                     height: 24,
-                    colorFilter: ColorFilter.mode(isDone ? Colors.white : AppColors.primaryGreen, BlendMode.srcIn),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, height: 1.6),
                 ),
               ],
             ),
@@ -394,15 +399,12 @@ class _HomePageState extends State<HomePage> {
                   end: Alignment.bottomRight,
                   colors: [AppColors.healthPassportGradientStart, AppColors.healthPassportGradientEnd],
                 ),
-                textStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w500,
-                ),
                 onTap: () => Navigator.of(context).pushNamed('/health-passport'),
+                height: 80,
+                isRow: true,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 10),
             Expanded(
               child: _buildFeatureButton(
                 '氣喘知識',
@@ -412,11 +414,8 @@ class _HomePageState extends State<HomePage> {
                   end: Alignment.bottomRight,
                   colors: [AppColors.healthPassportGradientStart, AppColors.healthPassportGradientEnd],
                 ),
-                textStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w500,
-                ),
+                height: 80,
+                isRow: true,
               ),
             ),
           ],
@@ -433,12 +432,8 @@ class _HomePageState extends State<HomePage> {
                   end: Alignment.bottomRight,
                   colors: [AppColors.historyGradientStart, AppColors.historyGradientEnd],
                 ),
-                textStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
                 padding: const EdgeInsets.all(8),
+                height: 108,
               ),
             ),
             const SizedBox(width: 4),
@@ -451,12 +446,8 @@ class _HomePageState extends State<HomePage> {
                   end: Alignment.bottomRight,
                   colors: [AppColors.asthmaExpertGradientStart, AppColors.asthmaExpertGradientEnd],
                 ),
-                textStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
                 padding: const EdgeInsets.all(8),
+                height: 108,
               ),
             ),
             const SizedBox(width: 4),
@@ -469,12 +460,8 @@ class _HomePageState extends State<HomePage> {
                   end: Alignment.bottomRight,
                   colors: [AppColors.smartAssistantGradientStart, AppColors.smartAssistantGradientEnd],
                 ),
-                textStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
                 padding: const EdgeInsets.all(8),
+                height: 108,
               ),
             ),
           ],
@@ -487,48 +474,90 @@ class _HomePageState extends State<HomePage> {
     String title,
     String iconPath, {
     required Gradient gradient,
-    required TextStyle textStyle,
     EdgeInsets padding = const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
     VoidCallback? onTap,
+    double height = 80,
+    bool isRow = false,
   }) {
     return GestureDetector(
       onTap: isLoggedIn
           ? onTap
           : () => Navigator.of(context).pushReplacementNamed('/login'),
       child: Container(
-        height: 140,
+        width: double.infinity,
+        height: height,
         padding: padding,
         decoration: BoxDecoration(
           gradient: gradient,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 56,
-              height: 56,
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(40),
+        child: isRow
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        iconPath,
+                        width: 32,
+                        height: 32,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      height: 1.6,
+                    ),
+                  ),
+                ],
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        iconPath,
+                        width: 32,
+                        height: 32,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      height: 1.6,
+                    ),
+                  ),
+                ],
               ),
-              child: Center(
-                child: SvgPicture.asset(
-                  iconPath,
-                  width: 40,
-                  height: 40,
-                ),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: textStyle,
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -564,18 +593,18 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildNavButton(String title, String iconPath, Color color, bool isActive) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         border: Border.all(color: color, width: 2),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(4),
         color: isActive ? color : Colors.transparent,
       ),
       child: Row(
         children: [
           SvgPicture.asset(
             iconPath,
-            width: 20,
-            height: 20,
+            width: 24,
+            height: 24,
             colorFilter: ColorFilter.mode(isActive ? Colors.white : color, BlendMode.srcIn),
           ),
           const SizedBox(width: 4),
@@ -585,6 +614,7 @@ class _HomePageState extends State<HomePage> {
               color: isActive ? Colors.white : color,
               fontSize: 12,
               fontWeight: FontWeight.w500,
+              height: 2,
             ),
           ),
         ],
