@@ -19,7 +19,6 @@ class ApiService {
   static Future<Map<String, dynamic>> getPassport() async {
     return {
       'id': 'passport_123',
-      'type': '兒童氣喘照護計畫',
       'name': '王曉明',
       'dateOfBirth': '2024/01/15',
       'code': '123456',

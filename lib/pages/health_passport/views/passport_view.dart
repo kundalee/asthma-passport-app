@@ -17,7 +17,6 @@ class HealthPassportView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final type = (data['type'] ?? '').toString();
     final name = (data['name'] ?? '').toString();
     final dateOfBirth = (data['dateOfBirth'] ?? '').toString();
     final code = (data['code'] ?? '').toString();
@@ -57,6 +56,7 @@ class HealthPassportView extends StatelessWidget {
                           fontSize: 24,
                           fontWeight: FontWeight.w500,
                           color: AppColors.passportAccent,
+                          height: 1.0,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -66,6 +66,7 @@ class HealthPassportView extends StatelessWidget {
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: AppColors.passportAccent,
+                          height: 1.0,
                         ),
                       ),
                     ],
@@ -81,6 +82,7 @@ class HealthPassportView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Card
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
@@ -115,27 +117,27 @@ class HealthPassportView extends StatelessWidget {
                                           Row(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Expanded(flex: 60, child: _buildInfoRow('TYPE / 類型', type)),
+                                              Expanded(flex: 60, child: _buildInfoRow('NAME / 姓名', name)),
                                               const SizedBox(width: 12),
                                               Expanded(flex: 40, child: _buildInfoRow('CODE / 代碼', code)),
                                             ],
                                           ),
-                                          const SizedBox(height: 6),
+                                          const SizedBox(height: 12),
                                           Row(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Expanded(flex: 60, child: _buildInfoRow('NAME / 姓名', name)),
+                                              Expanded(flex: 60, child: _buildInfoRow('SEX / 性別', sex)),
                                               const SizedBox(width: 12),
-                                              Expanded(flex: 40, child: _buildInfoRow('SEX / 性別', sex)),
+                                              Expanded(flex: 40, child: _buildInfoRow('AGE / 年齡', age.isNotEmpty ? '$age 歲' : '')),
                                             ],
                                           ),
-                                          const SizedBox(height: 6),
+                                          const SizedBox(height: 12),
                                           Row(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Expanded(flex: 60, child: _buildInfoRow('DATE OF BIRTH / 出生日期', dateOfBirth)),
                                               const SizedBox(width: 12),
-                                              Expanded(flex: 40, child: _buildInfoRow('AGE / 年齡', age)),
+                                              Expanded(flex: 40, child: Container()),
                                             ],
                                           ),
                                         ],
@@ -167,9 +169,7 @@ class HealthPassportView extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      _buildMenuItem('基本健康資料', '查看氣喘診測計畫', iconPath: 'assets/icons/user.svg', onTap: () => onMenuTap?.call(1)),
-                      const SizedBox(height: 10),
-                      _buildMenuItem('健康護照', '請專業醫生生給予診斷及保健指南', iconPath: 'assets/icons/doctor.svg', onTap: () => onMenuTap?.call(1)),
+                      _buildMenuItem('氣喘處置計劃', '請專業醫生給予診斷及保健指南', iconPath: 'assets/icons/doctor.svg', onTap: () => onMenuTap?.call(1)),
                     ],
                   ),
                 ),
@@ -192,32 +192,23 @@ class HealthPassportView extends StatelessWidget {
               ),
             ),
             padding: const EdgeInsets.only(top: 12, bottom: 40, left: 24, right: 24),
-            child: Column(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: CustomButton(
-                    text: '登出帳號',
-                    onPressed: onLogout,
-                    backgroundColor: AppColors.logoutButtonBg,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    borderRadius: 4,
+            child: SizedBox(
+              width: double.infinity,
+              child: Column(
+                children: [
+                  const Text(
+                    '彰化基督教醫院 核發',
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.passportAccent70, height: 1.0),
                   ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  '彰化基督教醫院 核發',
-                  style: TextStyle(fontSize: 10, color: AppColors.passportAccent70),
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  'ISSUED BY CHANGHUA CHRISTIAN HOSPITAL',
-                  style: TextStyle(fontSize: 10, color: AppColors.passportAccent70),
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  const Text(
+                    'ISSUED BY CHANGHUA CHRISTIAN HOSPITAL',
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.passportAccent70, height: 1.0),
+                  ),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 16),
         ],
       ),
     );
@@ -227,9 +218,9 @@ class HealthPassportView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.infoLabel)),
+        Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.infoLabel, height: 1.0)),
         const SizedBox(height: 2),
-        Text(value, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black)),
+        Text(value, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black, height: 2.0)),
       ],
     );
   }
@@ -238,7 +229,7 @@ class HealthPassportView extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(color: AppColors.inputBorder, width: 1),
@@ -263,13 +254,13 @@ class HealthPassportView extends StatelessWidget {
                       Expanded(
                         child: Text(
                           title,
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 10),
-                  Text(subtitle, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: AppColors.menuSubtitle)),
+                  Text(subtitle, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.menuSubtitle, height: 1.0)),
                 ],
               ),
             ),
