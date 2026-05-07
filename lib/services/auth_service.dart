@@ -5,22 +5,34 @@ class AuthService {
   static const String _userNameKey = 'user_name';
   static const String _userEmailKey = 'user_email';
 
-  static Future<String> login(String email, String password) async {
+  static Future<Map<String, dynamic>> login(String email, String password) async {
     await Future.delayed(const Duration(milliseconds: 300));
+    if (password != '1111') {
+      return {
+        'success': false,
+        'message': '密碼錯誤',
+      };
+    }
     const token = 'fake_token_123';
     await saveToken(token);
     await saveUserEmail(email);
     await saveUserName('王曉明');
-    return token;
+    return {
+      'success': true,
+      'token': token,
+    };
   }
 
-  static Future<String> register(String name, String email, String password, String confirmPassword) async {
+  static Future<Map<String, dynamic>> register(String name, String email, String password, String confirmPassword) async {
     await Future.delayed(const Duration(milliseconds: 300));
     const token = 'fake_token_123';
     await saveToken(token);
     await saveUserName(name);
     await saveUserEmail(email);
-    return token;
+    return {
+      'success': true,
+      'token': token,
+    };
   }
 
   static Future<void> logout() async {

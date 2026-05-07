@@ -14,13 +14,17 @@ class RegisterForm extends StatefulWidget {
 }
 
 class _RegisterFormState extends State<RegisterForm> {
-  bool obscurePassword = true;
-  bool obscureConfirmPassword = true;
+  bool obscurePassword = false;
+  bool obscureConfirmPassword = false;
   bool isLoading = false;
   late TextEditingController nameController;
   late TextEditingController emailController;
   late TextEditingController passwordController;
   late TextEditingController confirmPasswordController;
+  String? nameError;
+  String? emailError;
+  String? passwordError;
+  String? confirmPasswordError;
 
   @override
   void initState() {
@@ -29,10 +33,18 @@ class _RegisterFormState extends State<RegisterForm> {
     emailController = TextEditingController();
     passwordController = TextEditingController();
     confirmPasswordController = TextEditingController();
+    nameController.addListener(_onNameChanged);
+    emailController.addListener(_onEmailChanged);
+    passwordController.addListener(_onPasswordChanged);
+    confirmPasswordController.addListener(_onConfirmPasswordChanged);
   }
 
   @override
   void dispose() {
+    nameController.removeListener(_onNameChanged);
+    emailController.removeListener(_onEmailChanged);
+    passwordController.removeListener(_onPasswordChanged);
+    confirmPasswordController.removeListener(_onConfirmPasswordChanged);
     nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
@@ -40,37 +52,95 @@ class _RegisterFormState extends State<RegisterForm> {
     super.dispose();
   }
 
+  void _onNameChanged() {
+    if (nameController.text.isNotEmpty && nameError != null) {
+      setState(() => nameError = null);
+    }
+  }
+
+  void _onEmailChanged() {
+    if (emailController.text.isNotEmpty && emailError != null) {
+      setState(() => emailError = null);
+    }
+  }
+
+  void _onPasswordChanged() {
+    if (passwordController.text.isNotEmpty && passwordError != null) {
+      setState(() => passwordError = null);
+    }
+  }
+
+  void _onConfirmPasswordChanged() {
+    if (confirmPasswordController.text.isNotEmpty && confirmPasswordError != null) {
+      setState(() => confirmPasswordError = null);
+    }
+  }
+
+  bool _isValidEmail(String email) {
+    return RegExp(r'^[\w.-]+@[\w.-]+\.\w+$').hasMatch(email);
+  }
+
   void _handleRegister() async {
-    if (passwordController.text != confirmPasswordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('密碼不相符')),
-      );
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+    final confirmPassword = confirmPasswordController.text;
+
+    String? newNameError;
+    String? newEmailError;
+    String? newPasswordError;
+    String? newConfirmPasswordError;
+
+    if (name.isEmpty) {
+      newNameError = '此欄位為必填';
+    }
+    if (email.isEmpty) {
+      newEmailError = '此欄位為必填';
+    } else if (!_isValidEmail(email)) {
+      newEmailError = '您輸入的信箱格式有誤，請重新輸入';
+    }
+    if (password.isEmpty) {
+      newPasswordError = '此欄位為必填';
+    }
+    if (confirmPassword.isEmpty) {
+      newConfirmPasswordError = '此欄位為必填';
+    } else if (password != confirmPassword) {
+      newConfirmPasswordError = '您輸入的密碼不符，請重新輸入';
+    }
+
+    if (newNameError != null || newEmailError != null || newPasswordError != null || newConfirmPasswordError != null) {
+      setState(() {
+        nameError = newNameError;
+        emailError = newEmailError;
+        passwordError = newPasswordError;
+        confirmPasswordError = newConfirmPasswordError;
+      });
       return;
     }
 
     setState(() => isLoading = true);
-    try {
-      await AuthService.register(
-        nameController.text,
-        emailController.text,
-        passwordController.text,
-        confirmPasswordController.text,
+
+    final response = await AuthService.register(
+      name,
+      email,
+      password,
+      confirmPassword,
+    );
+
+    if (!mounted) return;
+
+    if (response['success']) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const HomePage()),
       );
-      if (mounted) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('註冊失敗: ${e.toString()}')),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() => isLoading = false);
-      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response['message'] ?? '註冊失敗')),
+      );
+    }
+
+    if (mounted) {
+      setState(() => isLoading = false);
     }
   }
 
@@ -89,6 +159,7 @@ class _RegisterFormState extends State<RegisterForm> {
             height: 24,
             colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
           ),
+          errorText: nameError,
         ),
         const SizedBox(height: 16),
 
@@ -102,6 +173,7 @@ class _RegisterFormState extends State<RegisterForm> {
             height: 24,
             colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
           ),
+          errorText: emailError,
         ),
         const SizedBox(height: 16),
 
@@ -122,18 +194,7 @@ class _RegisterFormState extends State<RegisterForm> {
               obscurePassword = !obscurePassword;
             });
           },
-          hideIcon: SvgPicture.asset(
-            'assets/icons/hide-on.svg',
-            width: 24,
-            height: 24,
-            colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
-          ),
-          showIcon: SvgPicture.asset(
-            'assets/icons/hide-off.svg',
-            width: 24,
-            height: 24,
-            colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
-          ),
+          errorText: passwordError,
         ),
         const SizedBox(height: 16),
 
@@ -154,18 +215,7 @@ class _RegisterFormState extends State<RegisterForm> {
               obscureConfirmPassword = !obscureConfirmPassword;
             });
           },
-          hideIcon: SvgPicture.asset(
-            'assets/icons/hide-on.svg',
-            width: 24,
-            height: 24,
-            colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
-          ),
-          showIcon: SvgPicture.asset(
-            'assets/icons/hide-off.svg',
-            width: 24,
-            height: 24,
-            colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
-          ),
+          errorText: confirmPasswordError,
         ),
         const SizedBox(height: 16),
 
