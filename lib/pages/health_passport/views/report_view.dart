@@ -36,7 +36,7 @@ class HealthReportView extends StatelessWidget {
                 const SizedBox(width: 8),
                 const Text(
                   '近期紀錄簡報',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.reportTitle),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.reportTitle, height: 1.5),
                 ),
               ],
             ),
@@ -48,22 +48,22 @@ class HealthReportView extends StatelessWidget {
                 children: [
                   const Text(
                     '基本資料',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5),
                   ),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('姓名', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle)),
-                      Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle)),
+                      const Text('姓名', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle, height: 1.71)),
+                      Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle, height: 1.71)),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('年齡', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle)),
-                      Text('$age 歲', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle)),
+                      const Text('年齡', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle, height: 1.71)),
+                      Text('$age 歲', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle, height: 1.71)),
                     ],
                   ),
                 ],
@@ -81,12 +81,12 @@ class HealthReportView extends StatelessWidget {
                 children: [
                   const Text(
                     '前一個月控制狀況',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle, height: 1.71),
                   ),
                   const SizedBox(height: 8),
                   const Text(
                     '良好',
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.primaryGreen),
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.primaryGreen, height: 1.0),
                   ),
                 ],
               ),

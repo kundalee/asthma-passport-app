@@ -3,29 +3,29 @@ import '../theme/app_colors.dart';
 
 class CardContainer extends StatelessWidget {
   final Widget child;
-  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry padding;
   final double borderRadius;
-  final Color? backgroundColor;
-  final Color? borderColor;
+  final Color backgroundColor;
+  final Color borderColor;
 
   const CardContainer({
     super.key,
     required this.child,
-    this.padding,
+    this.padding = const EdgeInsets.all(12),
     this.borderRadius = 14,
-    this.backgroundColor,
-    this.borderColor,
+    this.backgroundColor = Colors.white,
+    this.borderColor = AppColors.inputBorder,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: backgroundColor ?? Colors.white,
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color: borderColor ?? AppColors.inputBorder, width: 1),
+        border: Border.all(color: borderColor, width: 1),
       ),
-      padding: padding ?? const EdgeInsets.all(12),
+      padding: padding,
       child: child,
     );
   }
