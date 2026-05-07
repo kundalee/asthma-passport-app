@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../theme/app_colors.dart';
-import '../../../components/custom_button.dart';
 
 class HealthPassportView extends StatelessWidget {
   final Map<String, dynamic> data;
