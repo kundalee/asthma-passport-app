@@ -3,6 +3,7 @@ import '../theme/app_colors.dart';
 import 'custom_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'custom_button.dart';
+import 'terms_bottom_sheet.dart';
 import '../services/auth_service.dart';
 import '../pages/home_page.dart';
 
@@ -49,6 +50,20 @@ class _LoginFormState extends State<LoginForm> {
     if (passwordController.text.isNotEmpty && passwordError != null) {
       setState(() => passwordError = null);
     }
+  }
+
+  void _showTermsAndThirdPartyLogin(String provider) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => TermsBottomSheet(
+        title: 'APP使用條款及隱私權保護聲明',
+        onConfirm: () {
+          Navigator.pop(context);
+          // TODO: Call third-party login API
+        },
+      ),
+    );
   }
 
   bool _isValidEmail(String email) {
@@ -187,7 +202,7 @@ class _LoginFormState extends State<LoginForm> {
         // LINE Login Button
         CustomButton(
           text: '使用 LINE 登入',
-          onPressed: () {},
+          onPressed: () => _showTermsAndThirdPartyLogin('LINE'),
           backgroundColor: AppColors.lineGreen,
           icon: SvgPicture.asset(
             'assets/icons/line.svg',
@@ -201,7 +216,7 @@ class _LoginFormState extends State<LoginForm> {
         // Google Login Button
         CustomButton(
           text: '使用 Google 登入',
-          onPressed: () {},
+          onPressed: () => _showTermsAndThirdPartyLogin('Google'),
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
           icon: SvgPicture.asset(

@@ -3,6 +3,7 @@ import '../theme/app_colors.dart';
 import 'custom_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'custom_button.dart';
+import 'terms_bottom_sheet.dart';
 import '../services/auth_service.dart';
 import '../pages/home_page.dart';
 
@@ -78,6 +79,20 @@ class _RegisterFormState extends State<RegisterForm> {
 
   bool _isValidEmail(String email) {
     return RegExp(r'^[\w.-]+@[\w.-]+\.\w+$').hasMatch(email);
+  }
+
+  void _showTermsAndRegister() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => TermsBottomSheet(
+        title: 'APP使用條款及隱私權保護聲明',
+        onConfirm: () {
+          Navigator.pop(context);
+          _handleRegister();
+        },
+      ),
+    );
   }
 
   void _handleRegister() async {
@@ -222,7 +237,7 @@ class _RegisterFormState extends State<RegisterForm> {
         // Register Button
         CustomButton(
           text: '註冊',
-          onPressed: _handleRegister,
+          onPressed: _showTermsAndRegister,
           backgroundColor: AppColors.primaryGreen,
           isLoading: isLoading,
         ),
