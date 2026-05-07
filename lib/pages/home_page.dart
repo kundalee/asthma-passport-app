@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../services/api_service.dart';
+import '../services/auth_service.dart';
 import '../components/app_page_container.dart';
 
 class HomePage extends StatefulWidget {
@@ -30,14 +31,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _checkLoginStatus() async {
-    final token = await ApiService.getToken();
+    final token = await AuthService.getToken();
     setState(() {
       isLoggedIn = token != null;
     });
   }
 
   Future<void> _loadUserName() async {
-    final name = await ApiService.getUserName();
+    final name = await AuthService.getUserName();
     setState(() {
       userName = name ?? '';
     });

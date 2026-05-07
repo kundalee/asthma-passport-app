@@ -3,7 +3,7 @@ import '../theme/app_colors.dart';
 import 'custom_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'custom_button.dart';
-import '../services/api_service.dart';
+import '../services/auth_service.dart';
 import '../pages/home_page.dart';
 
 class RegisterForm extends StatefulWidget {
@@ -50,7 +50,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
     setState(() => isLoading = true);
     try {
-      await ApiService.register(
+      await AuthService.register(
         nameController.text,
         emailController.text,
         passwordController.text,

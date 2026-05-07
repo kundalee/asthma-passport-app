@@ -3,7 +3,7 @@ import '../theme/app_colors.dart';
 import 'custom_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'custom_button.dart';
-import '../services/api_service.dart';
+import '../services/auth_service.dart';
 import '../pages/home_page.dart';
 
 class LoginForm extends StatefulWidget {
@@ -36,7 +36,7 @@ class _LoginFormState extends State<LoginForm> {
   void _handleLogin() async {
     setState(() => isLoading = true);
     try {
-      await ApiService.login(emailController.text, passwordController.text);
+      await AuthService.login(emailController.text, passwordController.text);
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const HomePage()),

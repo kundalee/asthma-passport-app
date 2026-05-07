@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../services/api_service.dart';
+import '../../services/auth_service.dart';
 import '../../components/app_page_container.dart';
 import 'views/passport_view.dart';
 import 'views/report_view.dart';
@@ -91,7 +92,7 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
   }
 
   Future<void> _logout(BuildContext context) async {
-    await ApiService.logout();
+    await AuthService.logout();
     if (context.mounted) {
       Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
     }
