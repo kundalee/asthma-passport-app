@@ -2,32 +2,32 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
+  final Widget? icon;
   final VoidCallback onPressed;
   final Color backgroundColor;
   final Color foregroundColor;
   final double borderRadius;
   final EdgeInsetsGeometry padding;
-  final Widget? icon;
   final BorderSide? border;
-  final bool isLoading;
+  final Gradient? gradient;
   final double? height;
   final MainAxisAlignment iconAlignment;
-  final Gradient? gradient;
+  final bool isLoading;
 
   const CustomButton({
     super.key,
     required this.text,
     required this.onPressed,
+    this.icon,
     this.backgroundColor = Colors.blue,
     this.foregroundColor = Colors.white,
     this.borderRadius = 4.0,
     this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-    this.icon,
     this.border,
-    this.isLoading = false,
+    this.gradient,
     this.height,
     this.iconAlignment = MainAxisAlignment.center,
-    this.gradient,
+    this.isLoading = false,
   });
 
   @override
