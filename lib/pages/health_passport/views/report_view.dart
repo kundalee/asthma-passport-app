@@ -19,9 +19,7 @@ class HealthReportView extends StatelessWidget {
     final name = (data['name'] ?? '').toString();
     final age = (data['age'] ?? '').toString();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      child: CardContainer(
+    return CardContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -119,7 +117,6 @@ class HealthReportView extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 }

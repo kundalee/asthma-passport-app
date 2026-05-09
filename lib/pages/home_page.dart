@@ -69,28 +69,32 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _handleTestItemTap(String testName) {
+    if (testName == '氣喘日記') {
+      Navigator.of(context).pushNamed('/asthma-diary');
+    }
+    // TODO: Add navigation for other test types
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppPageContainer(
       header: _buildHeader(),
-      content: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // AQI and Weather Card
-            _buildAQICard(),
-            const SizedBox(height: 12),
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // AQI and Weather Card
+          _buildAQICard(),
+          const SizedBox(height: 12),
 
-            // Today's Tests Section
-            _buildTodayTestsSection(),
-            const SizedBox(height: 12),
+          // Today's Tests Section
+          _buildTodayTestsSection(),
+          const SizedBox(height: 12),
 
-            // Feature Buttons Grid
-            _buildFeatureButtonsGrid(),
-            const SizedBox(height: 52),
-          ],
-        ),
+          // Feature Buttons Grid
+          _buildFeatureButtonsGrid(),
+          const SizedBox(height: 52),
+        ],
       ),
       bottomNavigation: _buildBottomNavigation(),
     );
@@ -327,6 +331,7 @@ class _HomePageState extends State<HomePage> {
                 todayTests[index]['name'] ?? '',
                 todayTests[index]['icon'] ?? testItems[index % 3]['icon'] ?? '',
                 todayTests[index]['status'] ?? 0,
+                onTap: () => _handleTestItemTap(todayTests[index]['name'] ?? ''),
               ),
             ),
           ),

@@ -5,12 +5,14 @@ class AppPageContainer extends StatelessWidget {
   final Widget header;
   final Widget content;
   final Widget? bottomNavigation;
+  final EdgeInsets contentPadding;
 
   const AppPageContainer({
     super.key,
     required this.header,
     required this.content,
     this.bottomNavigation,
+    this.contentPadding = const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
   });
 
   @override
@@ -27,7 +29,10 @@ class AppPageContainer extends StatelessWidget {
                   child: Container(
                     color: AppColors.lightMintBackground,
                     child: SingleChildScrollView(
-                      child: content,
+                      child: Padding(
+                        padding: contentPadding,
+                        child: content,
+                      ),
                     ),
                   ),
                 ),

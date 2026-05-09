@@ -221,9 +221,7 @@ class _NewPlanViewState extends State<NewPlanView> {
   Widget build(BuildContext context) {
     final name = (widget.data['name'] ?? '').toString();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
         child: CardContainer(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -380,7 +378,6 @@ class _NewPlanViewState extends State<NewPlanView> {
             ],
           ),
         ),
-      ),
     );
   }
 }

@@ -23,12 +23,10 @@ class _LoginPageState extends State<LoginPage> {
         height: 44,
         color: Colors.white,
       ),
-      content: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
+      contentPadding: const EdgeInsets.all(16.0),
+      content: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 16),
             // Logo/Title area
             const Center(
               child: Column(
@@ -104,7 +102,6 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 40),
           ],
         ),
-      ),
     );
   }
 }

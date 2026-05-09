@@ -35,6 +35,12 @@ class AppColors {
   static const Color resultModerateIcon = Color(0xFFA65F00);
   static const Color resultSevereIcon = Color(0xFFDC2626);
 
+  // Button colors
+  static const Color completedButtonBg = Color(0xFF1877F2);
+
+  // Instructions box colors
+  static const Color instructionsBoxBorder = Color(0xFFFFE082);
+
   // Passport Card Gradient Colors
   static const Color passportCardGradientStart = Color(0xFF004D2C);
   static const Color passportCardGradientEnd = Color(0xFF006D37);
@@ -51,4 +57,18 @@ class AppColors {
 
   static const Color smartAssistantGradientStart = Color(0xFF2B7FFF);
   static const Color smartAssistantGradientEnd = Color(0xFF51A2FF);
+
+  static const Color scoreBadgeBackground = Color(0xFFEFF6FF);
+  static const Color scoreBadgeBorder = Color(0xFFBEDBFF);
+
+  // Scale bar colors (assessment scale: no symptoms to severe)
+  static const Color scaleBarGreen = Color(0xFF006D37);
+  static const Color scaleBarLightGreen = Color(0xFFA7E54F);
+  static const Color scaleBarYellow = Color(0xFFF0B100);
+  static const Color scaleBarOrange = Color(0xFFEF6464);
+  static const Color scaleBarRed = Color(0xFFFF0000);
+
+  // Status message border colors
+  static const Color statusGoodBorder = Color(0xFFB9F8CF);
+  static const Color statusBadBorder = Color(0xFFFDCDCD);
 }

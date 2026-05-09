@@ -23,9 +23,7 @@ class HealthPassportView extends StatelessWidget {
     final age = (data['age'] ?? '').toString();
     final barcode = (data['barcode'] ?? '').toString();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      child: Column(
+    return Column(
         children: [
           Container(
             decoration: BoxDecoration(
@@ -209,8 +207,7 @@ class HealthPassportView extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
+      );
   }
 
   Widget _buildInfoRow(String label, String value) {
