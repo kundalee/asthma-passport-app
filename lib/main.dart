@@ -4,6 +4,7 @@ import 'pages/login_page.dart';
 import 'pages/home_page.dart';
 import 'pages/health_passport/health_passport_page.dart';
 import 'pages/asthma_diary_page.dart';
+import 'pages/peak_flow_page.dart';
 import 'theme/app_colors.dart';
 
 void main() {
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomePage(),
         '/health-passport': (context) => const HealthPassportPage(),
         '/asthma-diary': (context) => const AsthmaDiaryPage(),
+        '/peak-flow': (context) => const PeakFlowPage(),
       },
     );
   }

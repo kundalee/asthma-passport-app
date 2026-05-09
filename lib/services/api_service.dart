@@ -37,6 +37,18 @@ class ApiService {
     };
   }
 
+  static Future<Map<String, dynamic>> getPeakFlowStatus() async {
+    return {
+      'measurementDate': '2025/12/10',
+      'isDaytimeCompleted': true,
+      'isEveningCompleted': false,
+      'daytimeValue': 350,
+      'daytimeStatus': 1, // 1: good, 2: moderate, 3: severe
+      'eveningValue': null,
+      'eveningStatus': null,
+    };
+  }
+
   static Future<List<Map<String, dynamic>>> getAssessmentQuestions() async {
     final bool isCompleted = false; // toggle between true and false
     final bool isGood = false; // toggle between true (good) and false (bad)
@@ -109,5 +121,22 @@ class ApiService {
         'selected_option_id': selectedAnswers[4],
       },
     ];
+  }
+
+  static Future<int> submitPeakFlowMeasurement({
+    required String measurementDate,
+    required bool isDaytime,
+    required String measurementValue,
+  }) async {
+    // TODO: Replace with actual API call
+    // Sample logic: determine status based on measurement value
+    final value = int.tryParse(measurementValue) ?? 0;
+    if (value >= 280) {
+      return 1; // Good control
+    } else if (value >= 240) {
+      return 2; // Moderate control
+    } else {
+      return 3; // Poor control
+    }
   }
 }

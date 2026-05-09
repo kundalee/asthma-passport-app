@@ -72,6 +72,8 @@ class _HomePageState extends State<HomePage> {
   void _handleTestItemTap(String testName) {
     if (testName == '氣喘日記') {
       Navigator.of(context).pushNamed('/asthma-diary');
+    } else if (testName == '尖峰吐氣流量') {
+      Navigator.of(context).pushNamed('/peak-flow');
     }
     // TODO: Add navigation for other test types
   }

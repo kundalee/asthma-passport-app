@@ -1,0 +1,476 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../../../theme/app_colors.dart';
+import '../../../components/custom_button.dart';
+import '../../../components/card_container.dart';
+import '../../../services/api_service.dart';
+
+class PeakFlowResultsView extends StatefulWidget {
+  final String measurementDate;
+  final bool isDaytime;
+  final String measurementValue;
+  final int? status;
+  final Function(int) onSwitchView;
+
+  const PeakFlowResultsView({
+    super.key,
+    required this.measurementDate,
+    required this.isDaytime,
+    required this.measurementValue,
+    this.status,
+    required this.onSwitchView,
+  });
+
+  @override
+  State<PeakFlowResultsView> createState() => _PeakFlowResultsViewState();
+}
+
+class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
+  final TextEditingController _inputController = TextEditingController();
+  late int? _statusResult;
+  late bool _isEditingFromCompleted;
+
+  @override
+  void initState() {
+    super.initState();
+    _statusResult = widget.status;
+    _isEditingFromCompleted = false;
+    _inputController.text = widget.measurementValue;
+  }
+
+  @override
+  void dispose() {
+    _inputController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submitMeasurement() async {
+    final status = await ApiService.submitPeakFlowMeasurement(
+      measurementDate: widget.measurementDate,
+      isDaytime: widget.isDaytime,
+      measurementValue: _inputController.text,
+    );
+    setState(() => _statusResult = status);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: CardContainer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(),
+            const SizedBox(height: 12),
+            _buildInstructionImage(),
+            const SizedBox(height: 12),
+            _buildInstructions(),
+            const SizedBox(height: 12),
+            _buildMeasurementInput(),
+            const SizedBox(height: 12),
+            _statusResult == null ? _buildResultsTable() : _buildStatusResult(),
+            const SizedBox(height: 12),
+            _buildConfirmButton(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Row(
+      children: [
+        SvgPicture.asset(
+          widget.isDaytime ? 'assets/icons/sun.svg' : 'assets/icons/night.svg',
+          width: 24,
+          height: 24,
+          colorFilter: const ColorFilter.mode(AppColors.measurementIconColor, BlendMode.srcIn),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          widget.isDaytime ? '白天量測' : '夜晚量測',
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
+            height: 1.5,
+            letterSpacing: 0,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInstructionImage() {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Image.asset(
+        'assets/images/peak_flow_instruction.png',
+        width: 280,
+        height: 179,
+        fit: BoxFit.contain,
+      ),
+    );
+  }
+
+  Widget _buildInstructions() {
+    return const Text(
+      '步驟一、確保指針歸零。\n步驟二、站直深吸一口氣，緊閉嘴唇並用力呼氣，將吹嘴放入口中並用嘴唇緊密包住，快速且用力地將所有空氣在短時間內吹出，不要用舌頭堵住。\n步驟三、記下讀數後休息一下，重複 2-3 次，選取最高的數值點選完成紀錄。',
+      style: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: Colors.black,
+        height: 1.67,
+        letterSpacing: 0,
+      ),
+    );
+  }
+
+  Widget _buildMeasurementInput() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            '請紀錄最高尖峰呼氣流速',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              height: 1.71,
+              letterSpacing: 0,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _inputController,
+            enabled: widget.status == null || _isEditingFromCompleted,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              height: 1.5,
+              letterSpacing: 0,
+            ),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: (widget.status == null || _isEditingFromCompleted) ? Colors.white : AppColors.inputBackground,
+              suffixIcon: Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  widthFactor: 1.0,
+                  child: Text(
+                    '(L/min)',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                      height: 1.71,
+                      letterSpacing: 0,
+                    ),
+                  ),
+                ),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: const BorderSide(
+                  color: AppColors.inputBorder,
+                  width: 1,
+                ),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: const BorderSide(
+                  color: AppColors.inputBorder,
+                  width: 1,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: const BorderSide(
+                  color: AppColors.inputBorder,
+                  width: 1,
+                ),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4),
+                borderSide: const BorderSide(
+                  color: AppColors.inputBorder,
+                  width: 1,
+                ),
+              ),
+              contentPadding: const EdgeInsets.all(8),
+            ),
+            keyboardType: TextInputType.number,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResultsTable() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            '比對測測結果',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              height: 1.71,
+              letterSpacing: 0,
+            ),
+          ),
+          const SizedBox(height: 8),
+          _buildTable(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTable() {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.black,
+          width: 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildTableRow('區別', '最佳值之百分比', '代表意義', isHeader: true),
+          _buildTableRow('PEFR值綠燈區', '80%以上', '情況穩定', backgroundColor: AppColors.tableRowGoodBg),
+          _buildTableRow('PEFR值黃燈區', '60%~80%', '要小心', backgroundColor: AppColors.tableRowModerateBg),
+          _buildTableRow('PEFR值紅燈區', '60%以下', '醫療警訊', backgroundColor: AppColors.tableRowSevereBg),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTableRow(
+    String column1,
+    String column2,
+    String column3, {
+    bool isHeader = false,
+    Color? backgroundColor,
+  }) {
+    const textStyle = TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+      color: Colors.black,
+      height: 2.67,
+      letterSpacing: 0,
+    );
+
+    return Container(
+      height: 32,
+      color: backgroundColor,
+      alignment: Alignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Text(column1, style: textStyle, textAlign: TextAlign.center),
+          ),
+          Expanded(
+            child: Text(column2, style: textStyle, textAlign: TextAlign.center),
+          ),
+          Expanded(
+            child: Text(column3, style: textStyle, textAlign: TextAlign.center),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusResult() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            '比對測測結果',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              height: 1.71,
+              letterSpacing: 0,
+            ),
+          ),
+          const SizedBox(height: 8),
+          _buildStatusBox(_statusResult ?? 1),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusBox(int status) {
+    late Color backgroundColor;
+    late Color borderColor;
+    late Color textColor;
+    late String iconPath;
+    late String statusText;
+
+    switch (status) {
+      case 1:
+        backgroundColor = AppColors.statusGoodBg;
+        borderColor = AppColors.statusGoodBorder;
+        textColor = AppColors.statusGoodText;
+        iconPath = 'assets/icons/check.svg';
+        statusText = '控制良好，請繼續保持';
+        break;
+      case 2:
+        backgroundColor = AppColors.statusModerateBg;
+        borderColor = AppColors.statusModerateBorder;
+        textColor = AppColors.statusModerateText;
+        iconPath = 'assets/icons/alert-info.svg';
+        statusText = '目前氣道不穩定，如合併有氣喘症狀請使用氣喘緊急用藥，並持續觀察氣喘狀況';
+        break;
+      case 3:
+        backgroundColor = AppColors.statusSevereBg;
+        borderColor = AppColors.statusSevereBorder;
+        textColor = AppColors.statusSevereText;
+        iconPath = 'assets/icons/emergency.svg';
+        statusText = '氣喘正處於急性發作，請立即使用氣喘緊急用藥，使用後若症狀無法緩解請盡快就醫';
+        break;
+      default:
+        backgroundColor = AppColors.statusGoodBg;
+        borderColor = AppColors.statusGoodBorder;
+        textColor = AppColors.statusGoodText;
+        iconPath = 'assets/icons/check.svg';
+        statusText = '控制良好，請繼續保持';
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        border: Border.all(
+          color: borderColor,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      alignment: Alignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            iconPath,
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(textColor, BlendMode.srcIn),
+          ),
+          const SizedBox(width: 12),
+          Flexible(
+            child: Text(
+              statusText,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: textColor,
+                height: 1.71,
+                letterSpacing: 0,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildConfirmButton() {
+    if (widget.status != null && !_isEditingFromCompleted) {
+      // Initial status provided and not editing - show 3 buttons
+      return Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: CustomButton(
+              text: '返回首頁',
+              onPressed: () => widget.onSwitchView(0),
+              backgroundColor: AppColors.primaryGreen,
+              padding: const EdgeInsets.all(12),
+              borderRadius: 4,
+              height: 37,
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: CustomButton(
+              text: '查看歷史紀錄',
+              onPressed: () {},
+              backgroundColor: const Color(0xFF1877F2),
+              padding: const EdgeInsets.all(12),
+              borderRadius: 4,
+              height: 37,
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: CustomButton(
+              text: '編輯檢測結果',
+              onPressed: () {
+                setState(() {
+                  _statusResult = null;
+                  _isEditingFromCompleted = true;
+                });
+              },
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              border: const BorderSide(
+                color: AppColors.inputBorder,
+                width: 1,
+              ),
+              padding: const EdgeInsets.all(12),
+              borderRadius: 4,
+              height: 37,
+            ),
+          ),
+        ],
+      );
+    } else {
+      // Recording new measurement - show 1 button
+      return SizedBox(
+        width: double.infinity,
+        child: CustomButton(
+          text: _statusResult == null ? '確認' : '完成紀錄',
+          onPressed: _statusResult == null ? _submitMeasurement : () => widget.onSwitchView(0),
+          backgroundColor: AppColors.primaryGreen,
+          padding: const EdgeInsets.all(12),
+          borderRadius: 4,
+          height: 37,
+        ),
+      );
+    }
+  }
+}
