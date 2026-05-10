@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'pages/login_page.dart';
 import 'pages/home_page.dart';
+import 'pages/profile_page.dart';
 import 'pages/health_passport/health_passport_page.dart';
 import 'pages/asthma_diary_page.dart';
 import 'pages/peak_flow_page.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => const LoginPage(),
         '/home': (context) => const HomePage(),
+        '/profile': (context) => const ProfilePage(),
         '/health-passport': (context) => const HealthPassportPage(),
         '/asthma-diary': (context) => const AsthmaDiaryPage(),
         '/peak-flow': (context) => const PeakFlowPage(),

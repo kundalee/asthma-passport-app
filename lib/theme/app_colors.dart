@@ -89,4 +89,7 @@ class AppColors {
 
   // Measurement icon color
   static const Color measurementIconColor = Color(0xFFF0B100);
+
+  // Action sheet colors
+  static const Color actionSheetItem = Color(0xFF0078FF);
 }

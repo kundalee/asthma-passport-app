@@ -112,7 +112,9 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           GestureDetector(
-            onTap: isLoggedIn ? null : () => Navigator.of(context).pushReplacementNamed('/login'),
+            onTap: isLoggedIn
+                ? () => Navigator.of(context).pushNamed('/profile')
+                : () => Navigator.of(context).pushReplacementNamed('/login'),
             child: SizedBox(
               width: isLoggedIn ? null : 64,
               child: Container(
