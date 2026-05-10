@@ -231,7 +231,7 @@ class _ActFormViewState extends State<ActFormView> {
     return Column(
       children: [
         CustomButton(
-          text: isLastQuestion ? '提交測驗' : '下一題',
+          text: isLastQuestion ? '完成作答' : '下一題',
           onPressed: _isAnswered(currentQuestion)
               ? () {
                   if (isLastQuestion) {
@@ -415,7 +415,7 @@ class _ActFormViewState extends State<ActFormView> {
       text: '完成紀錄',
       onPressed: () {
         widget.onSubmitAssessment?.call();
-        widget.onSwitchView(0);
+        Navigator.of(context).pushReplacementNamed('/');
       },
       foregroundColor: Colors.white,
       backgroundColor: AppColors.primaryGreen,
