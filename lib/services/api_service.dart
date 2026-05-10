@@ -367,4 +367,31 @@ class ApiService {
       'measurementDate': DateTime.now().toString().split(' ')[0],
     };
   }
+
+  static Future<Map<String, dynamic>> calculateAssessmentResult({
+    required List<int?> answers,
+  }) async {
+    // TODO: Replace with actual API call
+    // Calculate total score based on answers
+    int totalScore = 0;
+    for (final answer in answers) {
+      if (answer != null) {
+        totalScore += answer;
+      }
+    }
+
+    // Determine control level based on score
+    int controlLevel;
+    if (totalScore <= 2) {
+      controlLevel = 1; // Good control
+    } else {
+      controlLevel = 2; // Poor control
+    }
+
+    return {
+      'totalScore': totalScore,
+      'controlLevel': controlLevel,
+      'measurementDate': DateTime.now().toString().split(' ')[0],
+    };
+  }
 }

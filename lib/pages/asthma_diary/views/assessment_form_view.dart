@@ -25,6 +25,10 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
   late List<int?> selectedAnswers;
   late Future<List<Map<String, dynamic>>> questionsFuture;
   bool isEditMode = false;
+  bool isSubmitted = false;
+  int? totalScore;
+  int? controlLevel;
+  String? controlStatus;
 
   @override
   void initState() {
@@ -45,18 +49,38 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
     return questions;
   }
 
-  void _saveAssessment() {
-    // TODO: Save assessment data to API
-    widget.onSwitchView(0);
+  Future<void> _saveAssessment() async {
+    try {
+      final result = await ApiService.calculateAssessmentResult(
+        answers: selectedAnswers,
+      );
+
+      if (mounted) {
+        setState(() {
+          totalScore = result['totalScore'];
+          controlLevel = result['controlLevel'];
+          controlStatus = _getControlStatusMessage(result['controlLevel']);
+          isSubmitted = true;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving assessment: $e')),
+        );
+      }
+    }
   }
 
-  int _calculateTotalScore() {
-    return selectedAnswers.fold(0, (sum, answer) => sum + (answer ?? 0));
-  }
-
-  bool _isGoodHealth() {
-    final score = _calculateTotalScore();
-    return score <= 4;
+  String _getControlStatusMessage(int level) {
+    switch (level) {
+      case 1:
+        return '症狀控制良好，請繼續維持';
+      case 2:
+        return '控制不佳，建議用藥或回診';
+      default:
+        return '';
+    }
   }
 
   @override
@@ -81,56 +105,57 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
               final questions = snapshot.data ?? [];
 
               return CardContainer(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                borderRadius: 10,
-                child: Column(
-                  children: [
-                    _buildFormHeaderContent(),
-                    ...List.generate(
-                      questions.length,
-                      (index) {
-                        final question = questions[index];
-                        return Column(
-                          children: [
-                            const SizedBox(height: 16),
-                            question['type'] == 'yes_no'
-                                ? _buildYesNoQuestion(
-                                    number: question['number'],
-                                    title: question['title'],
-                                    options: List<Map<String, dynamic>>.from(question['options'] ?? []),
-                                    selectedValue: selectedAnswers[index],
-                                    onChanged: (value) => setState(() => selectedAnswers[index] = value),
-                                  )
-                                : _buildScaleQuestion(
-                                    number: question['number'],
-                                    title: question['title'],
-                                    options: List<Map<String, dynamic>>.from(question['options'] ?? []),
-                                    selectedValue: selectedAnswers[index],
-                                    onChanged: (value) => setState(() => selectedAnswers[index] = value),
-                                  ),
-                            const SizedBox(height: 16),
-                            if (index < questions.length - 1)
-                              Divider(color: AppColors.photoBackground, height: 2),
-                          ],
-                        );
-                      },
-                    ),
-                    if (!widget.isAssessmentCompleted || isEditMode)
-                      SizedBox(
-                        width: double.infinity,
-                        child: CustomButton(
-                          text: '儲存記錄',
-                          onPressed: _saveAssessment,
-                          backgroundColor: AppColors.primaryGreen,
-                          padding: const EdgeInsets.all(12),
-                          borderRadius: 4,
-                          height: 37,
-                        ),
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      borderRadius: 10,
+                      child: Column(
+                        children: [
+                          _buildFormHeaderContent(),
+                          ...List.generate(
+                            questions.length,
+                            (index) {
+                              final question = questions[index];
+                              return Column(
+                                children: [
+                                  const SizedBox(height: 16),
+                                  question['type'] == 'yes_no'
+                                      ? _buildYesNoQuestion(
+                                          number: question['number'],
+                                          title: question['title'],
+                                          options: List<Map<String, dynamic>>.from(question['options'] ?? []),
+                                          selectedValue: selectedAnswers[index],
+                                          onChanged: (value) => setState(() => selectedAnswers[index] = value),
+                                        )
+                                      : _buildScaleQuestion(
+                                          number: question['number'],
+                                          title: question['title'],
+                                          options: List<Map<String, dynamic>>.from(question['options'] ?? []),
+                                          selectedValue: selectedAnswers[index],
+                                          onChanged: (value) => setState(() => selectedAnswers[index] = value),
+                                        ),
+                                  const SizedBox(height: 16),
+                                  if (index < questions.length - 1)
+                                    Divider(color: AppColors.photoBackground, height: 2),
+                                ],
+                              );
+                            },
+                          ),
+                          if (!isSubmitted && (!widget.isAssessmentCompleted || isEditMode))
+                            SizedBox(
+                              width: double.infinity,
+                              child: CustomButton(
+                                text: '儲存記錄',
+                                onPressed: _saveAssessment,
+                                backgroundColor: AppColors.primaryGreen,
+                                padding: const EdgeInsets.all(12),
+                                borderRadius: 4,
+                                height: 37,
+                              ),
+                            ),
+                          if (isSubmitted) _buildResultsSummary(),
+                          if (widget.isAssessmentCompleted && !isEditMode && !isSubmitted) _buildResultsSummary(),
+                        ],
                       ),
-                    if (widget.isAssessmentCompleted && !isEditMode) _buildResultsSummary(),
-                  ],
-                ),
-              );
+                    );
             },
           ),
         ],
@@ -410,14 +435,11 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
   }
 
   Widget _buildResultsSummary() {
-    final totalScore = _calculateTotalScore();
-    final isGood = _isGoodHealth();
+    final isGood = controlLevel == 1;
     final statusColor = isGood ? AppColors.resultGoodIcon : Colors.red;
     final statusBgColor = isGood ? AppColors.resultGoodBg : AppColors.resultSevereBg;
     final statusIcon = isGood ? 'assets/icons/check.svg' : 'assets/icons/undone.svg';
-    final statusMessage = isGood
-        ? '症狀控制良好，請繼續維持'
-        : '控制不佳，建議用藥或回診';
+    final statusMessage = controlStatus ?? '';
 
     return Column(
       children: [
@@ -496,7 +518,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
           width: double.infinity,
           child: CustomButton(
             text: '返回首頁',
-            onPressed: () => widget.onSwitchView(0),
+            onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
             backgroundColor: AppColors.primaryGreen,
             padding: const EdgeInsets.all(12),
             borderRadius: 4,
@@ -508,7 +530,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
           width: double.infinity,
           child: CustomButton(
             text: '編輯記錄',
-            onPressed: () => setState(() => isEditMode = true),
+            onPressed: () => setState(() => isSubmitted = false),
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             border: const BorderSide(color: AppColors.inputBorder, width: 1),
