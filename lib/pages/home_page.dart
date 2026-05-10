@@ -74,8 +74,9 @@ class _HomePageState extends State<HomePage> {
       Navigator.of(context).pushNamed('/asthma-diary');
     } else if (testName == '尖峰吐氣流量') {
       Navigator.of(context).pushNamed('/peak-flow');
+    } else if (testName == '氣喘控制測驗') {
+      Navigator.of(context).pushNamed('/asthma-control-test');
     }
-    // TODO: Add navigation for other test types
   }
 
   @override
