@@ -298,7 +298,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildTodayTestsSection() {
     final testItems = [
       {'name': '氣喘日記', 'icon': 'assets/icons/note.svg'},
-      {'name': '尖峰呼氣流量', 'icon': 'assets/icons/wind.svg'},
+      {'name': '尖峰吐氣流量', 'icon': 'assets/icons/wind.svg'},
       {'name': '氣喘控制測驗', 'icon': 'assets/icons/exam.svg'},
     ];
 
@@ -371,8 +371,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: SvgPicture.asset(
                     isDone ? 'assets/icons/check-fill.svg' : iconPath,
-                    width: 24,
-                    height: 24,
+                              width: 24,
+                              height: 24,
                   ),
                 ),
                 const SizedBox(width: 12),

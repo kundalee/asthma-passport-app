@@ -29,6 +29,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
   final TextEditingController _inputController = TextEditingController();
   late int? _statusResult;
   late bool _isEditingFromCompleted;
+  bool _showCompletedButtons = false;
 
   @override
   void initState() {
@@ -154,7 +155,9 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
           const SizedBox(height: 8),
           TextField(
             controller: _inputController,
-            enabled: widget.status == null || _isEditingFromCompleted,
+            enabled: (widget.status == null && _statusResult == null) || _isEditingFromCompleted,
+            readOnly: !((widget.status == null && _statusResult == null) || _isEditingFromCompleted),
+            showCursor: _statusResult == null && ((widget.status == null) || _isEditingFromCompleted),
             style: const TextStyle(
               color: Colors.black,
               fontSize: 16,
@@ -407,15 +410,15 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
   }
 
   Widget _buildConfirmButton() {
-    if (widget.status != null && !_isEditingFromCompleted) {
-      // Initial status provided and not editing - show 3 buttons
+    if ((widget.status != null && !_isEditingFromCompleted) || _showCompletedButtons) {
+      // Initial status provided and not editing, or showing completed buttons - show 3 buttons
       return Column(
         children: [
           SizedBox(
             width: double.infinity,
             child: CustomButton(
               text: '返回首頁',
-              onPressed: () => widget.onSwitchView(0),
+              onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
               backgroundColor: AppColors.primaryGreen,
               padding: const EdgeInsets.all(12),
               borderRadius: 4,
@@ -443,6 +446,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
                 setState(() {
                   _statusResult = null;
                   _isEditingFromCompleted = true;
+                  _showCompletedButtons = false;
                 });
               },
               backgroundColor: Colors.white,
@@ -459,17 +463,51 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
         ],
       );
     } else {
-      // Recording new measurement - show 1 button
-      return SizedBox(
-        width: double.infinity,
-        child: CustomButton(
-          text: _statusResult == null ? '確認' : '完成紀錄',
-          onPressed: _statusResult == null ? _submitMeasurement : () => widget.onSwitchView(0),
-          backgroundColor: AppColors.primaryGreen,
-          padding: const EdgeInsets.all(12),
-          borderRadius: 4,
-          height: 37,
-        ),
+      // Recording new measurement
+      return Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: CustomButton(
+              text: _statusResult == null ? '確認' : '完成紀錄',
+              onPressed: _statusResult == null
+                  ? _submitMeasurement
+                  : () {
+                      setState(() {
+                        _showCompletedButtons = true;
+                      });
+                    },
+              backgroundColor: AppColors.primaryGreen,
+              padding: const EdgeInsets.all(12),
+              borderRadius: 4,
+              height: 37,
+            ),
+          ),
+          if (_statusResult != null && !_showCompletedButtons) ...[
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: CustomButton(
+                text: '重新測量',
+                onPressed: () {
+                  setState(() {
+                    _statusResult = null;
+                    _inputController.clear();
+                  });
+                },
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
+                border: const BorderSide(
+                  color: AppColors.inputBorder,
+                  width: 1,
+                ),
+                padding: const EdgeInsets.all(12),
+                borderRadius: 4,
+                height: 37,
+              ),
+            ),
+          ],
+        ],
       );
     }
   }
