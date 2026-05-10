@@ -422,6 +422,7 @@ class _HomePageState extends State<HomePage> {
                   end: Alignment.bottomRight,
                   colors: [AppColors.healthPassportGradientStart, AppColors.healthPassportGradientEnd],
                 ),
+                onTap: () => Navigator.of(context).pushNamed('/asthma-knowledge'),
                 height: 80,
                 isRow: true,
               ),

@@ -6,6 +6,7 @@ import 'pages/health_passport/health_passport_page.dart';
 import 'pages/asthma_diary_page.dart';
 import 'pages/peak_flow_page.dart';
 import 'pages/asthma_control_test_page.dart';
+import 'pages/asthma_knowledge_page.dart';
 import 'theme/app_colors.dart';
 
 void main() {
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/asthma-diary': (context) => const AsthmaDiaryPage(),
         '/peak-flow': (context) => const PeakFlowPage(),
         '/asthma-control-test': (context) => const AsthmaControlTestPage(),
+        '/asthma-knowledge': (context) => const AsthmaKnowledgePage(),
       },
     );
   }
