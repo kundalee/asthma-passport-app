@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../components/app_page_container.dart';
+import '../components/custom_button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -473,6 +474,7 @@ class _HomePageState extends State<HomePage> {
                   end: Alignment.bottomRight,
                   colors: [AppColors.smartAssistantGradientStart, AppColors.smartAssistantGradientEnd],
                 ),
+                onTap: () => _showDevelopmentDialog(),
                 padding: const EdgeInsets.all(8),
                 height: 108,
               ),
@@ -631,6 +633,58 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showDevelopmentDialog() {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final horizontalPadding = (screenWidth * 0.05).clamp(16.0, 24.0);
+
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        insetPadding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                'assets/icons/alert.svg',
+                width: 80,
+                height: 80,
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                '功能開發中\n敬請期待',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                  height: 1.5,
+                  letterSpacing: 0,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: CustomButton(
+                  text: '確認',
+                  onPressed: () => Navigator.pop(context),
+                  backgroundColor: AppColors.primaryGreen,
+                  foregroundColor: Colors.white,
+                  height: 37,
+                  borderRadius: 4,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
