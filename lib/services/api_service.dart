@@ -394,4 +394,52 @@ class ApiService {
       'measurementDate': DateTime.now().toString().split(' ')[0],
     };
   }
+
+  static Future<List<String>> getHistoryMonths() async {
+    // TODO: Replace with actual API call
+    // GET /api/history/months
+    return [
+      '2026/05',
+      '2026/04',
+      '2026/03',
+      '2026/02',
+      '2026/01',
+      '2025/12',
+      '2025/11',
+    ];
+  }
+
+  static Future<Map<String, dynamic>> getHistorySummary(String month) async {
+    return {
+      'recordedDays': 20,
+      'averageScore': 2,
+      'pefrAverage': 253,
+      'actScore': 23,
+    };
+  }
+
+  static Future<List<Map<String, dynamic>>> getHistoryChartData(String month) async {
+    return [
+      {'day': 1, 'score': 3},
+      {'day': 2, 'score': 1},
+      {'day': 3, 'score': 2},
+      {'day': 4, 'score': 7},
+      {'day': 5, 'score': 4},
+      {'day': 6, 'score': 0},
+      {'day': 7, 'score': 1},
+      {'day': 8, 'score': 1},
+      {'day': 9, 'score': 2},
+      {'day': 10, 'score': 0},
+      {'day': 11, 'score': 4},
+      {'day': 12, 'score': 1},
+      {'day': 13, 'score': 0},
+      {'day': 14, 'score': 2},
+      {'day': 15, 'score': 1},
+      {'day': 16, 'score': 0},
+      {'day': 17, 'score': 3},
+      {'day': 18, 'score': 3},
+      {'day': 19, 'score': 0},
+      {'day': 20, 'score': 1},
+    ];
+  }
 }

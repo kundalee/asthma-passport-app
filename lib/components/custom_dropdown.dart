@@ -7,6 +7,13 @@ class CustomDropdown extends StatefulWidget {
   final List<String> items;
   final Function(String?) onChanged;
   final String placeholder;
+  final TextStyle textStyle;
+  final Color borderColor;
+  final Color backgroundColor;
+  final double borderRadius;
+  final double borderWidth;
+  final double height;
+  final EdgeInsetsGeometry padding;
 
   const CustomDropdown({
     super.key,
@@ -14,6 +21,19 @@ class CustomDropdown extends StatefulWidget {
     required this.items,
     required this.onChanged,
     required this.placeholder,
+    this.textStyle = const TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      color: Colors.black,
+      height: 1.0,
+      letterSpacing: 0,
+    ),
+    this.borderColor = AppColors.inputBorder,
+    this.backgroundColor = AppColors.inputBackground,
+    this.borderRadius = 10.0,
+    this.borderWidth = 2.0,
+    this.height = 54.0,
+    this.padding = const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
   });
 
   @override
@@ -53,27 +73,20 @@ class _CustomDropdownState extends State<CustomDropdown> {
           child: Container(
             decoration: BoxDecoration(
               border: Border(
-                left: BorderSide(color: AppColors.inputBorder, width: 2),
-                right: BorderSide(color: AppColors.inputBorder, width: 2),
-                bottom: BorderSide(color: AppColors.inputBorder, width: 2),
+                left: BorderSide(color: widget.borderColor, width: widget.borderWidth),
+                right: BorderSide(color: widget.borderColor, width: widget.borderWidth),
+                bottom: BorderSide(color: widget.borderColor, width: widget.borderWidth),
               ),
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(10),
-                bottomRight: Radius.circular(10),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(widget.borderRadius),
+                bottomRight: Radius.circular(widget.borderRadius),
               ),
-              color: AppColors.inputBackground,
+              color: widget.backgroundColor,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Divider(
-                  height: 1,
-                  color: AppColors.inputBorder,
-                  indent: 0,
-                  endIndent: 0,
-                  thickness: 1,
-                ),
                 ...widget.items.asMap().entries.map((entry) {
                   final item = entry.value;
                   final isLast = entry.key == widget.items.length - 1;
@@ -88,24 +101,23 @@ class _CustomDropdownState extends State<CustomDropdown> {
                     behavior: HitTestBehavior.opaque,
                     child: Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                      height: size.height,
                       decoration: BoxDecoration(
-                        color: AppColors.inputBackground,
+                        color: widget.backgroundColor,
                         border: !isLast
                             ? Border(
                                 bottom: BorderSide(
-                                  color: Colors.grey[200]!,
-                                  width: 1,
+                                  color: widget.borderColor,
+                                  width: widget.borderWidth,
                                 ),
                               )
                             : null,
                       ),
-                      child: Text(
-                        item,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
+                      child: Center(
+                        child: Text(
+                          item,
+                          textAlign: TextAlign.center,
+                          style: widget.textStyle,
                         ),
                       ),
                     ),
@@ -135,31 +147,25 @@ class _CustomDropdownState extends State<CustomDropdown> {
         },
         child: Container(
           width: double.infinity,
-          height: 54,
+          height: widget.height,
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.inputBorder, width: 2),
+            border: Border.all(color: widget.borderColor, width: widget.borderWidth),
             borderRadius: isOverlayOpen
-                ? const BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10),
+                ? BorderRadius.only(
+                    topLeft: Radius.circular(widget.borderRadius),
+                    topRight: Radius.circular(widget.borderRadius),
                   )
-                : BorderRadius.circular(10),
-            color: AppColors.inputBackground,
+                : BorderRadius.circular(widget.borderRadius),
+            color: widget.backgroundColor,
           ),
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+          padding: widget.padding,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: Text(
                   widget.value ?? widget.placeholder,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                    height: 1.625,
-                    letterSpacing: 0,
-                  ),
+                  style: widget.textStyle,
                 ),
               ),
               Transform.rotate(

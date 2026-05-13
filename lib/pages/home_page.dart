@@ -443,6 +443,7 @@ class _HomePageState extends State<HomePage> {
                   end: Alignment.bottomRight,
                   colors: [AppColors.historyGradientStart, AppColors.historyGradientEnd],
                 ),
+                onTap: () => Navigator.of(context).pushNamed('/history-records'),
                 padding: const EdgeInsets.all(8),
                 height: 108,
               ),

@@ -6,6 +6,7 @@ class AppPageContainer extends StatelessWidget {
   final Widget content;
   final Widget? bottomNavigation;
   final EdgeInsets contentPadding;
+  final EdgeInsets bottomNavigationPadding;
 
   const AppPageContainer({
     super.key,
@@ -13,6 +14,7 @@ class AppPageContainer extends StatelessWidget {
     required this.content,
     this.bottomNavigation,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+    this.bottomNavigationPadding = const EdgeInsets.symmetric(horizontal: 12.0),
   });
 
   @override
@@ -40,9 +42,9 @@ class AppPageContainer extends StatelessWidget {
             ),
             if (bottomNavigation != null)
               Positioned(
-                bottom: 0,
-                left: 12,
-                right: 12,
+                bottom: bottomNavigationPadding.bottom,
+                left: bottomNavigationPadding.left,
+                right: bottomNavigationPadding.right,
                 child: bottomNavigation!,
               ),
           ],

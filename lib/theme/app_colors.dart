@@ -92,4 +92,7 @@ class AppColors {
 
   // Action sheet colors
   static const Color actionSheetItem = Color(0xFF0078FF);
+
+  // Chart axis label color
+  static const Color axisLabelColor = Color(0xFF6B7280);
 }

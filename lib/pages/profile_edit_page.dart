@@ -172,6 +172,13 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
           items: items,
           onChanged: onChanged,
           placeholder: placeholder,
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.black,
+            height: 1.5,
+            letterSpacing: 0,
+          )
         ),
       ],
     );
