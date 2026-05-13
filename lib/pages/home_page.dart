@@ -607,32 +607,41 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildNavButton(String title, String iconPath, Color color, bool isActive) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        border: Border.all(color: color, width: 2),
-        borderRadius: BorderRadius.circular(4),
-        color: isActive ? color : Colors.transparent,
-      ),
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            iconPath,
-            width: 24,
-            height: 24,
-            colorFilter: ColorFilter.mode(isActive ? Colors.white : color, BlendMode.srcIn),
-          ),
-          const SizedBox(width: 4),
-          Text(
-            title,
-            style: TextStyle(
-              color: isActive ? Colors.white : color,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              height: 2,
+    return GestureDetector(
+      onTap: () {
+        if (title == '系統設定') {
+          Navigator.of(context).pushNamed('/system-settings');
+        } else if (title == '緊急聯絡') {
+          // TODO: Implement emergency contact
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          border: Border.all(color: color, width: 2),
+          borderRadius: BorderRadius.circular(4),
+          color: isActive ? color : Colors.transparent,
+        ),
+        child: Row(
+          children: [
+            SvgPicture.asset(
+              iconPath,
+              width: 24,
+              height: 24,
+              colorFilter: ColorFilter.mode(isActive ? Colors.white : color, BlendMode.srcIn),
             ),
-          ),
-        ],
+            const SizedBox(width: 4),
+            Text(
+              title,
+              style: TextStyle(
+                color: isActive ? Colors.white : color,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                height: 2,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
