@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/card_container.dart';
 import '../../../components/custom_button.dart';
+import '../../../components/instructions_box.dart';
 
 class AsthmaDiaryView extends StatelessWidget {
   final String measurementDate;
@@ -58,7 +59,14 @@ class AsthmaDiaryView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          _buildInstructionsBox(),
+          InstructionsBox(
+            title: '量測說明',
+            instructions: [
+              '透過 5 個問題評量和紀錄您的氣喘症狀',
+              '1 分鐘的自我檢視，有效追蹤症狀變化',
+              '誠實，是最好的處方',
+            ],
+          ),
           const SizedBox(height: 12),
           _buildStatusFields(),
           const SizedBox(height: 12),
@@ -92,90 +100,6 @@ class AsthmaDiaryView extends StatelessWidget {
           colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
         ),
       ),
-    );
-  }
-
-  Widget _buildInstructionsBox() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.resultModerateBg,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.instructionsBoxBorder, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/icons/heart.svg',
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(AppColors.resultModerateIcon, BlendMode.srcIn),
-              ),
-              const SizedBox(width: 10),
-              const Text(
-                '量測說明',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.resultModerateIcon,
-                  height: 1.0,
-                  letterSpacing: 0,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildInstructionItem('透過 5 個問題評量和紀錄您的氣喘症狀'),
-              const SizedBox(height: 10),
-              _buildInstructionItem('1 分鐘的自我檢視，有效追蹤症狀變化'),
-              const SizedBox(height: 10),
-              _buildInstructionItem('誠實，是最好的處方'),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInstructionItem(String text) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: 24,
-          height: 24,
-          child: const Center(
-            child: Text(
-              '•',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-                height: 1.0,
-                letterSpacing: 0,
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-              height: 1.0,
-              letterSpacing: 0,
-            ),
-          ),
-        ),
-      ],
     );
   }
 

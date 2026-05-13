@@ -458,6 +458,7 @@ class _HomePageState extends State<HomePage> {
                   end: Alignment.bottomRight,
                   colors: [AppColors.asthmaExpertGradientStart, AppColors.asthmaExpertGradientEnd],
                 ),
+                onTap: () => Navigator.of(context).pushNamed('/asthma-master'),
                 padding: const EdgeInsets.all(8),
                 height: 108,
               ),

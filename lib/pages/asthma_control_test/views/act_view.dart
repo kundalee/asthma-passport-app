@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/card_container.dart';
 import '../../../components/custom_button.dart';
+import '../../../components/instructions_box.dart';
 
 class ActView extends StatelessWidget {
   final String measurementDate;
@@ -58,7 +59,14 @@ class ActView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          _buildInstructionsBox(),
+          InstructionsBox(
+            title: '測驗說明',
+            instructions: [
+              '透過每個月測驗紀錄您個人的氣喘症狀',
+              '根據您的紀錄，即時判定個人症狀',
+              '誠實，是最好的處方',
+            ],
+          ),
           const SizedBox(height: 12),
           _buildStatusFields(),
           const SizedBox(height: 12),
@@ -95,91 +103,7 @@ class ActView extends StatelessWidget {
     );
   }
 
-  Widget _buildInstructionsBox() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.resultModerateBg,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.instructionsBoxBorder, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/icons/heart.svg',
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(AppColors.resultModerateIcon, BlendMode.srcIn),
-              ),
-              const SizedBox(width: 10),
-              const Text(
-                '測驗說明',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.resultModerateIcon,
-                  height: 1.0,
-                  letterSpacing: 0,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildInstructionItem('透過每個月測驗紀錄您個人的氣喘症狀'),
-              const SizedBox(height: 10),
-              _buildInstructionItem('根據您的紀錄，即時判定個人症狀'),
-              const SizedBox(height: 10),
-              _buildInstructionItem('誠實，是最好的處方'),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInstructionItem(String text) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: 24,
-          height: 24,
-          child: const Center(
-            child: Text(
-              '•',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-                height: 1.0,
-                letterSpacing: 0,
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-              height: 1.0,
-              letterSpacing: 0,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatusFields() {
+Widget _buildStatusFields() {
     final backgroundColor = isAssessmentCompleted ? AppColors.resultGoodBg : AppColors.resultSevereBg;
 
     return Container(

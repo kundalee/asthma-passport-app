@@ -9,6 +9,7 @@ import 'pages/peak_flow_page.dart';
 import 'pages/asthma_control_test_page.dart';
 import 'pages/asthma_knowledge_page.dart';
 import 'pages/history_records/history_records_page.dart';
+import 'pages/asthma_master_page.dart';
 import 'theme/app_colors.dart';
 
 void main() {
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
         '/asthma-control-test': (context) => const AsthmaControlTestPage(),
         '/asthma-knowledge': (context) => const AsthmaKnowledgePage(),
         '/history-records': (context) => const HistoryRecordsPage(),
+        '/asthma-master': (context) => const AsthmaMasterPage(),
       },
     );
   }
