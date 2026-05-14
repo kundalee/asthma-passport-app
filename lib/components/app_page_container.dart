@@ -22,29 +22,23 @@ class AppPageContainer extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Stack(
+        child: Column(
           children: [
-            Column(
-              children: [
-                header,
-                Expanded(
-                  child: Container(
-                    color: AppColors.lightMintBackground,
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: contentPadding,
-                        child: content,
-                      ),
-                    ),
+            header,
+            Expanded(
+              child: Container(
+                color: AppColors.lightMintBackground,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: contentPadding,
+                    child: content,
                   ),
                 ),
-              ],
+              ),
             ),
             if (bottomNavigation != null)
-              Positioned(
-                bottom: bottomNavigationPadding.bottom,
-                left: bottomNavigationPadding.left,
-                right: bottomNavigationPadding.right,
+              Padding(
+                padding: bottomNavigationPadding,
                 child: bottomNavigation!,
               ),
           ],

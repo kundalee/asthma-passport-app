@@ -97,7 +97,6 @@ class _HomePageState extends State<HomePage> {
 
           // Feature Buttons Grid
           _buildFeatureButtonsGrid(),
-          const SizedBox(height: 52),
         ],
       ),
       bottomNavigation: _buildBottomNavigation(),

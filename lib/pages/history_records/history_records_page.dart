@@ -92,7 +92,7 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
   Widget build(BuildContext context) {
     return AppPageContainer(
       header: _buildHeader(context),
-      contentPadding: const EdgeInsets.only(top: 20, left: 16, right: 16, bottom: 140),
+      contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
