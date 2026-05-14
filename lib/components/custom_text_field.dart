@@ -4,24 +4,30 @@ import '../theme/app_colors.dart';
 
 class CustomTextField extends StatefulWidget {
   final String hintText;
-  final Widget prefixIcon;
+  final Widget? prefixIcon;
   final TextEditingController? controller;
   final bool isPassword;
   final bool obscureText;
   final VoidCallback? onToggleVisibility;
   final String? errorText;
   final Color borderColor;
+  final double borderRadius;
+  final Color backgroundColor;
+  final bool dynamicBorderColor;
 
   const CustomTextField({
     super.key,
     required this.hintText,
-    required this.prefixIcon,
+    this.prefixIcon,
     this.controller,
     this.isPassword = false,
     this.obscureText = false,
     this.onToggleVisibility,
     this.errorText,
     this.borderColor = AppColors.inputBorder,
+    this.borderRadius = 10,
+    this.backgroundColor = AppColors.inputBackground,
+    this.dynamicBorderColor = true,
   });
 
   @override
@@ -55,7 +61,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
     final currentBorderColor = hasError
         ? AppColors.error
-        : (_hasText ? AppColors.primaryGreen : widget.borderColor);
+        : (widget.dynamicBorderColor && _hasText ? AppColors.primaryGreen : widget.borderColor);
 
     final defaultHideIcon = SvgPicture.asset(
       'assets/icons/hide-on.svg',
@@ -79,14 +85,16 @@ class _CustomTextFieldState extends State<CustomTextField> {
             controller: widget.controller,
             obscureText: widget.obscureText,
             textAlignVertical: TextAlignVertical.center,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
             decoration: InputDecoration(
               hintText: widget.hintText,
               hintStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
-              prefixIcon: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                child: widget.prefixIcon,
-              ),
+              prefixIcon: widget.prefixIcon != null
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                      child: widget.prefixIcon,
+                    )
+                  : null,
               suffixIcon: widget.isPassword
                   ? GestureDetector(
                       onTap: widget.onToggleVisibility,
@@ -97,17 +105,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     )
                   : null,
               filled: true,
-              fillColor: AppColors.inputBackground,
+              fillColor: widget.backgroundColor,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(widget.borderRadius),
                 borderSide: BorderSide(color: currentBorderColor, width: 2),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(widget.borderRadius),
                 borderSide: BorderSide(color: currentBorderColor, width: 2),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(widget.borderRadius),
                 borderSide: BorderSide(color: currentBorderColor, width: 2),
               ),
             ),

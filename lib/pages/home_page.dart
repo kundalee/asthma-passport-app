@@ -612,7 +612,7 @@ class _HomePageState extends State<HomePage> {
         if (title == '系統設定') {
           Navigator.of(context).pushNamed('/system-settings');
         } else if (title == '緊急聯絡') {
-          // TODO: Implement emergency contact
+          Navigator.of(context).pushNamed('/emergency-contact');
         }
       },
       child: Container(

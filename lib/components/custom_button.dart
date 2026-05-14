@@ -68,13 +68,13 @@ class CustomButton extends StatelessWidget {
                               const SizedBox(width: 8),
                               Text(
                                 text,
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: foregroundColor, height: 1.5),
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: foregroundColor, height: 1.5, letterSpacing: 0),
                               ),
                             ],
                           )
                         : Text(
                             text,
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: foregroundColor, height: 1.5),
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: foregroundColor, height: 1.5, letterSpacing: 0),
                           )),
               ),
             ),
@@ -115,13 +115,13 @@ class CustomButton extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       text,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: foregroundColor, height: 1.5),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: foregroundColor, height: 1.5, letterSpacing: 0),
                     ),
                   ],
                 )
               : Text(
                   text,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: foregroundColor, height: 1.5),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: foregroundColor, height: 1.5, letterSpacing: 0),
                 )),
     );
   }

@@ -133,6 +133,8 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
       onTap: () {
         if (title == '個人首頁') {
           Navigator.of(context).pushReplacementNamed('/home');
+        } else if (title == '緊急聯絡') {
+          Navigator.of(context).pushReplacementNamed('/emergency-contact');
         }
       },
       child: Container(

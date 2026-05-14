@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../components/app_page_container.dart';
 import '../../components/card_container.dart';
-import '../../components/custom_button.dart';
 import '../../components/custom_dropdown.dart';
+import '../../components/custom_tab_bar.dart';
 import '../../services/api_service.dart';
 import '../../theme/app_colors.dart';
 import 'views/comprehensive_data_view.dart';
@@ -103,7 +103,7 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
             const SizedBox(height: 12),
           ],
           _buildTabContent(),
-          const SizedBox(height: 140),
+          // const SizedBox(height: 140),
         ],
       ),
       bottomNavigation: _buildBottomNavigation(),
@@ -207,45 +207,14 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
   }
 
   Widget _buildTabButtons() {
-    return CardContainer(
-      borderRadius: 8,
-      padding: const EdgeInsets.all(4),
-      child: Row(
-        children: List.generate(
-          tabs.length,
-          (index) => Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: index < tabs.length - 1 ? 8 : 0),
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedTabIndex = index;
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: selectedTabIndex == index ? AppColors.primaryGreen : AppColors.grey,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Center(
-                    child: Text(
-                      tabs[index],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: selectedTabIndex == index ? Colors.white : Colors.black,
-                        height: 2.67,
-                        letterSpacing: 0,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
+    return CustomTabBar(
+      tabs: tabs,
+      selectedTabIndex: selectedTabIndex,
+      onTabChanged: (index) {
+        setState(() {
+          selectedTabIndex = index;
+        });
+      },
     );
   }
 

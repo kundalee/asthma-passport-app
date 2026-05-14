@@ -11,6 +11,7 @@ import 'pages/asthma_knowledge_page.dart';
 import 'pages/history_records/history_records_page.dart';
 import 'pages/asthma_master_page.dart';
 import 'pages/system_settings_page.dart';
+import 'pages/emergency_contact_page.dart';
 import 'theme/app_colors.dart';
 
 void main() {
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
         '/history-records': (context) => const HistoryRecordsPage(),
         '/asthma-master': (context) => const AsthmaMasterPage(),
         '/system-settings': (context) => const SystemSettingsPage(),
+        '/emergency-contact': (context) => const EmergencyContactPage(),
       },
     );
   }
