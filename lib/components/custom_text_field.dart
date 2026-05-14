@@ -35,6 +35,19 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
+  static final _hideIcon = SvgPicture.asset(
+    'assets/icons/hide-on.svg',
+    width: 24,
+    height: 24,
+    colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+  );
+  static final _showIcon = SvgPicture.asset(
+    'assets/icons/hide-off.svg',
+    width: 24,
+    height: 24,
+    colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+  );
+
   late bool _hasText;
 
   @override
@@ -63,19 +76,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
         ? AppColors.error
         : (widget.dynamicBorderColor && _hasText ? AppColors.primaryGreen : widget.borderColor);
 
-    final defaultHideIcon = SvgPicture.asset(
-      'assets/icons/hide-on.svg',
-      width: 24,
-      height: 24,
-      colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
-    );
-    final defaultShowIcon = SvgPicture.asset(
-      'assets/icons/hide-off.svg',
-      width: 24,
-      height: 24,
-      colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
-    );
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -100,7 +100,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       onTap: widget.onToggleVisibility,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                        child: widget.obscureText ? defaultHideIcon : defaultShowIcon,
+                        child: widget.obscureText ? _hideIcon : _showIcon,
                       ),
                     )
                   : null,

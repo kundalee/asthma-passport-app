@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../theme/app_colors.dart';
@@ -169,7 +171,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
                 ),
               ),
               Transform.rotate(
-                angle: isOverlayOpen ? 3.14159 : 0,
+                angle: isOverlayOpen ? math.pi : 0,
                 child: SvgPicture.asset(
                   'assets/icons/arrow-down.svg',
                   width: 24,

@@ -30,99 +30,61 @@ class CustomButton extends StatelessWidget {
     this.isLoading = false,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    if (gradient != null) {
-      return Container(
-        decoration: BoxDecoration(
-          gradient: gradient,
-          borderRadius: BorderRadius.circular(borderRadius),
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: isLoading ? null : onPressed,
-            borderRadius: BorderRadius.circular(borderRadius),
-            child: Container(
-              constraints: BoxConstraints(
-                minHeight: height ?? 0,
-                minWidth: height != null ? double.infinity : 0,
-              ),
-              padding: height != null ? EdgeInsets.zero : padding,
-              child: Center(
-                child: isLoading
-                    ? SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
-                        ),
-                      )
-                    : (icon != null
-                        ? Row(
-                            mainAxisAlignment: iconAlignment,
-                            mainAxisSize: iconAlignment == MainAxisAlignment.center ? MainAxisSize.min : MainAxisSize.max,
-                            children: [
-                              icon!,
-                              const SizedBox(width: 8),
-                              Text(
-                                text,
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: foregroundColor, height: 1.5, letterSpacing: 0),
-                              ),
-                            ],
-                          )
-                        : Text(
-                            text,
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: foregroundColor, height: 1.5, letterSpacing: 0),
-                          )),
-              ),
-            ),
-          ),
+  TextStyle get _textStyle => TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        color: foregroundColor,
+        height: 1.5,
+        letterSpacing: 0,
+      );
+
+  Widget get _loadingIndicator => SizedBox(
+        width: 20,
+        height: 20,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
         ),
       );
-    }
 
-    return ElevatedButton(
-      onPressed: isLoading ? null : onPressed,
-      style: ElevatedButton.styleFrom(
-        minimumSize: height != null ? Size(double.infinity, height!) : Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        backgroundColor: backgroundColor,
-        foregroundColor: foregroundColor,
-        padding: height != null ? EdgeInsets.zero : padding,
-        side: border,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(borderRadius),
+  Widget _buildChild() {
+    if (isLoading) return _loadingIndicator;
+    if (icon != null) {
+      return Row(
+        mainAxisAlignment: iconAlignment,
+        mainAxisSize: iconAlignment == MainAxisAlignment.center ? MainAxisSize.min : MainAxisSize.max,
+        children: [icon!, const SizedBox(width: 8), Text(text, style: _textStyle)],
+      );
+    }
+    return Text(text, style: _textStyle);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(borderRadius);
+    return Material(
+      color: Colors.transparent,
+      borderRadius: radius,
+      child: Ink(
+        decoration: BoxDecoration(
+          color: gradient == null ? backgroundColor : null,
+          gradient: gradient,
+          borderRadius: radius,
+          border: border != null ? Border.fromBorderSide(border!) : null,
         ),
-        elevation: 0,
+        child: InkWell(
+          onTap: isLoading ? null : onPressed,
+          borderRadius: radius,
+          child: Container(
+            constraints: BoxConstraints(
+              minHeight: height ?? 0,
+              minWidth: height != null ? double.infinity : 0,
+            ),
+            padding: height != null ? EdgeInsets.zero : padding,
+            child: Center(child: _buildChild()),
+          ),
+        ),
       ),
-      child: isLoading
-          ? SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
-              ),
-            )
-          : (icon != null
-              ? Row(
-                  mainAxisAlignment: iconAlignment,
-                  mainAxisSize: iconAlignment == MainAxisAlignment.center ? MainAxisSize.min : MainAxisSize.max,
-                  children: [
-                    icon!,
-                    const SizedBox(width: 8),
-                    Text(
-                      text,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: foregroundColor, height: 1.5, letterSpacing: 0),
-                    ),
-                  ],
-                )
-              : Text(
-                  text,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: foregroundColor, height: 1.5, letterSpacing: 0),
-                )),
     );
   }
 }

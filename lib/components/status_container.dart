@@ -60,25 +60,18 @@ class StatusContainer extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
-              children: List.generate(
-                items.length,
-                (index) => [
-                  if (index > 0) const SizedBox(height: 12),
+              children: [
+                for (int i = 0; i < items.length; i++) ...[
+                  if (i > 0) const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        items[index].label,
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
-                      ),
-                      Text(
-                        items[index].status,
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
-                      ),
+                      Text(items[i].label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0)),
+                      Text(items[i].status, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0)),
                     ],
                   ),
                 ],
-              ).expand((element) => element).toList(),
+              ],
             ),
           ),
           const SizedBox(height: 12),
