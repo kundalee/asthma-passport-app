@@ -15,42 +15,44 @@ class StatusItem {
 }
 
 class StatusContainer extends StatelessWidget {
-  final String title;
+  final String? title;
   final List<StatusItem> items;
   final bool isComplete;
   final VoidCallback onPressed;
+  final bool withCard;
 
   const StatusContainer({
     super.key,
-    required this.title,
+    this.title,
     required this.items,
     required this.onPressed,
     this.isComplete = false,
+    this.withCard = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    return CardContainer(
-      padding: const EdgeInsets.all(16),
-      child: Column(
+    final content = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/icons/document.svg',
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.625, letterSpacing: 0),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
+          if (title != null) ...[
+            Row(
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/document.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  title!,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.625, letterSpacing: 0),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+          ],
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             decoration: BoxDecoration(
@@ -83,13 +85,16 @@ class StatusContainer extends StatelessWidget {
           CustomButton(
             text: isComplete ? '查看測驗結果' : '開始紀錄',
             onPressed: onPressed,
-            backgroundColor: isComplete ? const Color(0xFF155DFC) : AppColors.primaryGreen,
+            backgroundColor: isComplete ? AppColors.completedButtonBg : AppColors.primaryGreen,
             foregroundColor: Colors.white,
             borderRadius: 4,
             height: 37,
           ),
         ],
-      ),
     );
+    if (withCard) {
+      return CardContainer(padding: const EdgeInsets.all(16), child: content);
+    }
+    return content;
   }
 }

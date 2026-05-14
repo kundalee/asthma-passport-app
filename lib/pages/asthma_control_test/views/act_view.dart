@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/card_container.dart';
-import '../../../components/custom_button.dart';
 import '../../../components/instructions_box.dart';
+import '../../../components/status_container.dart';
 
 class ActView extends StatelessWidget {
   final String measurementDate;
@@ -18,17 +18,6 @@ class ActView extends StatelessWidget {
     this.measurementTime,
     required this.onSwitchView,
   });
-
-  String _getAssessmentDisplay() {
-    return isAssessmentCompleted ? '完成' : '未完成';
-  }
-
-  String _getMeasurementTimeDisplay() {
-    if (measurementTime == null || measurementTime!.isEmpty) {
-      return '無紀錄';
-    }
-    return measurementTime!;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,16 +57,14 @@ class ActView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          _buildStatusFields(),
-          const SizedBox(height: 12),
-          CustomButton(
-            text: isAssessmentCompleted ? '查看測驗結果' : '開始紀錄',
+          StatusContainer(
+            items: [
+              StatusItem(label: '測驗狀態', status: isAssessmentCompleted ? '完成' : '未完成'),
+              StatusItem(label: '測驗時間', status: measurementTime == null || measurementTime!.isEmpty ? '無紀錄' : measurementTime!),
+            ],
+            isComplete: isAssessmentCompleted,
             onPressed: () => onSwitchView(1),
-            foregroundColor: Colors.white,
-            backgroundColor: isAssessmentCompleted ? AppColors.completedButtonBg : AppColors.primaryGreen,
-            height: 37,
-            borderRadius: 4,
-            padding: const EdgeInsets.all(12),
+            withCard: false,
           ),
         ],
       ),
@@ -103,70 +90,4 @@ class ActView extends StatelessWidget {
     );
   }
 
-Widget _buildStatusFields() {
-    final backgroundColor = isAssessmentCompleted ? AppColors.resultGoodBg : AppColors.resultSevereBg;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                '測驗狀態',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.71,
-                  letterSpacing: 0,
-                ),
-              ),
-              Text(
-                _getAssessmentDisplay(),
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.71,
-                  letterSpacing: 0,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                '測驗時間',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.71,
-                  letterSpacing: 0,
-                ),
-              ),
-              Text(
-                _getMeasurementTimeDisplay(),
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.71,
-                  letterSpacing: 0,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 }

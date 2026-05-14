@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/card_container.dart';
-import '../../../components/custom_button.dart';
 import '../../../components/instructions_box.dart';
+import '../../../components/status_container.dart';
 
 class PeakFlowView extends StatelessWidget {
   final String measurementDate;
@@ -18,14 +18,6 @@ class PeakFlowView extends StatelessWidget {
     required this.isEveningCompleted,
     required this.onSwitchView,
   });
-
-  String _getDaytimeStatus() {
-    return isDaytimeCompleted ? '完成' : '未完成';
-  }
-
-  String _getEveningStatus() {
-    return isEveningCompleted ? '完成' : '未完成';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,16 +57,14 @@ class PeakFlowView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          _buildStatusFields(),
-          const SizedBox(height: 12),
-          CustomButton(
-            text: '開始紀錄',
+          StatusContainer(
+            items: [
+              StatusItem(label: '白天量測', status: isDaytimeCompleted ? '完成' : '未完成'),
+              StatusItem(label: '夜晚量測', status: isEveningCompleted ? '完成' : '未完成'),
+            ],
+            isComplete: isDaytimeCompleted && isEveningCompleted,
             onPressed: () => onSwitchView(1),
-            foregroundColor: Colors.white,
-            backgroundColor: AppColors.primaryGreen,
-            height: 37,
-            borderRadius: 4,
-            padding: const EdgeInsets.all(12),
+            withCard: false,
           ),
         ],
       ),
@@ -100,72 +90,4 @@ class PeakFlowView extends StatelessWidget {
     );
   }
 
-Widget _buildStatusFields() {
-    final backgroundColor = (isDaytimeCompleted && isEveningCompleted)
-        ? AppColors.resultGoodBg
-        : AppColors.resultSevereBg;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                '白天量測',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.71,
-                  letterSpacing: 0,
-                ),
-              ),
-              Text(
-                _getDaytimeStatus(),
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.71,
-                  letterSpacing: 0,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                '夜晚量測',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.71,
-                  letterSpacing: 0,
-                ),
-              ),
-              Text(
-                _getEveningStatus(),
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.71,
-                  letterSpacing: 0,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 }

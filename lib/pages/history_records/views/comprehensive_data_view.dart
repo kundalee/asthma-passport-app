@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../components/card_container.dart';
 import '../../../components/custom_button.dart';
+import '../../../components/status_container.dart';
 import '../../../components/line_chart_painter.dart';
 import '../../../theme/app_colors.dart';
 
@@ -408,75 +409,14 @@ class ComprehensiveDataView extends StatelessWidget {
   }
 
   Widget _buildMonthlyTestSection() {
-    return CardContainer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/icons/document.svg',
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                '每月測驗：12月',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-            decoration: const BoxDecoration(
-              color: Color(0xFFF0FDF4),
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      '自我評量',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
-                    ),
-                    Text(
-                      '${summaryData['actScore'] ?? 23} 分',
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      '量測時間',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
-                    ),
-                    Text(
-                      summaryData['measurementDate'] ?? '2025/12/03',
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          CustomButton(
-            text: '查看測驗結果',
-            onPressed: () {},
-            backgroundColor: AppColors.completedButtonBg,
-            foregroundColor: Colors.white,
-            borderRadius: 4,
-            height: 37,
-          ),
-        ],
-      ),
+    return StatusContainer(
+      title: '每月測驗：12月',
+      items: [
+        StatusItem(label: '自我評量', status: '${summaryData['actScore'] ?? 23} 分'),
+        StatusItem(label: '量測時間', status: summaryData['measurementDate'] ?? '2025/12/03'),
+      ],
+      isComplete: true,
+      onPressed: () {},
     );
   }
 }

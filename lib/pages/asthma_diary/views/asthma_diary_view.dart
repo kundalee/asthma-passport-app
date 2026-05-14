@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/card_container.dart';
-import '../../../components/custom_button.dart';
 import '../../../components/instructions_box.dart';
+import '../../../components/status_container.dart';
 
 class AsthmaDiaryView extends StatelessWidget {
   final String measurementDate;
@@ -68,16 +68,14 @@ class AsthmaDiaryView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          _buildStatusFields(),
-          const SizedBox(height: 12),
-          CustomButton(
-            text: isAssessmentCompleted ? '查看測驗結果' : '開始紀錄',
+          StatusContainer(
+            items: [
+              StatusItem(label: '自我評量', status: _getAssessmentDisplay()),
+              StatusItem(label: '量測時間', status: _getMeasurementTimeDisplay()),
+            ],
+            isComplete: isAssessmentCompleted,
             onPressed: () => onSwitchView(1),
-            foregroundColor: Colors.white,
-            backgroundColor: isAssessmentCompleted ? AppColors.completedButtonBg : AppColors.primaryGreen,
-            height: 37,
-            borderRadius: 4,
-            padding: const EdgeInsets.all(12),
+            withCard: false,
           ),
         ],
       ),
@@ -103,70 +101,5 @@ class AsthmaDiaryView extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusFields() {
-    final backgroundColor = isAssessmentCompleted ? AppColors.resultGoodBg : AppColors.resultSevereBg;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                '自我評量',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.71,
-                  letterSpacing: 0,
-                ),
-              ),
-              Text(
-                _getAssessmentDisplay(),
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.71,
-                  letterSpacing: 0,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                '量測時間',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.71,
-                  letterSpacing: 0,
-                ),
-              ),
-              Text(
-                _getMeasurementTimeDisplay(),
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.71,
-                  letterSpacing: 0,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 }
