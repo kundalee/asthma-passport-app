@@ -4,17 +4,17 @@ import '../theme/app_colors.dart';
 class CardContainer extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
-  final double borderRadius;
   final Color backgroundColor;
   final Color borderColor;
+  final double borderRadius;
 
   const CardContainer({
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(12),
-    this.borderRadius = 14,
     this.backgroundColor = Colors.white,
     this.borderColor = AppColors.inputBorder,
+    this.borderRadius = 14,
   });
 
   @override

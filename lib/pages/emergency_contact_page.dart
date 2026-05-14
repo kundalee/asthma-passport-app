@@ -27,7 +27,7 @@ class _EmergencyContactPageState extends State<EmergencyContactPage> {
   Widget build(BuildContext context) {
     return AppPageContainer(
       header: _buildHeader(),
-      contentPadding: const EdgeInsets.only(top: 12, left: 16, right: 16, bottom: 66),
+      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       content: Column(
         children: [
           _buildTabButtons(),

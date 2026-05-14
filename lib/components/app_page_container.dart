@@ -12,8 +12,8 @@ class AppPageContainer extends StatelessWidget {
     super.key,
     required this.header,
     required this.content,
-    this.bottomNavigation,
     this.contentPadding = const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+    this.bottomNavigation,
     this.bottomNavigationPadding = const EdgeInsets.symmetric(horizontal: 12.0),
   });
 

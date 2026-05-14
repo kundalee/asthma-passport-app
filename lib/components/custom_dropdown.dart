@@ -8,8 +8,8 @@ class CustomDropdown extends StatefulWidget {
   final Function(String?) onChanged;
   final String placeholder;
   final TextStyle textStyle;
-  final Color borderColor;
   final Color backgroundColor;
+  final Color borderColor;
   final double borderRadius;
   final double borderWidth;
   final double height;
@@ -28,8 +28,8 @@ class CustomDropdown extends StatefulWidget {
       height: 1.0,
       letterSpacing: 0,
     ),
-    this.borderColor = AppColors.inputBorder,
     this.backgroundColor = AppColors.inputBackground,
+    this.borderColor = AppColors.inputBorder,
     this.borderRadius = 10.0,
     this.borderWidth = 2.0,
     this.height = 54.0,

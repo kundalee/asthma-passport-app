@@ -8,8 +8,8 @@ class InstructionsBox extends StatelessWidget {
 
   const InstructionsBox({
     super.key,
-    required this.instructions,
     required this.title,
+    required this.instructions,
   });
 
   @override

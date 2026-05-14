@@ -15,17 +15,17 @@ class StatusItem {
 }
 
 class StatusContainer extends StatelessWidget {
-  final String? title;
   final List<StatusItem> items;
-  final bool isComplete;
   final VoidCallback onPressed;
+  final String? title;
+  final bool isComplete;
   final bool withCard;
 
   const StatusContainer({
     super.key,
-    this.title,
     required this.items,
     required this.onPressed,
+    this.title,
     this.isComplete = false,
     this.withCard = true,
   });

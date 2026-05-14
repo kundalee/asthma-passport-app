@@ -4,29 +4,29 @@ import '../theme/app_colors.dart';
 
 class CustomTextField extends StatefulWidget {
   final String hintText;
-  final Widget? prefixIcon;
   final TextEditingController? controller;
+  final Widget? prefixIcon;
+  final String? errorText;
   final bool isPassword;
   final bool obscureText;
   final VoidCallback? onToggleVisibility;
-  final String? errorText;
+  final Color backgroundColor;
   final Color borderColor;
   final double borderRadius;
-  final Color backgroundColor;
   final bool dynamicBorderColor;
 
   const CustomTextField({
     super.key,
     required this.hintText,
-    this.prefixIcon,
     this.controller,
+    this.prefixIcon,
+    this.errorText,
     this.isPassword = false,
     this.obscureText = false,
     this.onToggleVisibility,
-    this.errorText,
+    this.backgroundColor = AppColors.inputBackground,
     this.borderColor = AppColors.inputBorder,
     this.borderRadius = 10,
-    this.backgroundColor = AppColors.inputBackground,
     this.dynamicBorderColor = true,
   });
 
