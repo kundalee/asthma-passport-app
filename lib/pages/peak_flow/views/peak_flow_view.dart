@@ -23,9 +23,9 @@ class PeakFlowView extends StatelessWidget {
   Widget build(BuildContext context) {
     return CardContainer(
       child: Column(
+        spacing: 12,
         children: [
           _buildIconHeader(),
-          const SizedBox(height: 12),
           const Text(
             '每日尖峰吐氣流量',
             style: TextStyle(
@@ -36,7 +36,6 @@ class PeakFlowView extends StatelessWidget {
               letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: 12),
           Text(
             '量測日期：$measurementDate',
             style: TextStyle(
@@ -47,7 +46,6 @@ class PeakFlowView extends StatelessWidget {
               letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: 12),
           InstructionsBox(
             title: '量測說明',
             instructions: [
@@ -56,7 +54,6 @@ class PeakFlowView extends StatelessWidget {
               '誠實，是最好的處方',
             ],
           ),
-          const SizedBox(height: 12),
           StatusContainer(
             items: [
               StatusItem(label: '白天量測', status: isDaytimeCompleted ? '完成' : '未完成'),

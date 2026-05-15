@@ -138,12 +138,12 @@ class CalendarGrid extends StatelessWidget {
     return CardContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 16,
         children: [
           Text(
             '${currentMonth.month}月',
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1, letterSpacing: 0),
           ),
-          const SizedBox(height: 16),
           GridView.count(
             crossAxisCount: 7,
             childAspectRatio: 1.2,

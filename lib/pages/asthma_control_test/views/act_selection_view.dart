@@ -18,6 +18,7 @@ class ActSelectionView extends StatelessWidget {
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 16,
         children: [
         _buildTestOption(
           '成人測驗',
@@ -28,7 +29,6 @@ class ActSelectionView extends StatelessWidget {
             onSwitchView(2);
           },
         ),
-        const SizedBox(height: 16),
         _buildTestOption(
           '兒童測驗',
           '(4-11 歲)',
@@ -62,6 +62,7 @@ class ActSelectionView extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 12,
           children: [
             Container(
               width: 64,
@@ -79,10 +80,10 @@ class ActSelectionView extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
               children: [
                 Text(
                   title,
@@ -94,7 +95,6 @@ class ActSelectionView extends StatelessWidget {
                     letterSpacing: 0,
                   ),
                 ),
-                const SizedBox(height: 4),
                 Text(
                   subtitle,
                   style: TextStyle(

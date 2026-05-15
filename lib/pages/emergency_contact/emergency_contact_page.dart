@@ -29,9 +29,9 @@ class _EmergencyContactPageState extends State<EmergencyContactPage> {
       header: _buildHeader(),
       contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       content: Column(
+        spacing: 8,
         children: [
           _buildTabButtons(),
-          const SizedBox(height: 8),
           _buildTabContent(),
         ],
       ),
@@ -95,11 +95,10 @@ class _EmergencyContactPageState extends State<EmergencyContactPage> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 24,
         children: [
           _buildNavButton('個人首頁', Icons.home, AppColors.funGreen, false),
-          const SizedBox(width: 24),
           _buildNavButton('系統設定', Icons.settings, AppColors.funGreen, false),
-          const SizedBox(width: 24),
           _buildNavButton('緊急聯絡', Icons.warning, Colors.red, true),
         ],
       ),
@@ -123,13 +122,13 @@ class _EmergencyContactPageState extends State<EmergencyContactPage> {
           color: isActive ? color : Colors.transparent,
         ),
         child: Row(
+          spacing: 4,
           children: [
             Icon(
               icon,
               color: isActive ? Colors.white : color,
               size: 24,
             ),
-            const SizedBox(width: 4),
             Text(
               title,
               style: TextStyle(

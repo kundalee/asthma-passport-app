@@ -23,8 +23,10 @@ class InstructionsBox extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 10,
         children: [
           Row(
+            spacing: 10,
             children: [
               SvgPicture.asset(
                 'assets/icons/heart.svg',
@@ -32,7 +34,6 @@ class InstructionsBox extends StatelessWidget {
                 height: 24,
                 colorFilter: const ColorFilter.mode(AppColors.windsorTan, BlendMode.srcIn),
               ),
-              const SizedBox(width: 10),
               Text(
                 title,
                 style: const TextStyle(
@@ -45,14 +46,12 @@ class InstructionsBox extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 10,
             children: [
-              for (int i = 0; i < instructions.length; i++) ...[
-                _InstructionItem(text: instructions[i]),
-                if (i < instructions.length - 1) const SizedBox(height: 10),
-              ],
+              for (final instruction in instructions)
+                _InstructionItem(text: instruction),
             ],
           ),
         ],

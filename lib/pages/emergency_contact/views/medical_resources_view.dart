@@ -131,19 +131,10 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
   Widget build(BuildContext context) {
     return CardContainer(
       child: Column(
+        spacing: 12,
         children: [
           _buildEmergencyHotlineCard(),
-          const SizedBox(height: 12),
-          ...List.generate(
-            contacts.length,
-            (index) => Column(
-              children: [
-                _buildContactItem(index),
-                if (index < contacts.length - 1) const SizedBox(height: 8),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
+          ...List.generate(contacts.length, (index) => _buildContactItem(index)),
           CustomButton(
             text: '+ 新增緊急醫療連絡',
             onPressed: _addContact,
@@ -158,8 +149,10 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
 
   Widget _buildEmergencyHotlineCard() {
     return Column(
+      spacing: 12,
       children: [
         Row(
+          spacing: 8,
           children: [
             SvgPicture.asset(
               'assets/icons/emergency.svg',
@@ -167,14 +160,12 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
               height: 24,
               colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn),
             ),
-            const SizedBox(width: 8),
             const Text(
               '緊急醫療救護專線',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
             ),
           ],
         ),
-        const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
@@ -201,6 +192,7 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
       backgroundColor: const Color(0xFFF9FAFB),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
           if (isEditing) ...[
             CustomTextField(
@@ -210,7 +202,6 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
               borderRadius: 4,
               dynamicBorderColor: false,
             ),
-            const SizedBox(height: 8),
             CustomTextField(
               hintText: '請輸入聯絡事項',
               controller: _infoControllers[index],
@@ -223,14 +214,13 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
               contacts[index]['title'] ?? '',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5),
             ),
-            const SizedBox(height: 4),
             Text(
               contacts[index]['contactInfo'] ?? '',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: AppColors.funGreen, height: 1.6),
             ),
           ],
-          const SizedBox(height: 8),
           Row(
+            spacing: 8,
             children: [
               Expanded(
                 child: CustomButton(
@@ -241,7 +231,6 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
                   height: 37,
                 ),
               ),
-              const SizedBox(width: 8),
               Expanded(
                 child: CustomButton(
                   text: isEditing ? '儲存編輯' : '編輯資料',

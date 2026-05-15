@@ -32,13 +32,18 @@ class PeakFlowFormView extends StatefulWidget {
 
 class _PeakFlowFormViewState extends State<PeakFlowFormView> {
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
         children: [
           _buildMeasurementInfoSection(),
-          const SizedBox(height: 12),
           _buildMeasurementFormCard(
             icon: 'assets/icons/sun.svg',
             title: '白天量測',
@@ -46,7 +51,6 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
             measurementValue: widget.daytimeValue,
             onViewResults: widget.onViewDaytimeResults,
           ),
-          const SizedBox(height: 12),
           _buildMeasurementFormCard(
             icon: 'assets/icons/night.svg',
             title: '夜晚量測',
@@ -78,8 +82,10 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
       padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
           Row(
+            spacing: 8,
             children: [
               SvgPicture.asset(
                 icon,
@@ -87,7 +93,6 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
                 height: 24,
                 colorFilter: const ColorFilter.mode(AppColors.mustardGold, BlendMode.srcIn),
               ),
-              const SizedBox(width: 8),
               Text(
                 title,
                 style: const TextStyle(
@@ -100,12 +105,10 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
               ),
             ],
           ),
-          const SizedBox(height: 8),
           _buildMeasurementInfo(
             isComplete: isComplete,
             value: measurementValue,
           ),
-          const SizedBox(height: 8),
           SizedBox(
             width: double.infinity,
             child: CustomButton(
@@ -126,11 +129,10 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
     return CardContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
           _buildMeasurementDateRow(),
-          const SizedBox(height: 8),
           _buildBasicInfoSection(),
-          const SizedBox(height: 8),
           _buildPredictedValueRow(),
         ],
       ),
@@ -139,6 +141,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
 
   Widget _buildMeasurementDateRow() {
     return Row(
+      spacing: 8,
       children: [
         SvgPicture.asset(
           'assets/icons/document.svg',
@@ -146,7 +149,6 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
           height: 24,
           colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
         ),
-        const SizedBox(width: 8),
         Expanded(
           child: Text(
             '每日量測：${widget.measurementDate}',
@@ -171,6 +173,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
           const Text(
             '基本資料',
@@ -182,13 +185,9 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
               letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: 8),
           _buildInfoRow('姓名', '王曉明'),
-          const SizedBox(height: 8),
           _buildInfoRow('年齡', '13 歲'),
-          const SizedBox(height: 8),
           _buildInfoRow('身高', '146 cm'),
-          const SizedBox(height: 8),
           _buildInfoRow('體重', '42 kg'),
         ],
       ),
@@ -267,6 +266,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -293,7 +293,6 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -324,8 +323,4 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 }

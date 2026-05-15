@@ -30,6 +30,7 @@ class KnowledgeListView extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         borderRadius: 0,
         child: Column(
+          spacing: 8,
           children: List.generate(
             knowledgeItems.length,
             (index) => Column(
@@ -37,7 +38,6 @@ class KnowledgeListView extends StatelessWidget {
                 _buildKnowledgeItem(knowledgeItems[index]),
                 if (index < knowledgeItems.length - 1)
                   const Divider(color: AppColors.sweetGrey, height: 2),
-                if (index < knowledgeItems.length - 1) const SizedBox(height: 8),
               ],
             ),
           ),

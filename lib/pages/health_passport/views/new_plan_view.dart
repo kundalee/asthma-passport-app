@@ -102,8 +102,10 @@ class _NewPlanViewState extends State<NewPlanView> {
         child: CardContainer(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
             children: [
               Row(
+                spacing: 8,
                 children: [
                   SvgPicture.asset(
                     'assets/icons/document.svg',
@@ -111,22 +113,20 @@ class _NewPlanViewState extends State<NewPlanView> {
                     height: 24,
                     colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
                   ),
-                  const SizedBox(width: 8),
                   const Text(
                     '填寫新的行動計畫',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.mirage),
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 8,
                 children: [
                   const Text(
                     '病患姓名',
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.mirage),
                   ),
-                  const SizedBox(height: 8),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -142,15 +142,14 @@ class _NewPlanViewState extends State<NewPlanView> {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 8,
                 children: [
                   const Text(
                     '填寫日期',
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.mirage),
                   ),
-                  const SizedBox(height: 8),
                   TextField(
                     controller: dateController,
                     decoration: InputDecoration(
@@ -173,7 +172,6 @@ class _NewPlanViewState extends State<NewPlanView> {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
                 child: CustomButton(
@@ -194,15 +192,14 @@ class _NewPlanViewState extends State<NewPlanView> {
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 8,
                 children: [
                   const Text(
                     '處理等級',
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.mirage),
                   ),
-                  const SizedBox(height: 8),
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -250,7 +247,6 @@ class _NewPlanViewState extends State<NewPlanView> {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
               _buildResultSection(),
             ],
           ),
@@ -286,6 +282,7 @@ class _NewPlanViewState extends State<NewPlanView> {
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
           SvgPicture.asset(
             iconPath,
@@ -293,10 +290,10 @@ class _NewPlanViewState extends State<NewPlanView> {
             height: 24,
             colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
           ),
-          const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
               children: [
                 Text(
                   title,
@@ -306,7 +303,6 @@ class _NewPlanViewState extends State<NewPlanView> {
                     color: iconColor,
                   ),
                 ),
-                const SizedBox(height: 4),
                 ...points.map((point) => Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

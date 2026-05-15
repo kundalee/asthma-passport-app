@@ -39,9 +39,9 @@ class _FormCardState extends State<FormCard> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
+        spacing: 12,
         children: [
           _buildProgressIndicator(),
-          const SizedBox(height: 12),
           isSubmitted ? _buildResultsSection() : _buildQuestionSection(),
         ],
       ),
@@ -94,11 +94,10 @@ class _FormCardState extends State<FormCard> {
       borderRadius: 10,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 20,
         children: [
           _buildQuestion(),
-          const SizedBox(height: 20),
           const Divider(color: AppColors.sweetGrey, thickness: 2),
-          const SizedBox(height: 20),
           _buildNavigation(),
         ],
       ),
@@ -115,6 +114,7 @@ class _FormCardState extends State<FormCard> {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 20,
       children: [
         Text(
           currentQuestionData['title'] ?? '',
@@ -126,21 +126,17 @@ class _FormCardState extends State<FormCard> {
             letterSpacing: 0,
           ),
         ),
-        const SizedBox(height: 20),
         ...List.generate(
           questionOptions.length,
-          (index) => Padding(
-            padding: EdgeInsets.only(bottom: index < questionOptions.length - 1 ? 20 : 0),
-            child: _buildOption(
-              questionOptions[index]['label'] ?? '',
-              questionOptions[index]['id'] ?? (index + 1),
-              answers[currentStep],
-              (value) {
-                setState(() {
-                  answers[currentStep] = value;
-                });
-              },
-            ),
+          (index) => _buildOption(
+            questionOptions[index]['label'] ?? '',
+            questionOptions[index]['id'] ?? (index + 1),
+            answers[currentStep],
+            (value) {
+              setState(() {
+                answers[currentStep] = value;
+              });
+            },
           ),
         ),
       ],
@@ -188,6 +184,7 @@ class _FormCardState extends State<FormCard> {
   Widget _buildNavigation() {
     final isLastQuestion = currentStep == widget.questionsData.length - 1;
     return Column(
+      spacing: 12,
       children: [
         CustomButton(
           text: isLastQuestion ? '完成作答' : '下一題',
@@ -210,7 +207,6 @@ class _FormCardState extends State<FormCard> {
           height: 37,
           borderRadius: 4,
         ),
-        const SizedBox(height: 12),
         CustomButton(
           text: '上一題',
           onPressed: currentStep > 0

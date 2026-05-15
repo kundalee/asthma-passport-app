@@ -60,17 +60,13 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
       child: CardContainer(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 12,
           children: [
             _buildHeader(),
-            const SizedBox(height: 12),
             _buildInstructionImage(),
-            const SizedBox(height: 12),
             _buildInstructions(),
-            const SizedBox(height: 12),
             _buildMeasurementInput(),
-            const SizedBox(height: 12),
             _statusResult == null ? _buildResultsTable() : _buildStatusResult(),
-            const SizedBox(height: 12),
             _buildConfirmButton(),
           ],
         ),
@@ -80,6 +76,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
 
   Widget _buildHeader() {
     return Row(
+      spacing: 8,
       children: [
         SvgPicture.asset(
           widget.isDaytime ? 'assets/icons/sun.svg' : 'assets/icons/night.svg',
@@ -87,7 +84,6 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
           height: 24,
           colorFilter: const ColorFilter.mode(AppColors.mustardGold, BlendMode.srcIn),
         ),
-        const SizedBox(width: 8),
         Text(
           widget.isDaytime ? '白天量測' : '夜晚量測',
           style: const TextStyle(
@@ -141,6 +137,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
           const Text(
             '請紀錄最高尖峰呼氣流速',
@@ -152,7 +149,6 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
               letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: 8),
           TextField(
             controller: _inputController,
             enabled: (widget.status == null && _statusResult == null) || _isEditingFromCompleted,
@@ -231,6 +227,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
           const Text(
             '比對測測結果',
@@ -242,7 +239,6 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
               letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: 8),
           _buildTable(),
         ],
       ),
@@ -314,6 +310,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
           const Text(
             '比對測測結果',
@@ -325,7 +322,6 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
               letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: 8),
           _buildStatusBox(_statusResult ?? 1),
         ],
       ),
@@ -383,6 +379,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 12,
         children: [
           SvgPicture.asset(
             iconPath,
@@ -390,7 +387,6 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
             height: 24,
             colorFilter: ColorFilter.mode(textColor, BlendMode.srcIn),
           ),
-          const SizedBox(width: 12),
           Flexible(
             child: Text(
               statusText,
@@ -413,6 +409,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
     if ((widget.status != null && !_isEditingFromCompleted) || _showCompletedButtons) {
       // Initial status provided and not editing, or showing completed buttons - show 3 buttons
       return Column(
+        spacing: 12,
         children: [
           SizedBox(
             width: double.infinity,
@@ -425,7 +422,6 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
               height: 37,
             ),
           ),
-          const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             child: CustomButton(
@@ -437,7 +433,6 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
               height: 37,
             ),
           ),
-          const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             child: CustomButton(
@@ -465,6 +460,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
     } else {
       // Recording new measurement
       return Column(
+        spacing: 12,
         children: [
           SizedBox(
             width: double.infinity,
@@ -483,8 +479,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
               height: 37,
             ),
           ),
-          if (_statusResult != null && !_showCompletedButtons) ...[
-            const SizedBox(height: 12),
+          if (_statusResult != null && !_showCompletedButtons)
             SizedBox(
               width: double.infinity,
               child: CustomButton(
@@ -506,9 +501,9 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
                 height: 37,
               ),
             ),
-          ],
         ],
       );
+
     }
   }
 }

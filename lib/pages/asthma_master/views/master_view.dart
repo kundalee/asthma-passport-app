@@ -19,9 +19,9 @@ class MasterView extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 20,
         children: [
           _buildIcon(),
-          const SizedBox(height: 20),
           const Text(
             '氣喘知識挑戰',
             style: TextStyle(
@@ -32,7 +32,6 @@ class MasterView extends StatelessWidget {
               letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: 20),
           InstructionsBox(
             title: '挑戰規則',
             instructions: [
@@ -41,7 +40,6 @@ class MasterView extends StatelessWidget {
               '自標得分：80 分以上即為「達人」',
             ],
           ),
-          const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
             child: CustomButton(

@@ -76,17 +76,13 @@ class _MasterFormViewState extends State<MasterFormView> {
         borderRadius: 10,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 20,
           children: [
             _buildResultIcon(),
-            const SizedBox(height: 20),
             _buildResultTitleAndSubtitle(),
-            const SizedBox(height: 20),
             _buildScoreSection(),
-            const SizedBox(height: 20),
             _buildReturnButton(),
-            const SizedBox(height: 20),
             _buildRetestButton(),
-            const SizedBox(height: 20),
             _buildFooterText(),
           ],
         ),
@@ -118,6 +114,7 @@ class _MasterFormViewState extends State<MasterFormView> {
 
   Widget _buildResultTitleAndSubtitle() {
     return Column(
+      spacing: 12,
       children: [
         Text(
           _getResultTitle(),
@@ -130,7 +127,6 @@ class _MasterFormViewState extends State<MasterFormView> {
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 12),
         Text(
           _getResultSubtitle(),
           style: const TextStyle(
@@ -155,6 +151,7 @@ class _MasterFormViewState extends State<MasterFormView> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
+        spacing: 12,
         children: [
           const Text(
             '最終成績',
@@ -166,7 +163,6 @@ class _MasterFormViewState extends State<MasterFormView> {
               letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: 12),
           Text(
             '${totalScore ?? 0} 分',
             style: const TextStyle(

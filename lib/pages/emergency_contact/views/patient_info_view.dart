@@ -111,8 +111,10 @@ class _PatientInfoViewState extends State<PatientInfoView> {
     return CardContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
         children: [
           Row(
+            spacing: 8,
             children: [
               SvgPicture.asset(
                 'assets/icons/user.svg',
@@ -120,7 +122,6 @@ class _PatientInfoViewState extends State<PatientInfoView> {
                 height: 24,
                 colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
               ),
-              const SizedBox(width: 8),
               const Text(
                 '病患基本資料',
                 style: TextStyle(
@@ -133,9 +134,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
           _buildBasicInfoSection(),
-          const SizedBox(height: 12),
           _buildChipSection(
             title: '過敏史',
             expanded: _allergyExpanded,
@@ -150,7 +149,6 @@ class _PatientInfoViewState extends State<PatientInfoView> {
             onAddTag: _addAllergyTag,
             onRemoveTag: (index) { setState(() => _editAllergies.removeAt(index)); },
           ),
-          const SizedBox(height: 12),
           _buildChipSection(
             title: '目前用藥',
             expanded: _medicationExpanded,
@@ -165,24 +163,27 @@ class _PatientInfoViewState extends State<PatientInfoView> {
             onAddTag: _addMedicationTag,
             onRemoveTag: (index) { setState(() => _editMedications.removeAt(index)); },
           ),
-          const SizedBox(height: 12),
-          if (_isEditing) ...[
-            CustomButton(
-              text: '儲存編輯',
-              onPressed: _saveEditing,
-              backgroundColor: AppColors.funGreen,
-              foregroundColor: Colors.white,
-              height: 44,
-            ),
-            const SizedBox(height: 8),
-            CustomButton(
-              text: '取消編輯',
-              onPressed: _cancelEditing,
-              backgroundColor: AppColors.strongRed,
-              foregroundColor: Colors.white,
-              height: 44,
-            ),
-          ] else
+          if (_isEditing)
+            Column(
+              spacing: 8,
+              children: [
+                CustomButton(
+                  text: '儲存編輯',
+                  onPressed: _saveEditing,
+                  backgroundColor: AppColors.funGreen,
+                  foregroundColor: Colors.white,
+                  height: 44,
+                ),
+                CustomButton(
+                  text: '取消編輯',
+                  onPressed: _cancelEditing,
+                  backgroundColor: AppColors.strongRed,
+                  foregroundColor: Colors.white,
+                  height: 44,
+                ),
+              ],
+            )
+          else
             CustomButton(
               text: '編輯基本資料',
               onPressed: _startEditing,
@@ -334,8 +335,9 @@ class _PatientInfoViewState extends State<PatientInfoView> {
                 padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 12,
                   children: [
-                    if (_isEditing && inputController != null) ...[
+                    if (_isEditing && inputController != null)
                       TextField(
                         controller: inputController,
                         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xFF4A5565), height: 1.5, letterSpacing: 0),
@@ -360,8 +362,6 @@ class _PatientInfoViewState extends State<PatientInfoView> {
                         ),
                         onSubmitted: (_) => onAddTag?.call(),
                       ),
-                      const SizedBox(height: 12),
-                    ],
                     SizedBox(
                       width: double.infinity,
                       child: Wrap(

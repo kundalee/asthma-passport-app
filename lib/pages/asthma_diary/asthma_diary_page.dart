@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../components/app_page_container.dart';
 import '../../services/api_service.dart';
 import 'views/asthma_diary_view.dart';
-import 'views/assessment_form_view.dart';
+import 'views/asthma_diary_form_view.dart';
 
 class AsthmaDiaryPage extends StatefulWidget {
   const AsthmaDiaryPage({super.key});
@@ -54,7 +54,7 @@ class _AsthmaDiaryPageState extends State<AsthmaDiaryPage> {
               measurementTime: measurementTime,
               onSwitchView: _switchView,
             )
-          : AssessmentFormView(
+          : AsthmaDiaryFormView(
               measurementDate: measurementDate,
               isAssessmentCompleted: isAssessmentCompleted,
               onSwitchView: _switchView,

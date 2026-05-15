@@ -69,11 +69,10 @@ class _ActFormViewState extends State<ActFormView> {
       borderRadius: 10,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 20,
         children: [
           _buildResultsTitle(),
-          const SizedBox(height: 20),
           _buildScoreAndStatusBox(),
-          const SizedBox(height: 20),
           CustomButton(
             text: '完成紀錄',
             onPressed: () {
@@ -94,6 +93,7 @@ class _ActFormViewState extends State<ActFormView> {
     return SizedBox(
       height: 24,
       child: Row(
+        spacing: 8,
         children: [
           SvgPicture.asset(
             'assets/icons/document.svg',
@@ -101,7 +101,6 @@ class _ActFormViewState extends State<ActFormView> {
             height: 24,
             colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
           ),
-          const SizedBox(width: 8),
           const Text(
             '測驗結果',
             style: TextStyle(
@@ -126,6 +125,7 @@ class _ActFormViewState extends State<ActFormView> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -152,7 +152,6 @@ class _ActFormViewState extends State<ActFormView> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
           Container(
             constraints: const BoxConstraints(minHeight: 54),
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -164,6 +163,7 @@ class _ActFormViewState extends State<ActFormView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 12,
               children: [
                 SvgPicture.asset(
                   _getControlLevelIcon(controlLevel),
@@ -171,7 +171,6 @@ class _ActFormViewState extends State<ActFormView> {
                   height: 24,
                   colorFilter: ColorFilter.mode(_getStatusTextColor(controlLevel), BlendMode.srcIn),
                 ),
-                const SizedBox(width: 12),
                 Flexible(
                   child: Text(
                     _getControlLevelAdvice(controlLevel),

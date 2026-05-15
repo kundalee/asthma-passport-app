@@ -16,6 +16,7 @@ class KnowledgeSelectionView extends StatelessWidget {
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 16,
         children: [
           _buildEducationOption(
             '成人衛教',
@@ -24,7 +25,6 @@ class KnowledgeSelectionView extends StatelessWidget {
               onSwitchView(1);
             },
           ),
-          const SizedBox(height: 16),
           _buildEducationOption(
             '兒童衛教',
             false,
@@ -55,6 +55,7 @@ class KnowledgeSelectionView extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 12,
           children: [
             Container(
               width: 64,
@@ -72,7 +73,6 @@ class KnowledgeSelectionView extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,

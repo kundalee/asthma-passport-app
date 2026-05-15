@@ -61,17 +61,17 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 borderRadius: 0,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 16,
                   children: [
                     _buildLabeledField('姓名', _nameController, '請輸入您的姓名'),
-                    const SizedBox(height: 16),
                     Row(
+                      spacing: 16,
                       children: [
                         Expanded(
                           child: _buildLabeledDropdown('性別', _selectedGender, ['男性', '女性'], (value) {
                             setState(() => _selectedGender = value);
                           }, '請選擇'),
                         ),
-                        const SizedBox(width: 16),
                         Expanded(
                           child: _buildLabeledDropdown('血型', _selectedBloodType, ['A型', 'B型', 'AB型', 'O型'], (value) {
                             setState(() => _selectedBloodType = value);
@@ -79,28 +79,23 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
                     Row(
+                      spacing: 16,
                       children: [
                         Expanded(
                           child: _buildLabeledField('身高', _heightController, '請輸入您的身高'),
                         ),
-                        const SizedBox(width: 16),
                         Expanded(
                           child: _buildLabeledField('體重', _weightController, '請輸入您的體重'),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
                     _buildLabeledDatePicker(context),
-                    const SizedBox(height: 16),
                     _buildSaveButton(),
-                    const SizedBox(height: 16),
                     _buildCancelButton(context),
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -120,7 +115,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             '編輯個人資料',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black, height: 1.0),
           ),
-          const SizedBox(width: 24),
         ],
       ),
     );
@@ -142,9 +136,9 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   Widget _buildLabeledField(String label, TextEditingController controller, String placeholder) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
       children: [
         _buildLabel(label),
-        const SizedBox(height: 8),
         _buildTextField(controller, placeholder),
       ],
     );
@@ -153,9 +147,9 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   Widget _buildLabeledDatePicker(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
       children: [
         _buildLabel('生日'),
-        const SizedBox(height: 8),
         _buildDatePicker(context),
       ],
     );
@@ -164,9 +158,9 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   Widget _buildLabeledDropdown(String label, String? value, List<String> items, Function(String?) onChanged, String placeholder) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
       children: [
         _buildLabel(label),
-        const SizedBox(height: 8),
         CustomDropdown(
           value: value,
           items: items,

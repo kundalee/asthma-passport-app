@@ -34,9 +34,11 @@ class StatusContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final content = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
-          if (title != null) ...[
+          if (title != null)
             Row(
+              spacing: 8,
               children: [
                 SvgPicture.asset(
                   'assets/icons/document.svg',
@@ -44,15 +46,12 @@ class StatusContainer extends StatelessWidget {
                   height: 24,
                   colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
                 ),
-                const SizedBox(width: 8),
                 Text(
                   title!,
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.625, letterSpacing: 0),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-          ],
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             decoration: BoxDecoration(
@@ -60,21 +59,19 @@ class StatusContainer extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
+              spacing: 12,
               children: [
-                for (int i = 0; i < items.length; i++) ...[
-                  if (i > 0) const SizedBox(height: 12),
+                for (final item in items)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(items[i].label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0)),
-                      Text(items[i].status, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0)),
+                      Text(item.label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0)),
+                      Text(item.status, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0)),
                     ],
                   ),
-                ],
               ],
             ),
           ),
-          const SizedBox(height: 12),
           CustomButton(
             text: isComplete ? '查看測驗結果' : '開始紀錄',
             onPressed: onPressed,

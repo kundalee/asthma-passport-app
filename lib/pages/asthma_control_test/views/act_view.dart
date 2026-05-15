@@ -23,9 +23,9 @@ class ActView extends StatelessWidget {
   Widget build(BuildContext context) {
     return CardContainer(
       child: Column(
+        spacing: 12,
         children: [
           _buildExamIcon(),
-          const SizedBox(height: 12),
           const Text(
             '每月氣喘控制測驗',
             style: TextStyle(
@@ -36,7 +36,6 @@ class ActView extends StatelessWidget {
               letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: 12),
           Text(
             '測驗月份：$measurementDate',
             style: TextStyle(
@@ -47,7 +46,6 @@ class ActView extends StatelessWidget {
               letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: 12),
           InstructionsBox(
             title: '測驗說明',
             instructions: [
@@ -56,7 +54,6 @@ class ActView extends StatelessWidget {
               '誠實，是最好的處方',
             ],
           ),
-          const SizedBox(height: 12),
           StatusContainer(
             items: [
               StatusItem(label: '測驗狀態', status: isAssessmentCompleted ? '完成' : '未完成'),

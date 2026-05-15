@@ -25,6 +25,7 @@ class PeakFlowView extends StatefulWidget {
         border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
       ),
       child: Column(
+        spacing: 12,
         children: [
           CustomButton(
             text: '檢視前一個月資料',
@@ -34,7 +35,6 @@ class PeakFlowView extends StatefulWidget {
             borderRadius: 4,
             height: 37,
           ),
-          const SizedBox(height: 12),
           const Text(
             '此報告僅供參考，實際治療請遵循醫師指示',
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF4A5565), height: 1.71, letterSpacing: 0),
@@ -111,9 +111,9 @@ class _PeakFlowViewState extends State<PeakFlowView> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 12,
       children: [
         _buildCalendarSection(),
-        const SizedBox(height: 12),
         _buildDailyMeasurementSection(),
       ],
     );

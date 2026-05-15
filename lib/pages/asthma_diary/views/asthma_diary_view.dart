@@ -34,9 +34,9 @@ class AsthmaDiaryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return CardContainer(
       child: Column(
+        spacing: 12,
         children: [
           _buildDocumentIcon(),
-          const SizedBox(height: 12),
           const Text(
             '每日氣喘評量',
             style: TextStyle(
@@ -47,7 +47,6 @@ class AsthmaDiaryView extends StatelessWidget {
               letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: 12),
           Text(
             '量測日期：$measurementDate',
             style: TextStyle(
@@ -58,7 +57,6 @@ class AsthmaDiaryView extends StatelessWidget {
               letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: 12),
           InstructionsBox(
             title: '量測說明',
             instructions: [
@@ -67,7 +65,6 @@ class AsthmaDiaryView extends StatelessWidget {
               '誠實，是最好的處方',
             ],
           ),
-          const SizedBox(height: 12),
           StatusContainer(
             items: [
               StatusItem(label: '自我評量', status: _getAssessmentDisplay()),

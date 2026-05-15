@@ -5,12 +5,12 @@ import '../../../components/custom_button.dart';
 import '../../../components/card_container.dart';
 import '../../../services/api_service.dart';
 
-class AssessmentFormView extends StatefulWidget {
+class AsthmaDiaryFormView extends StatefulWidget {
   final String measurementDate;
   final bool isAssessmentCompleted;
   final Function(int) onSwitchView;
 
-  const AssessmentFormView({
+  const AsthmaDiaryFormView({
     super.key,
     required this.measurementDate,
     required this.isAssessmentCompleted,
@@ -18,10 +18,10 @@ class AssessmentFormView extends StatefulWidget {
   });
 
   @override
-  State<AssessmentFormView> createState() => _AssessmentFormViewState();
+  State<AsthmaDiaryFormView> createState() => _AsthmaDiaryFormViewState();
 }
 
-class _AssessmentFormViewState extends State<AssessmentFormView> {
+class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
   late List<int?> selectedAnswers;
   late Future<List<Map<String, dynamic>>> questionsFuture;
   bool isEditMode = false;
@@ -88,9 +88,9 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
         children: [
           _buildDateSection(),
-          const SizedBox(height: 12),
           FutureBuilder<List<Map<String, dynamic>>>(
             future: questionsFuture,
             builder: (context, snapshot) {
@@ -105,57 +105,57 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
               final questions = snapshot.data ?? [];
 
               return CardContainer(
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                      borderRadius: 10,
-                      child: Column(
-                        children: [
-                          _buildFormHeaderContent(),
-                          ...List.generate(
-                            questions.length,
-                            (index) {
-                              final question = questions[index];
-                              return Column(
-                                children: [
-                                  const SizedBox(height: 16),
-                                  question['type'] == 'yes_no'
-                                      ? _buildYesNoQuestion(
-                                          number: question['number'],
-                                          title: question['title'],
-                                          options: List<Map<String, dynamic>>.from(question['options'] ?? []),
-                                          selectedValue: selectedAnswers[index],
-                                          onChanged: (value) => setState(() => selectedAnswers[index] = value),
-                                        )
-                                      : _buildScaleQuestion(
-                                          number: question['number'],
-                                          title: question['title'],
-                                          options: List<Map<String, dynamic>>.from(question['options'] ?? []),
-                                          selectedValue: selectedAnswers[index],
-                                          onChanged: (value) => setState(() => selectedAnswers[index] = value),
-                                        ),
-                                  const SizedBox(height: 16),
-                                  if (index < questions.length - 1)
-                                    Divider(color: AppColors.sweetGrey, height: 2),
-                                ],
-                              );
-                            },
-                          ),
-                          if (!isSubmitted && (!widget.isAssessmentCompleted || isEditMode))
-                            SizedBox(
-                              width: double.infinity,
-                              child: CustomButton(
-                                text: '儲存記錄',
-                                onPressed: _saveAssessment,
-                                backgroundColor: AppColors.funGreen,
-                                padding: const EdgeInsets.all(12),
-                                borderRadius: 4,
-                                height: 37,
-                              ),
-                            ),
-                          if (isSubmitted) _buildResultsSummary(),
-                          if (widget.isAssessmentCompleted && !isEditMode && !isSubmitted) _buildResultsSummary(),
-                        ],
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                borderRadius: 10,
+                child: Column(
+                  spacing: 16,
+                  children: [
+                    _buildFormHeaderContent(),
+                    ...List.generate(
+                      questions.length,
+                      (index) {
+                        final question = questions[index];
+                        return Column(
+                          spacing: 16,
+                          children: [
+                            question['type'] == 'yes_no'
+                                ? _buildYesNoQuestion(
+                                    number: question['number'],
+                                    title: question['title'],
+                                    options: List<Map<String, dynamic>>.from(question['options'] ?? []),
+                                    selectedValue: selectedAnswers[index],
+                                    onChanged: (value) => setState(() => selectedAnswers[index] = value),
+                                  )
+                                : _buildScaleQuestion(
+                                    number: question['number'],
+                                    title: question['title'],
+                                    options: List<Map<String, dynamic>>.from(question['options'] ?? []),
+                                    selectedValue: selectedAnswers[index],
+                                    onChanged: (value) => setState(() => selectedAnswers[index] = value),
+                                  ),
+                            if (index < questions.length - 1)
+                              Divider(color: AppColors.sweetGrey, height: 2),
+                          ],
+                        );
+                      },
+                    ),
+                    if (!isSubmitted && (!widget.isAssessmentCompleted || isEditMode))
+                      SizedBox(
+                        width: double.infinity,
+                        child: CustomButton(
+                          text: '儲存記錄',
+                          onPressed: _saveAssessment,
+                          backgroundColor: AppColors.funGreen,
+                          padding: const EdgeInsets.all(12),
+                          borderRadius: 4,
+                          height: 37,
+                        ),
                       ),
-                    );
+                    if (isSubmitted) _buildResultsSummary(),
+                    if (widget.isAssessmentCompleted && !isEditMode && !isSubmitted) _buildResultsSummary(),
+                  ],
+                ),
+              );
             },
           ),
         ],
@@ -165,6 +165,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
 
   Widget _buildFormHeaderContent() {
     return Row(
+      spacing: 8,
       children: [
         SvgPicture.asset(
           'assets/icons/document.svg',
@@ -172,7 +173,6 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
           height: 24,
           colorFilter: const ColorFilter.mode(AppColors.solidBlue, BlendMode.srcIn),
         ),
-        const SizedBox(width: 8),
         const Text(
           '症狀評分記錄表',
           style: TextStyle(
@@ -192,6 +192,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       borderRadius: 10,
       child: Row(
+        spacing: 12,
         children: [
           SvgPicture.asset(
             'assets/icons/calendar.svg',
@@ -199,7 +200,6 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
             height: 24,
             colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
           ),
-          const SizedBox(width: 12),
           Text(
             '測驗日期：${widget.measurementDate}',
             style: const TextStyle(
@@ -224,6 +224,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 16,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -262,7 +263,6 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
             ),
           ],
         ),
-        const SizedBox(height: 16),
         Column(
           children: List.generate(
             options.length,
@@ -284,13 +284,13 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
                       ),
                     ),
                     child: Row(
+                      spacing: 24,
                       children: [
                         SvgPicture.asset(
                           selectedValue == option['id'] ? 'assets/icons/select-on.svg' : 'assets/icons/select-off.svg',
                           width: 24,
                           height: 24,
                         ),
-                        const SizedBox(width: 24),
                         Text(
                           option['label'] as String,
                           style: const TextStyle(
@@ -322,6 +322,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 16,
       children: [
         // Title and score
         Row(
@@ -361,22 +362,22 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
             ),
           ],
         ),
-        const SizedBox(height: 16),
         // Options
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          spacing: 4,
           children: [
-            for (int index = 0; index < 5; index++) ...[
+            for (int index = 0; index < 5; index++)
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 8,
                   children: [
                     Container(
                       width: double.infinity,
                       height: 8,
                       decoration: BoxDecoration(color: _getScaleBarColor(index)),
                     ),
-                    const SizedBox(height: 8),
                     GestureDetector(
                       onTap: () => onChanged(index),
                       child: SvgPicture.asset(
@@ -385,7 +386,6 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
                         height: 24,
                       ),
                     ),
-                    const SizedBox(height: 8),
                     Column(
                       children: [
                         Text(
@@ -415,8 +415,6 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
                   ],
                 ),
               ),
-              if (index < 4) const SizedBox(width: 4),
-            ],
           ],
         ),
       ],
@@ -442,12 +440,14 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
     final statusMessage = controlStatus ?? '';
 
     return Column(
+      spacing: 16,
       children: [
         CardContainer(
           padding: const EdgeInsets.all(16),
           backgroundColor: AppColors.luxuryWhite,
           borderRadius: 10,
           child: Column(
+            spacing: 12,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -474,7 +474,6 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
               Container(
                 height: 54,
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -487,6 +486,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
                   ),
                 ),
                 child: Row(
+                  spacing: 12,
                   children: [
                     SvgPicture.asset(
                       statusIcon,
@@ -494,7 +494,6 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
                       height: 24,
                       colorFilter: ColorFilter.mode(statusColor, BlendMode.srcIn),
                     ),
-                    const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         statusMessage,
@@ -513,7 +512,6 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
         SizedBox(
           width: double.infinity,
           child: CustomButton(
@@ -525,7 +523,6 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
             height: 37,
           ),
         ),
-        const SizedBox(height: 16),
         SizedBox(
           width: double.infinity,
           child: CustomButton(

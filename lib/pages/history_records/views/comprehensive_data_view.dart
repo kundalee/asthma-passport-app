@@ -28,6 +28,7 @@ class ComprehensiveDataView extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
       ),
       child: Column(
+        spacing: 12,
         children: [
           CustomButton(
             text: '下載報告',
@@ -37,7 +38,6 @@ class ComprehensiveDataView extends StatelessWidget {
             borderRadius: 4,
             height: 37,
           ),
-          const SizedBox(height: 12),
           const Text(
             '此報告僅供參考，實際治療請遵循醫師指示',
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF4A5565), height: 1.71, letterSpacing: 0),
@@ -52,13 +52,11 @@ class ComprehensiveDataView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 12,
       children: [
         _buildSummaryView(),
-        const SizedBox(height: 12),
         _buildChartSection(),
-        const SizedBox(height: 12),
         _buildPefrDistributionSection(),
-        const SizedBox(height: 12),
         _buildMonthlyTestSection(),
       ],
     );
@@ -74,8 +72,10 @@ class ComprehensiveDataView extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
           Row(
+            spacing: 8,
             children: [
               SvgPicture.asset(
                 'assets/icons/wave.svg',
@@ -83,14 +83,12 @@ class ComprehensiveDataView extends StatelessWidget {
                 height: 24,
                 colorFilter: const ColorFilter.mode(AppColors.solidBlue, BlendMode.srcIn),
               ),
-              const SizedBox(width: 8),
               const Text(
                 '整體狀態',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
               ),
             ],
           ),
-          const SizedBox(height: 8),
           _buildStatusGrid(),
         ],
       ),
@@ -135,24 +133,24 @@ class ComprehensiveDataView extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 6,
         children: [
           Text(
             label,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
           ),
-          const SizedBox(height: 6),
           Builder(
             builder: (context) {
               final parts = value.split(' ');
               final numValue = parts[0];
               final unit = parts.sublist(1).join(' ');
               return Row(
+                spacing: 4,
                 children: [
                   Text(
                     numValue,
                     style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500, color: Colors.black, height: 1.0, letterSpacing: 0),
                   ),
-                  const SizedBox(width: 4),
                   Text(
                     unit,
                     style: unitTextStyle,
@@ -170,8 +168,10 @@ class ComprehensiveDataView extends StatelessWidget {
     return CardContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 24,
         children: [
           Row(
+            spacing: 8,
             children: [
               SvgPicture.asset(
                 'assets/icons/increase.svg',
@@ -179,14 +179,12 @@ class ComprehensiveDataView extends StatelessWidget {
                 height: 24,
                 colorFilter: const ColorFilter.mode(AppColors.solidBlue, BlendMode.srcIn),
               ),
-              const SizedBox(width: 8),
               const Text(
                 '氣喘症狀檢測總分趨勢圖',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
               ),
             ],
           ),
-          const SizedBox(height: 24),
           _buildChart(),
         ],
       ),
@@ -218,6 +216,7 @@ class ComprehensiveDataView extends StatelessWidget {
     }
 
     return Column(
+      spacing: 8,
       children: [
         SizedBox(
           height: 140,
@@ -252,7 +251,6 @@ class ComprehensiveDataView extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 8),
         SizedBox(
           height: 20,
           child: LayoutBuilder(
@@ -299,6 +297,7 @@ class ComprehensiveDataView extends StatelessWidget {
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 4,
           children: [
             SvgPicture.asset(
               'assets/icons/score-trend.svg',
@@ -306,7 +305,6 @@ class ComprehensiveDataView extends StatelessWidget {
               height: 14,
               colorFilter: const ColorFilter.mode(AppColors.solidBlue, BlendMode.srcIn),
             ),
-            const SizedBox(width: 4),
             const Text('總分', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.solidBlue, height: 1.71, letterSpacing: 0)),
           ],
         ),
@@ -323,8 +321,10 @@ class ComprehensiveDataView extends StatelessWidget {
     return CardContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
           Row(
+            spacing: 8,
             children: [
               SvgPicture.asset(
                 'assets/icons/wave.svg',
@@ -332,18 +332,14 @@ class ComprehensiveDataView extends StatelessWidget {
                 height: 24,
                 colorFilter: const ColorFilter.mode(AppColors.solidBlue, BlendMode.srcIn),
               ),
-              const SizedBox(width: 8),
               const Text(
                 '本月 PEFR 區間分布',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
               ),
             ],
           ),
-          const SizedBox(height: 8),
           _buildPefrStatusRow('綠燈（穩定控制', greenDays, AppColors.honeydew, AppColors.lightPastelMint, const Color(0xFF008235), AppColors.lightPastelMint, const Color(0xFF008236), totalDays),
-          const SizedBox(height: 8),
           _buildPefrStatusRow('黃燈 (警告)', yellowDays, AppColors.butteryWhite2, AppColors.brightCanaryYellow, AppColors.windsorTan, const Color(0xFFFFF085), AppColors.windsorTan, totalDays),
-          const SizedBox(height: 8),
           _buildPefrStatusRow('紅燈 (醫療急症)', redDays, AppColors.babysBottom, AppColors.spicyPastelPink, AppColors.digitalRed, AppColors.spicyPastelPink, AppColors.digitalRed, totalDays),
         ],
       ),
@@ -362,6 +358,7 @@ class ComprehensiveDataView extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -383,7 +380,6 @@ class ComprehensiveDataView extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
             child: Stack(

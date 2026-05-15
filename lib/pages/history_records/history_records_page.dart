@@ -95,13 +95,11 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
       contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
         children: [
           _buildTabButtons(),
-          const SizedBox(height: 12),
-          if (selectedTabIndex != 3) ...[
+          if (selectedTabIndex != 3)
             _buildMonthDropdown(),
-            const SizedBox(height: 12),
-          ],
           _buildTabContent(),
         ],
       ),
@@ -169,6 +167,7 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
         borderRadius: 4,
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         child: Row(
+          spacing: 12,
           children: [
             SvgPicture.asset(
               'assets/icons/calendar.svg',
@@ -176,7 +175,6 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
               height: 24,
               colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
             ),
-            const SizedBox(width: 12),
             Expanded(
               child: CustomDropdown(
                 value: selectedMonth,

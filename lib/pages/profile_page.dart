@@ -40,9 +40,9 @@ class _ProfilePageState extends State<ProfilePage> {
       header: _buildHeader(context),
       contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       content: Column(
+        spacing: 20,
         children: [
           _buildProfileSection(),
-          const SizedBox(height: 20),
           _buildAccountInfoSection(),
         ],
       ),
@@ -227,8 +227,10 @@ class _ProfilePageState extends State<ProfilePage> {
       borderRadius: 10,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
         children: [
           Row(
+            spacing: 8,
             children: [
               SvgPicture.asset(
                 'assets/icons/user.svg',
@@ -236,7 +238,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 height: 24,
                 colorFilter: const ColorFilter.mode(AppColors.solidBlue, BlendMode.srcIn),
               ),
-              const SizedBox(width: 8),
               Text(
                 '帳號資訊',
                 style: TextStyle(
@@ -249,11 +250,8 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
           _buildInfoFields(),
-          const SizedBox(height: 12),
           const Divider(color: AppColors.sweetGrey, thickness: 2, height: 2),
-          const SizedBox(height: 12),
           _buildInfoRowWithBadge('編輯個人資料'),
         ],
       ),
@@ -275,14 +273,10 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       padding: const EdgeInsets.all(12),
       child: Column(
+        spacing: 8,
         children: List.generate(
           fields.length,
-          (index) => Column(
-            children: [
-              _buildInfoField(fields[index].$1, fields[index].$2),
-              if (index < fields.length - 1) const SizedBox(height: 8),
-            ],
-          ),
+          (index) => _buildInfoField(fields[index].$1, fields[index].$2),
         ),
       ),
     );

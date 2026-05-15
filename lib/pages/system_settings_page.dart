@@ -52,13 +52,13 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
         padding: const EdgeInsets.all(12),
         borderRadius: 0,
         child: Column(
+          spacing: 8,
           children: List.generate(
             settingItems.length,
             (index) => Column(
               children: [
                 _buildSettingItem(settingItems[index], () => _handleSettingTap(index)),
                 if (index < settingItems.length - 1) const Divider(color: AppColors.sweetGrey, height: 2),
-                if (index < settingItems.length - 1) const SizedBox(height: 8),
               ],
             ),
           ),
@@ -117,11 +117,10 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 24,
         children: [
           _buildNavButton('個人首頁', Icons.home, AppColors.funGreen, false),
-          const SizedBox(width: 24),
           _buildNavButton('系統設定', Icons.settings, AppColors.funGreen, true),
-          const SizedBox(width: 24),
           _buildNavButton('緊急聯絡', Icons.warning, Colors.red, false),
         ],
       ),
@@ -145,13 +144,13 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
           color: isActive ? color : Colors.transparent,
         ),
         child: Row(
+          spacing: 4,
           children: [
             Icon(
               icon,
               color: isActive ? Colors.white : color,
               size: 24,
             ),
-            const SizedBox(width: 4),
             Text(
               title,
               style: TextStyle(

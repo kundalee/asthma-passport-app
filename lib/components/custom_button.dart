@@ -84,7 +84,8 @@ class CustomButton extends StatelessWidget {
       return Row(
         mainAxisAlignment: iconAlignment,
         mainAxisSize: iconAlignment == MainAxisAlignment.center ? MainAxisSize.min : MainAxisSize.max,
-        children: [icon!, const SizedBox(width: 8), Text(text, style: _textStyle)],
+        spacing: 8,
+        children: [icon!, Text(text, style: _textStyle)],
       );
     }
     return Text(text, style: _textStyle);

@@ -122,19 +122,10 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
   Widget build(BuildContext context) {
     return CardContainer(
       child: Column(
+        spacing: 12,
         children: [
           _buildHeader(),
-          const SizedBox(height: 12),
-          ...List.generate(
-            contacts.length,
-            (index) => Column(
-              children: [
-                _buildContactItem(index),
-                if (index < contacts.length - 1) const SizedBox(height: 8),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
+          ...List.generate(contacts.length, (index) => _buildContactItem(index)),
           CustomButton(
             text: '+ 新增緊急聯絡人',
             onPressed: _addContact,
@@ -148,22 +139,18 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
   }
 
   Widget _buildHeader() {
-    return Column(
+    return Row(
+      spacing: 8,
       children: [
-        Row(
-          children: [
-            SvgPicture.asset(
-              'assets/icons/parent.svg',
-              width: 24,
-              height: 24,
-              colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
-            ),
-            const SizedBox(width: 8),
-            const Text(
-              '緊急醫療救護專線',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
-            ),
-          ],
+        SvgPicture.asset(
+          'assets/icons/parent.svg',
+          width: 24,
+          height: 24,
+          colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+        ),
+        const Text(
+          '緊急醫療救護專線',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
         ),
       ],
     );
@@ -176,6 +163,7 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
       backgroundColor: const Color(0xFFF9FAFB),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
           if (isEditing) ...[
             CustomTextField(
@@ -185,7 +173,6 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
               borderRadius: 4,
               dynamicBorderColor: false,
             ),
-            const SizedBox(height: 8),
             CustomTextField(
               hintText: '請輸入聯絡事項',
               controller: _phoneControllers[index],
@@ -198,14 +185,13 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
               contacts[index]['name'] ?? '',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5),
             ),
-            const SizedBox(height: 4),
             Text(
               contacts[index]['phone'] ?? '',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: AppColors.funGreen, height: 1.6),
             ),
           ],
-          const SizedBox(height: 8),
           Row(
+            spacing: 8,
             children: [
               Expanded(
                 child: CustomButton(
@@ -216,7 +202,6 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
                   height: 37,
                 ),
               ),
-              const SizedBox(width: 8),
               Expanded(
                 child: CustomButton(
                   text: isEditing ? '儲存編輯' : '編輯資料',
