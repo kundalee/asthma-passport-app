@@ -57,7 +57,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
             (index) => Column(
               children: [
                 _buildSettingItem(settingItems[index], () => _handleSettingTap(index)),
-                if (index < settingItems.length - 1) const Divider(color: AppColors.photoBackground, height: 2),
+                if (index < settingItems.length - 1) const Divider(color: AppColors.sweetGrey, height: 2),
                 if (index < settingItems.length - 1) const SizedBox(height: 8),
               ],
             ),
@@ -91,7 +91,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
               'assets/icons/arrow-right.svg',
               width: 24,
               height: 24,
-              colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
             ),
           ],
         ),
@@ -105,7 +105,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.inputBorder, width: 1),
+        border: Border.all(color: AppColors.whiteMarble, width: 1),
         boxShadow: [
           BoxShadow(
             offset: const Offset(0, 4),
@@ -118,9 +118,9 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildNavButton('個人首頁', Icons.home, AppColors.primaryGreen, false),
+          _buildNavButton('個人首頁', Icons.home, AppColors.funGreen, false),
           const SizedBox(width: 24),
-          _buildNavButton('系統設定', Icons.settings, AppColors.primaryGreen, true),
+          _buildNavButton('系統設定', Icons.settings, AppColors.funGreen, true),
           const SizedBox(width: 24),
           _buildNavButton('緊急聯絡', Icons.warning, Colors.red, false),
         ],

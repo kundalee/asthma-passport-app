@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryGreen,
+                  color: AppColors.funGreen,
                   borderRadius: BorderRadius.circular(isLoggedIn ? 8 : 24),
                 ),
                 child: Row(
@@ -190,7 +190,7 @@ class _HomePageState extends State<HomePage> {
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.primaryGreen,
+                            color: AppColors.funGreen,
                             height: 1.5,
                           ),
                         ),
@@ -217,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                     child: _buildWeatherItem('濕度', '$humidity', '%'),
                   ),
                   Expanded(
-                    child: _buildWeatherItem('PM2.5', pm25.toStringAsFixed(1), 'μg/m3', unitStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 10, color: AppColors.primaryGreen, height: 2.25)),
+                    child: _buildWeatherItem('PM2.5', pm25.toStringAsFixed(1), 'μg/m3', unitStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 10, color: AppColors.funGreen, height: 2.25)),
                   ),
                 ],
               ),
@@ -248,7 +248,7 @@ class _HomePageState extends State<HomePage> {
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primaryGreen,
+                    color: AppColors.funGreen,
                     height: 1.5,
                   ),
                 ),
@@ -276,7 +276,7 @@ class _HomePageState extends State<HomePage> {
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.primaryGreen,
+                  color: AppColors.funGreen,
                   height: 1.5,
                 ),
               ),
@@ -285,7 +285,7 @@ class _HomePageState extends State<HomePage> {
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.primaryGreen,
+                  color: AppColors.funGreen,
                   height: 1.5,
                 ),
               ),
@@ -307,7 +307,7 @@ class _HomePageState extends State<HomePage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.inputBorder, width: 1),
+        border: Border.all(color: AppColors.whiteMarble, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,7 +318,7 @@ class _HomePageState extends State<HomePage> {
                 'assets/icons/diary.svg',
                 width: 24,
                 height: 24,
-                colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
               ),
               const SizedBox(width: 8),
               const Text(
@@ -353,8 +353,8 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
-          color: AppColors.cardBackground,
-          border: Border.all(color: AppColors.inputBorder, width: 1),
+          color: AppColors.luxuryWhite,
+          border: Border.all(color: AppColors.whiteMarble, width: 1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
@@ -365,8 +365,8 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: isDone ? AppColors.primaryGreen : Colors.transparent,
-                    border: Border.all(color: AppColors.primaryGreen, width: 2),
+                    color: isDone ? AppColors.funGreen : Colors.transparent,
+                    border: Border.all(color: AppColors.funGreen, width: 2),
                     borderRadius: BorderRadius.circular(40),
                   ),
                   child: SvgPicture.asset(
@@ -387,7 +387,7 @@ class _HomePageState extends State<HomePage> {
                 'assets/icons/arrow-right.svg',
                 width: 24,
                 height: 24,
-                colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
               ),
           ],
         ),
@@ -407,7 +407,7 @@ class _HomePageState extends State<HomePage> {
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [AppColors.healthPassportGradientStart, AppColors.healthPassportGradientEnd],
+                  colors: [AppColors.philippineGreen, AppColors.jade],
                 ),
                 onTap: () => Navigator.of(context).pushNamed('/health-passport'),
                 height: 80,
@@ -422,7 +422,7 @@ class _HomePageState extends State<HomePage> {
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [AppColors.healthPassportGradientStart, AppColors.healthPassportGradientEnd],
+                  colors: [AppColors.philippineGreen, AppColors.jade],
                 ),
                 onTap: () => Navigator.of(context).pushNamed('/asthma-knowledge'),
                 height: 80,
@@ -441,7 +441,7 @@ class _HomePageState extends State<HomePage> {
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [AppColors.historyGradientStart, AppColors.historyGradientEnd],
+                  colors: [AppColors.royalAquamarine, AppColors.mermaid],
                 ),
                 onTap: () => Navigator.of(context).pushNamed('/history-records'),
                 padding: const EdgeInsets.all(8),
@@ -456,7 +456,7 @@ class _HomePageState extends State<HomePage> {
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [AppColors.asthmaExpertGradientStart, AppColors.asthmaExpertGradientEnd],
+                  colors: [AppColors.rawSienna, AppColors.metallicOrange],
                 ),
                 onTap: () => Navigator.of(context).pushNamed('/asthma-master'),
                 padding: const EdgeInsets.all(8),
@@ -471,7 +471,7 @@ class _HomePageState extends State<HomePage> {
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [AppColors.smartAssistantGradientStart, AppColors.smartAssistantGradientEnd],
+                  colors: [AppColors.dodgerBlue, AppColors.adonis],
                 ),
                 onTap: () => _showDevelopmentDialog(),
                 padding: const EdgeInsets.all(8),
@@ -582,7 +582,7 @@ class _HomePageState extends State<HomePage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.inputBorder, width: 1),
+        border: Border.all(color: AppColors.whiteMarble, width: 1),
         boxShadow: [
           BoxShadow(
             offset: const Offset(0, 4),
@@ -595,9 +595,9 @@ class _HomePageState extends State<HomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildNavButton('個人首頁', 'assets/icons/home.svg', AppColors.primaryGreen, true),
+          _buildNavButton('個人首頁', 'assets/icons/home.svg', AppColors.funGreen, true),
           const SizedBox(width: 24),
-          _buildNavButton('系統設定', 'assets/icons/setting.svg', AppColors.primaryGreen, false),
+          _buildNavButton('系統設定', 'assets/icons/setting.svg', AppColors.funGreen, false),
           const SizedBox(width: 24),
           _buildNavButton('緊急聯絡', 'assets/icons/emergency.svg', Colors.red, false),
         ],
@@ -684,7 +684,7 @@ class _HomePageState extends State<HomePage> {
                 child: CustomButton(
                   text: '確認',
                   onPressed: () => Navigator.pop(context),
-                  backgroundColor: AppColors.primaryGreen,
+                  backgroundColor: AppColors.funGreen,
                   foregroundColor: Colors.white,
                   height: 37,
                   borderRadius: 4,

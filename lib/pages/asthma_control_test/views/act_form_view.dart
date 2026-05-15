@@ -81,7 +81,7 @@ class _ActFormViewState extends State<ActFormView> {
               Navigator.of(context).pushReplacementNamed('/');
             },
             foregroundColor: Colors.white,
-            backgroundColor: AppColors.primaryGreen,
+            backgroundColor: AppColors.funGreen,
             height: 37,
             borderRadius: 4,
           ),
@@ -99,7 +99,7 @@ class _ActFormViewState extends State<ActFormView> {
             'assets/icons/document.svg',
             width: 24,
             height: 24,
-            colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+            colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
           ),
           const SizedBox(width: 8),
           const Text(
@@ -121,7 +121,7 @@ class _ActFormViewState extends State<ActFormView> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: AppColors.luxuryWhite,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -135,7 +135,7 @@ class _ActFormViewState extends State<ActFormView> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.menuSubtitle,
+                  color: AppColors.hydrocarbon,
                   height: 1.5,
                   letterSpacing: 0,
                 ),
@@ -145,7 +145,7 @@ class _ActFormViewState extends State<ActFormView> {
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.primaryGreen,
+                  color: AppColors.funGreen,
                   height: 1.0,
                   letterSpacing: 0,
                 ),
@@ -212,20 +212,20 @@ class _ActFormViewState extends State<ActFormView> {
     if (widget.isAdultTest) {
       switch (level) {
         case 1:
-          return AppColors.resultGoodBg;
+          return AppColors.honeydew;
         case 2:
-          return AppColors.resultModerateBg;
+          return AppColors.butteryWhite2;
         case 3:
-          return AppColors.resultSevereBg;
+          return AppColors.babysBottom;
         default:
           return Colors.grey.shade100;
       }
     } else {
       switch (level) {
         case 1:
-          return AppColors.resultGoodBg;
+          return AppColors.honeydew;
         case 2:
-          return AppColors.resultModerateBg;
+          return AppColors.butteryWhite2;
         default:
           return Colors.grey.shade100;
       }
@@ -236,20 +236,20 @@ class _ActFormViewState extends State<ActFormView> {
     if (widget.isAdultTest) {
       switch (level) {
         case 1:
-          return AppColors.statusGoodBorder;
+          return AppColors.lightPastelMint;
         case 2:
-          return AppColors.statusModerateBorder;
+          return AppColors.brightCanaryYellow;
         case 3:
-          return AppColors.statusSevereBorder;
+          return AppColors.spicyPastelPink;
         default:
           return Colors.grey;
       }
     } else {
       switch (level) {
         case 1:
-          return AppColors.statusGoodBorder;
+          return AppColors.lightPastelMint;
         case 2:
-          return AppColors.statusModerateBorder;
+          return AppColors.brightCanaryYellow;
         default:
           return Colors.grey;
       }
@@ -260,20 +260,20 @@ class _ActFormViewState extends State<ActFormView> {
     if (widget.isAdultTest) {
       switch (level) {
         case 1:
-          return AppColors.statusGoodText;
+          return AppColors.funGreen;
         case 2:
-          return AppColors.statusModerateText;
+          return AppColors.windsorTan;
         case 3:
-          return AppColors.statusSevereText;
+          return AppColors.digitalRed;
         default:
           return Colors.black;
       }
     } else {
       switch (level) {
         case 1:
-          return AppColors.statusGoodText;
+          return AppColors.funGreen;
         case 2:
-          return AppColors.statusModerateText;
+          return AppColors.windsorTan;
         default:
           return Colors.black;
       }

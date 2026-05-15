@@ -71,7 +71,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
         borderRadius: BorderRadius.circular(14),
         color: Colors.white,
         border: Border.all(
-          color: AppColors.inputBorder,
+          color: AppColors.whiteMarble,
           width: 1,
         ),
       ),
@@ -85,7 +85,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
                 icon,
                 width: 24,
                 height: 24,
-                colorFilter: const ColorFilter.mode(AppColors.measurementIconColor, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(AppColors.mustardGold, BlendMode.srcIn),
               ),
               const SizedBox(width: 8),
               Text(
@@ -111,7 +111,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
             child: CustomButton(
               text: isComplete ? '查看測驗結果' : '開始紀錄',
               onPressed: onViewResults ?? () {},
-              backgroundColor: isComplete ? AppColors.completedButtonBg : AppColors.primaryGreen,
+              backgroundColor: isComplete ? AppColors.sportyBlue : AppColors.funGreen,
               padding: const EdgeInsets.all(12),
               borderRadius: 4,
               height: 37,
@@ -144,7 +144,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
           'assets/icons/document.svg',
           width: 24,
           height: 24,
-          colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+          colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
         ),
         const SizedBox(width: 8),
         Expanded(
@@ -199,7 +199,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: AppColors.luxuryWhite,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -220,7 +220,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
-              color: AppColors.primaryGreen,
+              color: AppColors.funGreen,
               height: 1.5,
               letterSpacing: 0,
             ),
@@ -263,7 +263,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: isComplete ? AppColors.resultGoodBg : AppColors.resultSevereBg,
+        color: isComplete ? AppColors.honeydew : AppColors.babysBottom,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

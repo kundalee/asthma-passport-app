@@ -7,14 +7,16 @@ class CardContainer extends StatelessWidget {
   final Color backgroundColor;
   final Color borderColor;
   final double borderRadius;
+  final bool showBorder;
 
   const CardContainer({
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(12),
     this.backgroundColor = Colors.white,
-    this.borderColor = AppColors.inputBorder,
+    this.borderColor = AppColors.whiteMarble,
     this.borderRadius = 14,
+    this.showBorder = true,
   });
 
   @override
@@ -23,7 +25,7 @@ class CardContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(borderRadius),
-        border: Border.all(color: borderColor, width: 1),
+        border: showBorder ? Border.all(color: borderColor, width: 1) : null,
       ),
       padding: padding,
       child: child,

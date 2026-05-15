@@ -29,7 +29,7 @@ class AsthmaDiaryView extends StatefulWidget {
           CustomButton(
             text: '檢視前一個月資料',
             onPressed: () {},
-            backgroundColor: AppColors.primaryGreen,
+            backgroundColor: AppColors.funGreen,
             foregroundColor: Colors.white,
             borderRadius: 4,
             height: 37,

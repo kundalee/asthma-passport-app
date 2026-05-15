@@ -134,7 +134,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
                                         ),
                                   const SizedBox(height: 16),
                                   if (index < questions.length - 1)
-                                    Divider(color: AppColors.photoBackground, height: 2),
+                                    Divider(color: AppColors.sweetGrey, height: 2),
                                 ],
                               );
                             },
@@ -145,7 +145,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
                               child: CustomButton(
                                 text: '儲存記錄',
                                 onPressed: _saveAssessment,
-                                backgroundColor: AppColors.primaryGreen,
+                                backgroundColor: AppColors.funGreen,
                                 padding: const EdgeInsets.all(12),
                                 borderRadius: 4,
                                 height: 37,
@@ -170,7 +170,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
           'assets/icons/document.svg',
           width: 24,
           height: 24,
-          colorFilter: const ColorFilter.mode(AppColors.menuIconColor, BlendMode.srcIn),
+          colorFilter: const ColorFilter.mode(AppColors.solidBlue, BlendMode.srcIn),
         ),
         const SizedBox(width: 8),
         const Text(
@@ -197,7 +197,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
             'assets/icons/calendar.svg',
             width: 24,
             height: 24,
-            colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+            colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
           ),
           const SizedBox(width: 12),
           Text(
@@ -205,7 +205,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
-              color: AppColors.reportTitle,
+              color: AppColors.mirage,
               height: 1.5,
               letterSpacing: 0,
             ),
@@ -243,9 +243,9 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
               height: 24,
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: AppColors.scoreBadgeBackground,
+                color: AppColors.zumthor,
                 borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: AppColors.scoreBadgeBorder, width: 1),
+                border: Border.all(color: AppColors.crystalBlue, width: 1),
               ),
               child: Center(
                 child: Text(
@@ -276,10 +276,10 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
                     height: 37,
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
-                      color: selectedValue == option['id'] ? AppColors.resultGoodBg : Colors.white,
+                      color: selectedValue == option['id'] ? AppColors.honeydew : Colors.white,
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(
-                        color: selectedValue == option['id'] ? AppColors.primaryGreen : AppColors.inputBorder,
+                        color: selectedValue == option['id'] ? AppColors.funGreen : AppColors.whiteMarble,
                         width: 1,
                       ),
                     ),
@@ -342,9 +342,9 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
               height: 24,
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: AppColors.scoreBadgeBackground,
+                color: AppColors.zumthor,
                 borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: AppColors.scoreBadgeBorder, width: 1),
+                border: Border.all(color: AppColors.crystalBlue, width: 1),
               ),
               child: Center(
                 child: Text(
@@ -394,7 +394,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.menuSubtitle,
+                            color: AppColors.hydrocarbon,
                             height: 1.0,
                             letterSpacing: 0,
                           ),
@@ -405,7 +405,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.menuSubtitle,
+                            color: AppColors.hydrocarbon,
                             height: 1.0,
                             letterSpacing: 0,
                           ),
@@ -425,19 +425,19 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
 
   Color _getScaleBarColor(int index) {
     final colors = [
-      AppColors.scaleBarGreen,
-      AppColors.scaleBarLightGreen,
-      AppColors.scaleBarYellow,
-      AppColors.scaleBarOrange,
-      AppColors.scaleBarRed,
+      AppColors.funGreen,
+      AppColors.conifer,
+      AppColors.mustardGold,
+      AppColors.comfortingLightRed,
+      AppColors.digitalRed,
     ];
     return colors[index];
   }
 
   Widget _buildResultsSummary() {
     final isGood = controlLevel == 1;
-    final statusColor = isGood ? AppColors.resultGoodIcon : Colors.red;
-    final statusBgColor = isGood ? AppColors.resultGoodBg : AppColors.resultSevereBg;
+    final statusColor = isGood ? AppColors.funGreen : Colors.red;
+    final statusBgColor = isGood ? AppColors.honeydew : AppColors.babysBottom;
     final statusIcon = isGood ? 'assets/icons/check.svg' : 'assets/icons/undone.svg';
     final statusMessage = controlStatus ?? '';
 
@@ -445,7 +445,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
       children: [
         CardContainer(
           padding: const EdgeInsets.all(16),
-          backgroundColor: AppColors.cardBackground,
+          backgroundColor: AppColors.luxuryWhite,
           borderRadius: 10,
           child: Column(
             children: [
@@ -457,7 +457,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.menuSubtitle,
+                      color: AppColors.hydrocarbon,
                       height: 1.5,
                       letterSpacing: 0,
                     ),
@@ -482,7 +482,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
                   color: statusBgColor,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: isGood ? AppColors.statusGoodBorder : AppColors.statusBadBorder,
+                    color: isGood ? AppColors.lightPastelMint : AppColors.eva,
                     width: 2,
                   ),
                 ),
@@ -519,7 +519,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
           child: CustomButton(
             text: '返回首頁',
             onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
-            backgroundColor: AppColors.primaryGreen,
+            backgroundColor: AppColors.funGreen,
             padding: const EdgeInsets.all(12),
             borderRadius: 4,
             height: 37,
@@ -533,7 +533,7 @@ class _AssessmentFormViewState extends State<AssessmentFormView> {
             onPressed: () => setState(() => isSubmitted = false),
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
-            border: const BorderSide(color: AppColors.inputBorder, width: 1),
+            border: const BorderSide(color: AppColors.whiteMarble, width: 1),
             padding: const EdgeInsets.all(12),
             borderRadius: 4,
             height: 37,

@@ -95,7 +95,7 @@ class _MasterFormViewState extends State<MasterFormView> {
   }
 
   Widget _buildResultIcon() {
-    final iconColor = resultLevel == 1 ? const Color(0xFFF0B100) : const Color(0xFFFF0000);
+    final iconColor = resultLevel == 1 ? AppColors.mustardGold : AppColors.digitalRed;
     final iconPath = resultLevel == 1 ? 'assets/icons/crown.svg' : 'assets/icons/alert-info.svg';
 
     return Container(
@@ -172,7 +172,7 @@ class _MasterFormViewState extends State<MasterFormView> {
             style: const TextStyle(
               fontSize: 40,
               fontWeight: FontWeight.w500,
-              color: AppColors.primaryGreen,
+              color: AppColors.funGreen,
               height: 1.0,
               letterSpacing: 0,
             ),
@@ -192,7 +192,7 @@ class _MasterFormViewState extends State<MasterFormView> {
           Navigator.of(context).pushReplacementNamed('/');
         },
         foregroundColor: Colors.white,
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.funGreen,
         height: 37,
         borderRadius: 4,
       ),
@@ -214,7 +214,7 @@ class _MasterFormViewState extends State<MasterFormView> {
         },
         foregroundColor: Colors.black,
         backgroundColor: Colors.white,
-        border: BorderSide(color: AppColors.inputBorder, width: 1),
+        border: BorderSide(color: AppColors.whiteMarble, width: 1),
         height: 37,
         borderRadius: 4,
       ),
@@ -227,7 +227,7 @@ class _MasterFormViewState extends State<MasterFormView> {
       style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w400,
-        color: AppColors.menuSubtitle,
+        color: AppColors.hydrocarbon,
         height: 1.71,
         letterSpacing: 0,
       ),

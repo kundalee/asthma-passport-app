@@ -92,7 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
               height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.inputBorder, width: 2),
+                border: Border.all(color: AppColors.whiteMarble, width: 2),
               ),
               child: CircleAvatar(
                 backgroundColor: Colors.grey[300],
@@ -154,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w400,
-                  color: AppColors.actionSheetItem,
+                  color: AppColors.azure,
                   height: 1.2,
                   letterSpacing: 0.38,
                 ),
@@ -173,7 +173,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w400,
-                  color: AppColors.actionSheetItem,
+                  color: AppColors.azure,
                   height: 1.2,
                   letterSpacing: 0.38,
                 ),
@@ -204,7 +204,7 @@ class _ProfilePageState extends State<ProfilePage> {
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
-                color: AppColors.actionSheetItem,
+                color: AppColors.azure,
                 height: 1.2,
                 letterSpacing: 0.38,
               ),
@@ -234,7 +234,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 'assets/icons/user.svg',
                 width: 24,
                 height: 24,
-                colorFilter: const ColorFilter.mode(AppColors.menuIconColor, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(AppColors.solidBlue, BlendMode.srcIn),
               ),
               const SizedBox(width: 8),
               Text(
@@ -252,7 +252,7 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(height: 12),
           _buildInfoFields(),
           const SizedBox(height: 12),
-          const Divider(color: AppColors.photoBackground, thickness: 2, height: 2),
+          const Divider(color: AppColors.sweetGrey, thickness: 2, height: 2),
           const SizedBox(height: 12),
           _buildInfoRowWithBadge('編輯個人資料'),
         ],
@@ -345,7 +345,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   'assets/icons/arrow-right.svg',
                   width: 24,
                   height: 24,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
                 ),
               ],
             ),
@@ -364,7 +364,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
         }
       },
-      backgroundColor: AppColors.error,
+      backgroundColor: AppColors.strongRed,
       foregroundColor: Colors.white,
       borderRadius: 4,
       height: 37,

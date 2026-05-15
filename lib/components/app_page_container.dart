@@ -27,7 +27,7 @@ class AppPageContainer extends StatelessWidget {
             header,
             Expanded(
               child: Container(
-                color: AppColors.lightMintBackground,
+                color: AppColors.harp,
                 child: SingleChildScrollView(
                   child: Padding(
                     padding: contentPadding,

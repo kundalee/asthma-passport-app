@@ -65,15 +65,15 @@ class _NewPlanViewState extends State<NewPlanView> {
   };
 
   final Map<String, Color> resultColors = {
-    'good': AppColors.resultGoodBg,
-    'warning': AppColors.resultModerateBg,
-    'bad': AppColors.resultSevereBg,
+    'good': AppColors.honeydew,
+    'warning': AppColors.butteryWhite2,
+    'bad': AppColors.babysBottom,
   };
 
   final Map<String, Color> resultIconColors = {
-    'good': AppColors.resultGoodIcon,
-    'warning': AppColors.resultModerateIcon,
-    'bad': AppColors.resultSevereIcon,
+    'good': AppColors.funGreen,
+    'warning': AppColors.windsorTan,
+    'bad': AppColors.poppy,
   };
 
   @override
@@ -92,6 +92,170 @@ class _NewPlanViewState extends State<NewPlanView> {
     setState(() {
       isLevelExpanded = !isLevelExpanded;
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final name = (widget.data['name'] ?? '').toString();
+
+    return SingleChildScrollView(
+        child: CardContainer(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  SvgPicture.asset(
+                    'assets/icons/document.svg',
+                    width: 24,
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    '填寫新的行動計畫',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.mirage),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '病患姓名',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.mirage),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: AppColors.sweetGrey,
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: AppColors.whiteMarble, width: 1),
+                    ),
+                    child: Text(
+                      name,
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '填寫日期',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.mirage),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: dateController,
+                    decoration: InputDecoration(
+                      hintText: 'YYYY/MM/DD',
+                      hintStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.hydrocarbon),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: CustomButton(
+                  text: '查看常月份歷史紀錄',
+                  onPressed: () {},
+                  borderRadius: 8,
+                  iconAlignment: MainAxisAlignment.start,
+                  gradient: const LinearGradient(
+                    colors: [AppColors.royalAquamarine, AppColors.mermaid],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                  icon: SvgPicture.asset(
+                    'assets/icons/calendar.svg',
+                    width: 24,
+                    height: 24,
+                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '處理等級',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.mirage),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.whiteMarble),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: _toggleLevelDropdown,
+                          behavior: HitTestBehavior.opaque,
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  selectedLevel != null ? levelDescriptions[selectedLevel] ?? '請選擇' : '請選擇',
+                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
+                                ),
+                                Transform.rotate(
+                                  angle: isLevelExpanded ? 3.14159 : 0,
+                                  child: SvgPicture.asset(
+                                    'assets/icons/arrow-down.svg',
+                                    width: 16,
+                                    height: 16,
+                                    colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if (isLevelExpanded) ...[
+                          Divider(height: 2, color: AppColors.sweetGrey, indent: 12, endIndent: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: _buildLevelOptions(),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              _buildResultSection(),
+            ],
+          ),
+        ),
+    );
   }
 
   Widget _buildResultSection() {
@@ -148,12 +312,12 @@ class _NewPlanViewState extends State<NewPlanView> {
                   children: [
                     const Text(
                       '• ',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon),
                     ),
                     Expanded(
                       child: Text(
                         point,
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle, height: 1.71),
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71),
                       ),
                     ),
                   ],
@@ -200,185 +364,21 @@ class _NewPlanViewState extends State<NewPlanView> {
                         style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71),
                       ),
                       if (isSelected)
-                        const Icon(Icons.check, color: AppColors.primaryGreen, size: 20),
+                        const Icon(Icons.check, color: AppColors.funGreen, size: 20),
                     ],
                   ),
                   Text(
                     detail,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle, height: 1.71),
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71),
                   ),
                 ],
               ),
             ),
           ),
-          if (!isLast) const Divider(height: 2, color: AppColors.photoBackground, indent: 12, endIndent: 12),
+          if (!isLast) const Divider(height: 2, color: AppColors.sweetGrey, indent: 12, endIndent: 12),
         ],
       );
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final name = (widget.data['name'] ?? '').toString();
-
-    return SingleChildScrollView(
-        child: CardContainer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    'assets/icons/document.svg',
-                    width: 24,
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
-                  ),
-                  const SizedBox(width: 8),
-                  const Text(
-                    '填寫新的行動計畫',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.reportTitle),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '病患姓名',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.reportTitle),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: AppColors.photoBackground,
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: AppColors.inputBorder, width: 1),
-                    ),
-                    child: Text(
-                      name,
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '填寫日期',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.reportTitle),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: dateController,
-                    decoration: InputDecoration(
-                      hintText: 'YYYY/MM/DD',
-                      hintStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.menuSubtitle),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        borderSide: const BorderSide(color: AppColors.inputBorder, width: 1),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        borderSide: const BorderSide(color: AppColors.inputBorder, width: 1),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        borderSide: const BorderSide(color: AppColors.inputBorder, width: 1),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: CustomButton(
-                  text: '查看常月份歷史紀錄',
-                  onPressed: () {},
-                  borderRadius: 8,
-                  iconAlignment: MainAxisAlignment.start,
-                  gradient: const LinearGradient(
-                    colors: [AppColors.historyGradientStart, AppColors.historyGradientEnd],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                  icon: SvgPicture.asset(
-                    'assets/icons/calendar.svg',
-                    width: 24,
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '處理等級',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.reportTitle),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.inputBorder),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          onTap: _toggleLevelDropdown,
-                          behavior: HitTestBehavior.opaque,
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  selectedLevel != null ? levelDescriptions[selectedLevel] ?? '請選擇' : '請選擇',
-                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),
-                                ),
-                                Transform.rotate(
-                                  angle: isLevelExpanded ? 3.14159 : 0,
-                                  child: SvgPicture.asset(
-                                    'assets/icons/arrow-down.svg',
-                                    width: 16,
-                                    height: 16,
-                                    colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        if (isLevelExpanded) ...[
-                          Divider(height: 2, color: AppColors.photoBackground, indent: 12, endIndent: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: _buildLevelOptions(),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              _buildResultSection(),
-            ],
-          ),
-        ),
-    );
   }
 }
 

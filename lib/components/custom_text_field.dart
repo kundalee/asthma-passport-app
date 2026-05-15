@@ -24,8 +24,8 @@ class CustomTextField extends StatefulWidget {
     this.isPassword = false,
     this.obscureText = false,
     this.onToggleVisibility,
-    this.backgroundColor = AppColors.inputBackground,
-    this.borderColor = AppColors.inputBorder,
+    this.backgroundColor = AppColors.powder,
+    this.borderColor = AppColors.whiteMarble,
     this.borderRadius = 10,
     this.dynamicBorderColor = true,
   });
@@ -73,8 +73,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
     final currentBorderColor = hasError
-        ? AppColors.error
-        : (widget.dynamicBorderColor && _hasText ? AppColors.primaryGreen : widget.borderColor);
+        ? AppColors.strongRed
+        : (widget.dynamicBorderColor && _hasText ? AppColors.funGreen : widget.borderColor);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,25 +85,25 @@ class _CustomTextFieldState extends State<CustomTextField> {
             controller: widget.controller,
             obscureText: widget.obscureText,
             textAlignVertical: TextAlignVertical.center,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.625, letterSpacing: 0),
             decoration: InputDecoration(
               hintText: widget.hintText,
-              hintStyle: const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
+              hintStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.625, letterSpacing: 0),
               prefixIcon: widget.prefixIcon != null
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                      child: widget.prefixIcon,
-                    )
-                  : null,
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                    child: widget.prefixIcon,
+                  )
+                : null,
               suffixIcon: widget.isPassword
-                  ? GestureDetector(
-                      onTap: widget.onToggleVisibility,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                        child: widget.obscureText ? _hideIcon : _showIcon,
-                      ),
-                    )
-                  : null,
+                ? GestureDetector(
+                    onTap: widget.onToggleVisibility,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                      child: widget.obscureText ? _hideIcon : _showIcon,
+                    ),
+                  )
+                : null,
               filled: true,
               fillColor: widget.backgroundColor,
               border: OutlineInputBorder(
@@ -124,7 +124,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         if (hasError)
           Text(
             widget.errorText!,
-            style: const TextStyle(fontWeight: FontWeight.w500, color: AppColors.error, fontSize: 14, height: 1.71),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.strongRed, height: 1.71, letterSpacing: 0),
           ),
       ],
     );

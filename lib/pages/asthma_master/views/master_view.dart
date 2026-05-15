@@ -47,7 +47,7 @@ class MasterView extends StatelessWidget {
             child: CustomButton(
               text: '開始測驗',
               onPressed: () => onSwitchView(1),
-              backgroundColor: AppColors.primaryGreen,
+              backgroundColor: AppColors.funGreen,
               foregroundColor: Colors.white,
               borderRadius: 4,
               height: 48,
@@ -63,7 +63,7 @@ class MasterView extends StatelessWidget {
       width: 64,
       height: 64,
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.primaryGreen, width: 4),
+        border: Border.all(color: AppColors.funGreen, width: 4),
         borderRadius: BorderRadius.circular(40),
       ),
       child: Center(
@@ -71,7 +71,7 @@ class MasterView extends StatelessWidget {
           'assets/icons/book.svg',
           width: 40,
           height: 40,
-          colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+          colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
         ),
       ),
     );

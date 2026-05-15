@@ -83,7 +83,7 @@ class _EmergencyContactPageState extends State<EmergencyContactPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.inputBorder, width: 1),
+        border: Border.all(color: AppColors.whiteMarble, width: 1),
         boxShadow: [
           BoxShadow(
             offset: const Offset(0, 4),
@@ -96,9 +96,9 @@ class _EmergencyContactPageState extends State<EmergencyContactPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _buildNavButton('個人首頁', Icons.home, AppColors.primaryGreen, false),
+          _buildNavButton('個人首頁', Icons.home, AppColors.funGreen, false),
           const SizedBox(width: 24),
-          _buildNavButton('系統設定', Icons.settings, AppColors.primaryGreen, false),
+          _buildNavButton('系統設定', Icons.settings, AppColors.funGreen, false),
           const SizedBox(width: 24),
           _buildNavButton('緊急聯絡', Icons.warning, Colors.red, true),
         ],

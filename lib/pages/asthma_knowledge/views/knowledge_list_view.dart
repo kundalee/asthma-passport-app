@@ -36,7 +36,7 @@ class KnowledgeListView extends StatelessWidget {
               children: [
                 _buildKnowledgeItem(knowledgeItems[index]),
                 if (index < knowledgeItems.length - 1)
-                  const Divider(color: AppColors.photoBackground, height: 2),
+                  const Divider(color: AppColors.sweetGrey, height: 2),
                 if (index < knowledgeItems.length - 1) const SizedBox(height: 8),
               ],
             ),
@@ -70,7 +70,7 @@ class KnowledgeListView extends StatelessWidget {
               'assets/icons/arrow-right.svg',
               width: 24,
               height: 24,
-              colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
             ),
           ],
         ),

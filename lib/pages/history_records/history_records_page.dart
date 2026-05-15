@@ -174,7 +174,7 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
               'assets/icons/calendar.svg',
               width: 24,
               height: 24,
-              colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -223,7 +223,7 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.inputBorder, width: 1),
+        border: Border.all(color: AppColors.whiteMarble, width: 1),
       ),
       child: Text(
         '${tabs[selectedTabIndex]}功能即將推出',

@@ -120,6 +120,7 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: 16,
       children: [
         // Email Field
         CustomTextField(
@@ -133,9 +134,62 @@ class _LoginFormState extends State<LoginForm> {
           ),
           errorText: emailError,
         ),
-        const SizedBox(height: 16),
+        _buildPasswordSection(),
+        // Login Button
+        CustomButton(
+          text: '登入',
+          onPressed: _handleLogin,
+          backgroundColor: AppColors.funGreen,
+          isLoading: isLoading,
+        ),
+        // Divider
+        Row(
+          children: [
+            Expanded(child: Divider(color: Colors.black)),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                '或使用以下方式',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black, height: 1.67, letterSpacing: 0),
+              ),
+            ),
+            Expanded(child: Divider(color: Colors.black)),
+          ],
+        ),
+        // LINE Login Button
+        CustomButton(
+          text: '使用 LINE 登入',
+          onPressed: () => _showTermsAndThirdPartyLogin('LINE'),
+          backgroundColor: AppColors.malachite,
+          icon: SvgPicture.asset(
+            'assets/icons/line.svg',
+            width: 24,
+            height: 24,
+            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+          ),
+        ),
+        // Google Login Button
+        CustomButton(
+          text: '使用 Google 登入',
+          onPressed: () => _showTermsAndThirdPartyLogin('Google'),
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          icon: SvgPicture.asset(
+            'assets/icons/google.svg',
+            width: 24,
+            height: 24,
+          ),
+          border: const BorderSide(color: AppColors.whiteMarble, width: 1),
+        ),
+      ],
+    );
+  }
 
-        // Password Field
+  Widget _buildPasswordSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: 4,
+      children: [
         CustomTextField(
           controller: passwordController,
           hintText: '密碼',
@@ -154,9 +208,6 @@ class _LoginFormState extends State<LoginForm> {
             });
           },
         ),
-        const SizedBox(height: 4),
-
-        // Forgot Password
         Align(
           alignment: Alignment.centerRight,
           child: TextButton(
@@ -168,65 +219,10 @@ class _LoginFormState extends State<LoginForm> {
             ),
             child: const Text(
               '忘記密碼？',
-              style: TextStyle(color: AppColors.primaryGreen, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.funGreen, height: 1.71, letterSpacing: 0),
             ),
           ),
         ),
-        const SizedBox(height: 16),
-
-        // Login Button
-        CustomButton(
-          text: '登入',
-          onPressed: _handleLogin,
-          backgroundColor: AppColors.primaryGreen,
-          isLoading: isLoading,
-        ),
-        const SizedBox(height: 16),
-
-        // Divider
-        Row(
-          children: [
-            Expanded(child: Divider(color: Colors.black)),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                '或使用以下方式',
-                style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black, fontSize: 12),
-              ),
-            ),
-            Expanded(child: Divider(color: Colors.black)),
-          ],
-        ),
-        const SizedBox(height: 16),
-
-        // LINE Login Button
-        CustomButton(
-          text: '使用 LINE 登入',
-          onPressed: () => _showTermsAndThirdPartyLogin('LINE'),
-          backgroundColor: AppColors.lineGreen,
-          icon: SvgPicture.asset(
-            'assets/icons/line.svg',
-            width: 24,
-            height: 24,
-            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // Google Login Button
-        CustomButton(
-          text: '使用 Google 登入',
-          onPressed: () => _showTermsAndThirdPartyLogin('Google'),
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-          icon: SvgPicture.asset(
-            'assets/icons/google.svg',
-            width: 24,
-            height: 24,
-          ),
-          border: const BorderSide(color: AppColors.inputBorder, width: 1),
-        ),
-        const SizedBox(height: 16),
       ],
     );
   }

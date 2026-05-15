@@ -118,6 +118,35 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
     super.dispose();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return CardContainer(
+      child: Column(
+        children: [
+          _buildHeader(),
+          const SizedBox(height: 12),
+          ...List.generate(
+            contacts.length,
+            (index) => Column(
+              children: [
+                _buildContactItem(index),
+                if (index < contacts.length - 1) const SizedBox(height: 8),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          CustomButton(
+            text: '+ 新增緊急聯絡人',
+            onPressed: _addContact,
+            backgroundColor: AppColors.funGreen,
+            foregroundColor: Colors.white,
+            height: 44,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildHeader() {
     return Column(
       children: [
@@ -127,7 +156,7 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
               'assets/icons/parent.svg',
               width: 24,
               height: 24,
-              colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
             ),
             const SizedBox(width: 8),
             const Text(
@@ -172,7 +201,7 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
             const SizedBox(height: 4),
             Text(
               contacts[index]['phone'] ?? '',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: AppColors.primaryGreen, height: 1.6),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: AppColors.funGreen, height: 1.6),
             ),
           ],
           const SizedBox(height: 8),
@@ -182,7 +211,7 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
                 child: CustomButton(
                   text: isEditing ? '取消編輯' : '刪除資料',
                   onPressed: () => isEditing ? _cancelEditing(index) : _deleteContact(index),
-                  backgroundColor: const Color(0xFFE7000B),
+                  backgroundColor: AppColors.strongRed,
                   foregroundColor: Colors.white,
                   height: 37,
                 ),
@@ -192,41 +221,12 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
                 child: CustomButton(
                   text: isEditing ? '儲存編輯' : '編輯資料',
                   onPressed: () => isEditing ? _saveEditing(index) : _startEditing(index),
-                  backgroundColor: AppColors.primaryGreen,
+                  backgroundColor: AppColors.funGreen,
                   foregroundColor: Colors.white,
                   height: 37,
                 ),
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CardContainer(
-      child: Column(
-        children: [
-          _buildHeader(),
-          const SizedBox(height: 12),
-          ...List.generate(
-            contacts.length,
-            (index) => Column(
-              children: [
-                _buildContactItem(index),
-                if (index < contacts.length - 1) const SizedBox(height: 8),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          CustomButton(
-            text: '+ 新增緊急聯絡人',
-            onPressed: _addContact,
-            backgroundColor: AppColors.primaryGreen,
-            foregroundColor: Colors.white,
-            height: 44,
           ),
         ],
       ),

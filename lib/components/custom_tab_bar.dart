@@ -29,7 +29,7 @@ class CustomTabBar extends StatelessWidget {
                 onTap: () => onTabChanged(index),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: selectedTabIndex == index ? AppColors.primaryGreen : AppColors.grey,
+                    color: selectedTabIndex == index ? AppColors.funGreen : AppColors.richWhite,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Center(

@@ -17,9 +17,9 @@ class InstructionsBox extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.resultModerateBg,
+        color: AppColors.butteryWhite2,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.instructionsBoxBorder, width: 1),
+        border: Border.all(color: AppColors.glossyGold, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,7 +30,7 @@ class InstructionsBox extends StatelessWidget {
                 'assets/icons/heart.svg',
                 width: 24,
                 height: 24,
-                colorFilter: const ColorFilter.mode(AppColors.resultModerateIcon, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(AppColors.windsorTan, BlendMode.srcIn),
               ),
               const SizedBox(width: 10),
               Text(
@@ -38,7 +38,7 @@ class InstructionsBox extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.resultModerateIcon,
+                  color: AppColors.windsorTan,
                   height: 1.0,
                   letterSpacing: 0,
                 ),

@@ -23,7 +23,7 @@ class CustomToggleSwitch extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: AppColors.grey,
+        color: AppColors.richWhite,
         borderRadius: BorderRadius.circular(360),
       ),
       child: Row(
@@ -33,8 +33,8 @@ class CustomToggleSwitch extends StatelessWidget {
               text: leftText,
               onPressed: () => onChanged(true),
               backgroundColor: isLeftSelected ? activeColor : Colors.transparent,
-              foregroundColor: isLeftSelected ? Colors.white : Colors.black,
               borderRadius: 360,
+              textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: isLeftSelected ? Colors.white : Colors.black, height: 1.625, letterSpacing: 0),
             ),
           ),
           Expanded(
@@ -42,8 +42,8 @@ class CustomToggleSwitch extends StatelessWidget {
               text: rightText,
               onPressed: () => onChanged(false),
               backgroundColor: !isLeftSelected ? activeColor : Colors.transparent,
-              foregroundColor: !isLeftSelected ? Colors.white : Colors.black,
               borderRadius: 360,
+              textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: !isLeftSelected ? Colors.white : Colors.black, height: 1.625, letterSpacing: 0),
             ),
           ),
         ],

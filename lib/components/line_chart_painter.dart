@@ -29,7 +29,7 @@ class LineChartPainter extends CustomPainter {
       ..strokeWidth = 0.5;
 
     final axisPaint = Paint()
-      ..color = AppColors.axisLabelColor
+      ..color = AppColors.sharkGray
       ..strokeWidth = 1;
 
     final width = size.width;

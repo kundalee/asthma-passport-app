@@ -106,6 +106,95 @@ class _PatientInfoViewState extends State<PatientInfoView> {
     });
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return CardContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              SvgPicture.asset(
+                'assets/icons/user.svg',
+                width: 24,
+                height: 24,
+                colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                '病患基本資料',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                  height: 1.5,
+                  letterSpacing: 0,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _buildBasicInfoSection(),
+          const SizedBox(height: 12),
+          _buildChipSection(
+            title: '過敏史',
+            expanded: _allergyExpanded,
+            onTap: () => setState(() => _allergyExpanded = !_allergyExpanded),
+            backgroundColor: AppColors.babysBottom,
+            items: _isEditing ? _editAllergies : _allergies,
+            chipColor: AppColors.babysBottom,
+            chipTextColor: const Color(0xFF82181A),
+            chipBorderColor: AppColors.spicyPastelPink,
+            inputController: _allergyInputController,
+            inputHint: '請輸入過敏原',
+            onAddTag: _addAllergyTag,
+            onRemoveTag: (index) { setState(() => _editAllergies.removeAt(index)); },
+          ),
+          const SizedBox(height: 12),
+          _buildChipSection(
+            title: '目前用藥',
+            expanded: _medicationExpanded,
+            onTap: () => setState(() => _medicationExpanded = !_medicationExpanded),
+            backgroundColor: AppColors.butteryWhite2,
+            items: _isEditing ? _editMedications : _medications,
+            chipColor: AppColors.butteryWhite2,
+            chipTextColor: AppColors.windsorTan,
+            chipBorderColor: AppColors.brightCanaryYellow,
+            inputController: _medicationInputController,
+            inputHint: '請輸入使用藥物',
+            onAddTag: _addMedicationTag,
+            onRemoveTag: (index) { setState(() => _editMedications.removeAt(index)); },
+          ),
+          const SizedBox(height: 12),
+          if (_isEditing) ...[
+            CustomButton(
+              text: '儲存編輯',
+              onPressed: _saveEditing,
+              backgroundColor: AppColors.funGreen,
+              foregroundColor: Colors.white,
+              height: 44,
+            ),
+            const SizedBox(height: 8),
+            CustomButton(
+              text: '取消編輯',
+              onPressed: _cancelEditing,
+              backgroundColor: AppColors.strongRed,
+              foregroundColor: Colors.white,
+              height: 44,
+            ),
+          ] else
+            CustomButton(
+              text: '編輯基本資料',
+              onPressed: _startEditing,
+              backgroundColor: AppColors.funGreen,
+              foregroundColor: Colors.white,
+              height: 40,
+            ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildSectionHeader({
     required String title,
     required bool expanded,
@@ -165,7 +254,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
               title: '基本資料',
               expanded: _basicExpanded,
               onTap: () => setState(() => _basicExpanded = !_basicExpanded),
-              backgroundColor: const Color(0xFFEFF6FF),
+              backgroundColor: AppColors.zumthor,
             ),
             if (_basicExpanded) ...[
               Padding(
@@ -312,95 +401,6 @@ class _PatientInfoViewState extends State<PatientInfoView> {
             ],
           ],
         ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CardContainer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/icons/user.svg',
-                width: 24,
-                height: 24,
-                colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                '病患基本資料',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.5,
-                  letterSpacing: 0,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _buildBasicInfoSection(),
-          const SizedBox(height: 12),
-          _buildChipSection(
-            title: '過敏史',
-            expanded: _allergyExpanded,
-            onTap: () => setState(() => _allergyExpanded = !_allergyExpanded),
-            backgroundColor: const Color(0xFFFEF2F2),
-            items: _isEditing ? _editAllergies : _allergies,
-            chipColor: const Color(0xFFFEF2F2),
-            chipTextColor: const Color(0xFF82181A),
-            chipBorderColor: const Color(0xFFFFC9C9),
-            inputController: _allergyInputController,
-            inputHint: '請輸入過敏原',
-            onAddTag: _addAllergyTag,
-            onRemoveTag: (index) { setState(() => _editAllergies.removeAt(index)); },
-          ),
-          const SizedBox(height: 12),
-          _buildChipSection(
-            title: '目前用藥',
-            expanded: _medicationExpanded,
-            onTap: () => setState(() => _medicationExpanded = !_medicationExpanded),
-            backgroundColor: const Color(0xFFFEFCE8),
-            items: _isEditing ? _editMedications : _medications,
-            chipColor: const Color(0xFFFEFCE8),
-            chipTextColor: const Color(0xFFA65F00),
-            chipBorderColor: const Color(0xFFFFDF20),
-            inputController: _medicationInputController,
-            inputHint: '請輸入使用藥物',
-            onAddTag: _addMedicationTag,
-            onRemoveTag: (index) { setState(() => _editMedications.removeAt(index)); },
-          ),
-          const SizedBox(height: 12),
-          if (_isEditing) ...[
-            CustomButton(
-              text: '儲存編輯',
-              onPressed: _saveEditing,
-              backgroundColor: AppColors.primaryGreen,
-              foregroundColor: Colors.white,
-              height: 44,
-            ),
-            const SizedBox(height: 8),
-            CustomButton(
-              text: '取消編輯',
-              onPressed: _cancelEditing,
-              backgroundColor: const Color(0xFFE7000B),
-              foregroundColor: Colors.white,
-              height: 44,
-            ),
-          ] else
-            CustomButton(
-              text: '編輯基本資料',
-              onPressed: _startEditing,
-              backgroundColor: AppColors.primaryGreen,
-              foregroundColor: Colors.white,
-              height: 40,
-            ),
-        ],
       ),
     );
   }

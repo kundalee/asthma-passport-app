@@ -42,7 +42,7 @@ class StatusContainer extends StatelessWidget {
                   'assets/icons/document.svg',
                   width: 24,
                   height: 24,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
                 ),
                 const SizedBox(width: 8),
                 Text(
@@ -56,7 +56,7 @@ class StatusContainer extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             decoration: BoxDecoration(
-              color: isComplete ? const Color(0xFFF0FDF4) : const Color(0xFFFEF2F2),
+              color: isComplete ? AppColors.honeydew : AppColors.babysBottom,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
@@ -78,7 +78,7 @@ class StatusContainer extends StatelessWidget {
           CustomButton(
             text: isComplete ? '查看測驗結果' : '開始紀錄',
             onPressed: onPressed,
-            backgroundColor: isComplete ? AppColors.completedButtonBg : AppColors.primaryGreen,
+            backgroundColor: isComplete ? AppColors.sportyBlue : AppColors.funGreen,
             foregroundColor: Colors.white,
             borderRadius: 4,
             height: 37,

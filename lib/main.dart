@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       title: 'Asthma Passport',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryGreen),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.funGreen),
         textTheme: GoogleFonts.interTextTheme(
           Theme.of(context).textTheme,
         ).apply(

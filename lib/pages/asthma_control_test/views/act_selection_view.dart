@@ -56,7 +56,7 @@ class ActSelectionView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: AppColors.inputBorder, width: 1),
+          border: Border.all(color: AppColors.whiteMarble, width: 1),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -68,14 +68,14 @@ class ActSelectionView extends StatelessWidget {
               height: 64,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primaryGreen, width: 4),
+                border: Border.all(color: AppColors.funGreen, width: 4),
               ),
               child: Center(
                 child: SvgPicture.asset(
                   isAdult ? 'assets/icons/adult.svg' : 'assets/icons/child.svg',
                   width: 40,
                   height: 40,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
                 ),
               ),
             ),
@@ -100,7 +100,7 @@ class ActSelectionView extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.reportTitle,
+                    color: AppColors.mirage,
                     height: 1.5,
                     letterSpacing: 0,
                   ),

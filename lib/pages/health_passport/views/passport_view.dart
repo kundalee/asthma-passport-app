@@ -31,8 +31,8 @@ class HealthPassportView extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  AppColors.passportCardGradientStart,
-                  AppColors.passportCardGradientEnd,
+                  AppColors.sensationalGreen,
+                  AppColors.funGreen,
                 ],
               ),
               borderRadius: const BorderRadius.only(
@@ -52,7 +52,7 @@ class HealthPassportView extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.passportAccent,
+                          color: AppColors.goldenPoppy,
                           height: 1.0,
                         ),
                       ),
@@ -62,7 +62,7 @@ class HealthPassportView extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.passportAccent,
+                          color: AppColors.goldenPoppy,
                           height: 1.0,
                         ),
                       ),
@@ -71,7 +71,7 @@ class HealthPassportView extends StatelessWidget {
                 ),
                 Container(
                   height: 4,
-                  color: AppColors.passportAccent,
+                  color: AppColors.goldenPoppy,
                 ),
                 Container(
                   color: Colors.white,
@@ -83,8 +83,8 @@ class HealthPassportView extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppColors.passportCardBgColor,
-                          border: Border.all(color: AppColors.passportCardBorder, width: 1),
+                          color: AppColors.butteryWhite,
+                          border: Border.all(color: AppColors.tranquilYellow, width: 1),
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Column(
@@ -96,11 +96,11 @@ class HealthPassportView extends StatelessWidget {
                                   width: 100,
                                   height: 120,
                                   decoration: BoxDecoration(
-                                    border: Border.all(color: AppColors.photoBorder, width: 3),
+                                    border: Border.all(color: AppColors.brown, width: 3),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Container(
-                                    color: AppColors.photoBackground,
+                                    color: AppColors.sweetGrey,
                                     child: const Icon(Icons.person, size: 60, color: Colors.grey),
                                   ),
                                 ),
@@ -145,19 +145,19 @@ class HealthPassportView extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 12),
-                            Container(height: 1, color: AppColors.passportDivider),
+                            Container(height: 1, color: AppColors.gangsterGold),
                             const SizedBox(height: 12),
                             Container(
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                               decoration: BoxDecoration(
-                                color: AppColors.barcodeBg,
+                                color: AppColors.beeswax,
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Center(
                                 child: Text(
                                   barcode,
-                                  style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w400, color: AppColors.infoLabel, height: 1.0, letterSpacing: 2),
+                                  style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w400, color: AppColors.newAmber, height: 1.0, letterSpacing: 2),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -179,8 +179,8 @@ class HealthPassportView extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  AppColors.passportCardGradientStart,
-                  AppColors.passportCardGradientEnd,
+                  AppColors.sensationalGreen,
+                  AppColors.funGreen,
                 ],
               ),
               borderRadius: const BorderRadius.only(
@@ -195,12 +195,12 @@ class HealthPassportView extends StatelessWidget {
                 children: [
                   const Text(
                     '彰化基督教醫院 核發',
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.passportAccent70, height: 1.0),
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.goldenPoppy70, height: 1.0),
                   ),
                   const SizedBox(height: 4),
                   const Text(
                     'ISSUED BY CHANGHUA CHRISTIAN HOSPITAL',
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.passportAccent70, height: 1.0),
+                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.goldenPoppy70, height: 1.0),
                   ),
                 ],
               ),
@@ -214,7 +214,7 @@ class HealthPassportView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.infoLabel, height: 1.0)),
+        Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.newAmber, height: 1.0)),
         const SizedBox(height: 2),
         Text(value, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black, height: 2.0)),
       ],
@@ -228,7 +228,7 @@ class HealthPassportView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: AppColors.inputBorder, width: 1),
+          border: Border.all(color: AppColors.whiteMarble, width: 1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
@@ -244,7 +244,7 @@ class HealthPassportView extends StatelessWidget {
                         iconPath,
                         width: 24,
                         height: 24,
-                        colorFilter: const ColorFilter.mode(AppColors.menuIconColor, BlendMode.srcIn),
+                        colorFilter: const ColorFilter.mode(AppColors.solidBlue, BlendMode.srcIn),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
@@ -256,7 +256,7 @@ class HealthPassportView extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  Text(subtitle, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.menuSubtitle, height: 1.0)),
+                  Text(subtitle, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.hydrocarbon, height: 1.0)),
                 ],
               ),
             ),

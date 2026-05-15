@@ -28,7 +28,7 @@ class DailyMeasurementSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.description, size: 24, color: AppColors.primaryGreen),
+              const Icon(Icons.description, size: 24, color: AppColors.funGreen),
               const SizedBox(width: 8),
               Text(
                 '每日量測：${selectedDate.year}/${selectedDate.month.toString().padLeft(2, '0')}/${selectedDate.day.toString().padLeft(2, '0')}',
@@ -80,7 +80,7 @@ class DailyMeasurementSection extends StatelessWidget {
           CustomButton(
             text: '開始紀錄',
             onPressed: () {},
-            backgroundColor: AppColors.primaryGreen,
+            backgroundColor: AppColors.funGreen,
             foregroundColor: Colors.white,
             borderRadius: 4,
             height: 45,

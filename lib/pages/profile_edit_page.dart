@@ -199,18 +199,18 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             letterSpacing: 0,
           ),
           filled: true,
-          fillColor: AppColors.inputBackground,
+          fillColor: AppColors.powder,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: AppColors.inputBorder, width: 2),
+            borderSide: const BorderSide(color: AppColors.whiteMarble, width: 2),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: AppColors.inputBorder, width: 2),
+            borderSide: const BorderSide(color: AppColors.whiteMarble, width: 2),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: AppColors.inputBorder, width: 2),
+            borderSide: const BorderSide(color: AppColors.whiteMarble, width: 2),
           ),
           contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
           isDense: true,
@@ -238,8 +238,8 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: AppColors.inputBackground,
-            border: Border.all(color: AppColors.inputBorder, width: 2),
+            color: AppColors.powder,
+            border: Border.all(color: AppColors.whiteMarble, width: 2),
           ),
           padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
           child: Row(
@@ -278,7 +278,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
           Navigator.pop(context);
         }
       },
-      backgroundColor: AppColors.primaryGreen,
+      backgroundColor: AppColors.funGreen,
       foregroundColor: Colors.white,
       borderRadius: 4,
       height: 40,
@@ -289,7 +289,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     return CustomButton(
       text: '取消編輯',
       onPressed: () => Navigator.pop(context),
-      backgroundColor: AppColors.error,
+      backgroundColor: AppColors.strongRed,
       foregroundColor: Colors.white,
       borderRadius: 4,
       height: 40,

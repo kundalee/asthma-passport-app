@@ -29,12 +29,12 @@ class HealthReportView extends StatelessWidget {
                   'assets/icons/document.svg',
                   width: 24,
                   height: 24,
-                  colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
                 ),
                 const SizedBox(width: 8),
                 const Text(
                   '近期紀錄簡報',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.reportTitle, height: 1.5),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.mirage, height: 1.5),
                 ),
               ],
             ),
@@ -52,16 +52,16 @@ class HealthReportView extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('姓名', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle, height: 1.71)),
-                      Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle, height: 1.71)),
+                      const Text('姓名', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71)),
+                      Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71)),
                     ],
                   ),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('年齡', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle, height: 1.71)),
-                      Text('$age 歲', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle, height: 1.71)),
+                      const Text('年齡', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71)),
+                      Text('$age 歲', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71)),
                     ],
                   ),
                 ],
@@ -71,7 +71,7 @@ class HealthReportView extends StatelessWidget {
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: AppColors.controlStatusBg,
+                color: AppColors.honeydew,
                 borderRadius: BorderRadius.circular(10),
               ),
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -79,12 +79,12 @@ class HealthReportView extends StatelessWidget {
                 children: [
                   const Text(
                     '前一個月控制狀況',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.menuSubtitle, height: 1.71),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71),
                   ),
                   const SizedBox(height: 8),
                   const Text(
                     '良好',
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.primaryGreen, height: 1.0),
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.funGreen, height: 1.0),
                   ),
                 ],
               ),
@@ -95,7 +95,7 @@ class HealthReportView extends StatelessWidget {
               child: CustomButton(
                 text: '填寫新計畫',
                 onPressed: () => onSwitchView(2),
-                backgroundColor: AppColors.primaryGreen,
+                backgroundColor: AppColors.funGreen,
                 padding: const EdgeInsets.all(12),
                 borderRadius: 4,
                 height: 37,
@@ -109,7 +109,7 @@ class HealthReportView extends StatelessWidget {
                 onPressed: () => onSwitchView(0),
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.black,
-                border: const BorderSide(color: AppColors.inputBorder, width: 1),
+                border: const BorderSide(color: AppColors.whiteMarble, width: 1),
                 padding: const EdgeInsets.all(12),
                 borderRadius: 4,
                 height: 37,

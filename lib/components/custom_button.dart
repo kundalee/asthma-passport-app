@@ -13,6 +13,7 @@ class CustomButton extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final Gradient? gradient;
   final bool isLoading;
+  final TextStyle? textStyle;
 
   const CustomButton({
     super.key,
@@ -28,36 +29,25 @@ class CustomButton extends StatelessWidget {
     this.padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
     this.gradient,
     this.isLoading = false,
+    this.textStyle,
   });
 
-  TextStyle get _textStyle => TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-        color: foregroundColor,
-        height: 1.5,
-        letterSpacing: 0,
-      );
+  TextStyle get _textStyle => textStyle ?? TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    color: foregroundColor,
+    height: 1.5,
+    letterSpacing: 0,
+  );
 
   Widget get _loadingIndicator => SizedBox(
-        width: 20,
-        height: 20,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
-        ),
-      );
-
-  Widget _buildChild() {
-    if (isLoading) return _loadingIndicator;
-    if (icon != null) {
-      return Row(
-        mainAxisAlignment: iconAlignment,
-        mainAxisSize: iconAlignment == MainAxisAlignment.center ? MainAxisSize.min : MainAxisSize.max,
-        children: [icon!, const SizedBox(width: 8), Text(text, style: _textStyle)],
-      );
-    }
-    return Text(text, style: _textStyle);
-  }
+    width: 20,
+    height: 20,
+    child: CircularProgressIndicator(
+      strokeWidth: 2,
+      valueColor: AlwaysStoppedAnimation<Color>(foregroundColor),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -86,5 +76,17 @@ class CustomButton extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildChild() {
+    if (isLoading) return _loadingIndicator;
+    if (icon != null) {
+      return Row(
+        mainAxisAlignment: iconAlignment,
+        mainAxisSize: iconAlignment == MainAxisAlignment.center ? MainAxisSize.min : MainAxisSize.max,
+        children: [icon!, const SizedBox(width: 8), Text(text, style: _textStyle)],
+      );
+    }
+    return Text(text, style: _textStyle);
   }
 }

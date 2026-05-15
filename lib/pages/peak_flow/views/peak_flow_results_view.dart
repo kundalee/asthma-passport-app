@@ -85,7 +85,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
           widget.isDaytime ? 'assets/icons/sun.svg' : 'assets/icons/night.svg',
           width: 24,
           height: 24,
-          colorFilter: const ColorFilter.mode(AppColors.measurementIconColor, BlendMode.srcIn),
+          colorFilter: const ColorFilter.mode(AppColors.mustardGold, BlendMode.srcIn),
         ),
         const SizedBox(width: 8),
         Text(
@@ -107,7 +107,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
       width: double.infinity,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: AppColors.luxuryWhite,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Image.asset(
@@ -136,7 +136,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: AppColors.luxuryWhite,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -167,7 +167,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
             ),
             decoration: InputDecoration(
               filled: true,
-              fillColor: (widget.status == null || _isEditingFromCompleted) ? Colors.white : AppColors.inputBackground,
+              fillColor: (widget.status == null || _isEditingFromCompleted) ? Colors.white : AppColors.powder,
               suffixIcon: Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: Align(
@@ -188,28 +188,28 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide: const BorderSide(
-                  color: AppColors.inputBorder,
+                  color: AppColors.whiteMarble,
                   width: 1,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide: const BorderSide(
-                  color: AppColors.inputBorder,
+                  color: AppColors.whiteMarble,
                   width: 1,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide: const BorderSide(
-                  color: AppColors.inputBorder,
+                  color: AppColors.whiteMarble,
                   width: 1,
                 ),
               ),
               disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide: const BorderSide(
-                  color: AppColors.inputBorder,
+                  color: AppColors.whiteMarble,
                   width: 1,
                 ),
               ),
@@ -226,7 +226,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: AppColors.luxuryWhite,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -261,9 +261,9 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildTableRow('區別', '最佳值之百分比', '代表意義', isHeader: true),
-          _buildTableRow('PEFR值綠燈區', '80%以上', '情況穩定', backgroundColor: AppColors.tableRowGoodBg),
-          _buildTableRow('PEFR值黃燈區', '60%~80%', '要小心', backgroundColor: AppColors.tableRowModerateBg),
-          _buildTableRow('PEFR值紅燈區', '60%以下', '醫療警訊', backgroundColor: AppColors.tableRowSevereBg),
+          _buildTableRow('PEFR值綠燈區', '80%以上', '情況穩定', backgroundColor: AppColors.lightGreen),
+          _buildTableRow('PEFR值黃燈區', '60%~80%', '要小心', backgroundColor: AppColors.lightYellow),
+          _buildTableRow('PEFR值紅燈區', '60%以下', '醫療警訊', backgroundColor: AppColors.lightPink),
         ],
       ),
     );
@@ -309,7 +309,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: AppColors.luxuryWhite,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -341,30 +341,30 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
 
     switch (status) {
       case 1:
-        backgroundColor = AppColors.statusGoodBg;
-        borderColor = AppColors.statusGoodBorder;
-        textColor = AppColors.statusGoodText;
+        backgroundColor = AppColors.honeydew;
+        borderColor = AppColors.lightPastelMint;
+        textColor = AppColors.funGreen;
         iconPath = 'assets/icons/check.svg';
         statusText = '控制良好，請繼續保持';
         break;
       case 2:
-        backgroundColor = AppColors.statusModerateBg;
-        borderColor = AppColors.statusModerateBorder;
-        textColor = AppColors.statusModerateText;
+        backgroundColor = AppColors.butteryWhite2;
+        borderColor = AppColors.brightCanaryYellow;
+        textColor = AppColors.windsorTan;
         iconPath = 'assets/icons/alert-info.svg';
         statusText = '目前氣道不穩定，如合併有氣喘症狀請使用氣喘緊急用藥，並持續觀察氣喘狀況';
         break;
       case 3:
-        backgroundColor = AppColors.statusSevereBg;
-        borderColor = AppColors.statusSevereBorder;
-        textColor = AppColors.statusSevereText;
+        backgroundColor = AppColors.babysBottom;
+        borderColor = AppColors.spicyPastelPink;
+        textColor = AppColors.digitalRed;
         iconPath = 'assets/icons/emergency.svg';
         statusText = '氣喘正處於急性發作，請立即使用氣喘緊急用藥，使用後若症狀無法緩解請盡快就醫';
         break;
       default:
-        backgroundColor = AppColors.statusGoodBg;
-        borderColor = AppColors.statusGoodBorder;
-        textColor = AppColors.statusGoodText;
+        backgroundColor = AppColors.honeydew;
+        borderColor = AppColors.lightPastelMint;
+        textColor = AppColors.funGreen;
         iconPath = 'assets/icons/check.svg';
         statusText = '控制良好，請繼續保持';
     }
@@ -419,7 +419,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
             child: CustomButton(
               text: '返回首頁',
               onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
-              backgroundColor: AppColors.primaryGreen,
+              backgroundColor: AppColors.funGreen,
               padding: const EdgeInsets.all(12),
               borderRadius: 4,
               height: 37,
@@ -431,7 +431,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
             child: CustomButton(
               text: '查看歷史紀錄',
               onPressed: () {},
-              backgroundColor: const Color(0xFF1877F2),
+              backgroundColor: AppColors.sportyBlue,
               padding: const EdgeInsets.all(12),
               borderRadius: 4,
               height: 37,
@@ -452,7 +452,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
               border: const BorderSide(
-                color: AppColors.inputBorder,
+                color: AppColors.whiteMarble,
                 width: 1,
               ),
               padding: const EdgeInsets.all(12),
@@ -477,7 +477,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
                         _showCompletedButtons = true;
                       });
                     },
-              backgroundColor: AppColors.primaryGreen,
+              backgroundColor: AppColors.funGreen,
               padding: const EdgeInsets.all(12),
               borderRadius: 4,
               height: 37,
@@ -498,7 +498,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.black,
                 border: const BorderSide(
-                  color: AppColors.inputBorder,
+                  color: AppColors.whiteMarble,
                   width: 1,
                 ),
                 padding: const EdgeInsets.all(12),

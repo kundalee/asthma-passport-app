@@ -32,7 +32,7 @@ class ComprehensiveDataView extends StatelessWidget {
           CustomButton(
             text: '下載報告',
             onPressed: () {},
-            backgroundColor: AppColors.primaryGreen,
+            backgroundColor: AppColors.funGreen,
             foregroundColor: Colors.white,
             borderRadius: 4,
             height: 37,
@@ -81,7 +81,7 @@ class ComprehensiveDataView extends StatelessWidget {
                 'assets/icons/wave.svg',
                 width: 24,
                 height: 24,
-                colorFilter: const ColorFilter.mode(Color(0xFF155DFC), BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(AppColors.solidBlue, BlendMode.srcIn),
               ),
               const SizedBox(width: 8),
               const Text(
@@ -127,7 +127,7 @@ class ComprehensiveDataView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
+        color: AppColors.luxuryWhite,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: const Color(0xFFE5E7EB), width: 2),
       ),
@@ -177,7 +177,7 @@ class ComprehensiveDataView extends StatelessWidget {
                 'assets/icons/increase.svg',
                 width: 24,
                 height: 24,
-                colorFilter: const ColorFilter.mode(Color(0xFF155DFC), BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(AppColors.solidBlue, BlendMode.srcIn),
               ),
               const SizedBox(width: 8),
               const Text(
@@ -232,7 +232,7 @@ class ComprehensiveDataView extends StatelessWidget {
                       Positioned(
                         bottom: (double.parse(label) / maxValue * 140) - 6,
                         right: 8,
-                        child: Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: AppColors.axisLabelColor, height: 1.0, letterSpacing: 0)),
+                        child: Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: AppColors.sharkGray, height: 1.0, letterSpacing: 0)),
                       ),
                   ],
                 ),
@@ -285,7 +285,7 @@ class ComprehensiveDataView extends StatelessWidget {
                           child: Center(
                             child: Text(
                               '$day日',
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: AppColors.axisLabelColor, height: 1.0, letterSpacing: 0),
+                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: AppColors.sharkGray, height: 1.0, letterSpacing: 0),
                             ),
                           ),
                         ),
@@ -304,10 +304,10 @@ class ComprehensiveDataView extends StatelessWidget {
               'assets/icons/score-trend.svg',
               width: 14,
               height: 14,
-              colorFilter: const ColorFilter.mode(Color(0xFF155DFC), BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(AppColors.solidBlue, BlendMode.srcIn),
             ),
             const SizedBox(width: 4),
-            const Text('總分', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF155DFC), height: 1.71, letterSpacing: 0)),
+            const Text('總分', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.solidBlue, height: 1.71, letterSpacing: 0)),
           ],
         ),
       ],
@@ -330,7 +330,7 @@ class ComprehensiveDataView extends StatelessWidget {
                 'assets/icons/wave.svg',
                 width: 24,
                 height: 24,
-                colorFilter: const ColorFilter.mode(Color(0xFF155DFC), BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(AppColors.solidBlue, BlendMode.srcIn),
               ),
               const SizedBox(width: 8),
               const Text(
@@ -340,11 +340,11 @@ class ComprehensiveDataView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          _buildPefrStatusRow('綠燈（穩定控制', greenDays, const Color(0xFFF0FDF4), const Color(0xFFB9F8CF), const Color(0xFF008235), const Color(0xFFB9F8CF), const Color(0xFF008236), totalDays),
+          _buildPefrStatusRow('綠燈（穩定控制', greenDays, AppColors.honeydew, AppColors.lightPastelMint, const Color(0xFF008235), AppColors.lightPastelMint, const Color(0xFF008236), totalDays),
           const SizedBox(height: 8),
-          _buildPefrStatusRow('黃燈 (警告)', yellowDays, const Color(0xFFFEFCE8), const Color(0xFFFFDF20), const Color(0xFFA65F00), const Color(0xFFFFF085), const Color(0xFFA65F00), totalDays),
+          _buildPefrStatusRow('黃燈 (警告)', yellowDays, AppColors.butteryWhite2, AppColors.brightCanaryYellow, AppColors.windsorTan, const Color(0xFFFFF085), AppColors.windsorTan, totalDays),
           const SizedBox(height: 8),
-          _buildPefrStatusRow('紅燈 (醫療急症)', redDays, const Color(0xFFFEF2F2), const Color(0xFFFFC9C9), const Color(0xFFFF0000), const Color(0xFFFFC9C9), const Color(0xFFFF0000), totalDays),
+          _buildPefrStatusRow('紅燈 (醫療急症)', redDays, AppColors.babysBottom, AppColors.spicyPastelPink, AppColors.digitalRed, AppColors.spicyPastelPink, AppColors.digitalRed, totalDays),
         ],
       ),
     );
