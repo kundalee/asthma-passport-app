@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../components/app_page_container.dart';
-import 'asthma_knowledge/views/knowledge_selection_view.dart';
-import 'asthma_knowledge/views/knowledge_list_view.dart';
+import '../../components/app_page_container.dart';
+import 'views/knowledge_selection_view.dart';
+import 'views/knowledge_list_view.dart';
 
 class AsthmaKnowledgePage extends StatefulWidget {
   const AsthmaKnowledgePage({super.key});

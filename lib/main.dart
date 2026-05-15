@@ -4,14 +4,14 @@ import 'pages/login_page.dart';
 import 'pages/home_page.dart';
 import 'pages/profile_page.dart';
 import 'pages/health_passport/health_passport_page.dart';
-import 'pages/asthma_diary_page.dart';
-import 'pages/peak_flow_page.dart';
-import 'pages/asthma_control_test_page.dart';
-import 'pages/asthma_knowledge_page.dart';
+import 'pages/asthma_diary/asthma_diary_page.dart';
+import 'pages/peak_flow/peak_flow_page.dart';
+import 'pages/asthma_control_test/asthma_control_test_page.dart';
+import 'pages/asthma_knowledge/asthma_knowledge_page.dart';
 import 'pages/history_records/history_records_page.dart';
-import 'pages/asthma_master_page.dart';
+import 'pages/asthma_master/asthma_master_page.dart';
 import 'pages/system_settings_page.dart';
-import 'pages/emergency_contact_page.dart';
+import 'pages/emergency_contact/emergency_contact_page.dart';
 import 'theme/app_colors.dart';
 
 void main() {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart';
-import '../components/app_page_container.dart';
-import '../components/custom_tab_bar.dart';
-import 'emergency_contact/views/medical_resources_view.dart';
-import 'emergency_contact/views/emergency_contacts_view.dart';
-import 'emergency_contact/views/patient_info_view.dart';
+import '../../theme/app_colors.dart';
+import '../../components/app_page_container.dart';
+import '../../components/custom_tab_bar.dart';
+import 'views/medical_resources_view.dart';
+import 'views/emergency_contacts_view.dart';
+import 'views/patient_info_view.dart';
 
 class EmergencyContactPage extends StatefulWidget {
   const EmergencyContactPage({super.key});

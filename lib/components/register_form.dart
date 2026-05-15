@@ -163,6 +163,7 @@ class _RegisterFormState extends State<RegisterForm> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: 16,
       children: [
         // Name Field
         CustomTextField(
@@ -176,8 +177,6 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           errorText: nameError,
         ),
-        const SizedBox(height: 16),
-
         // Email Field
         CustomTextField(
           controller: emailController,
@@ -190,8 +189,6 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           errorText: emailError,
         ),
-        const SizedBox(height: 16),
-
         // Password Field
         CustomTextField(
           controller: passwordController,
@@ -211,8 +208,6 @@ class _RegisterFormState extends State<RegisterForm> {
           },
           errorText: passwordError,
         ),
-        const SizedBox(height: 16),
-
         // Confirm Password Field
         CustomTextField(
           controller: confirmPasswordController,
@@ -232,8 +227,6 @@ class _RegisterFormState extends State<RegisterForm> {
           },
           errorText: confirmPasswordError,
         ),
-        const SizedBox(height: 16),
-
         // Register Button
         CustomButton(
           text: '註冊',
@@ -241,7 +234,6 @@ class _RegisterFormState extends State<RegisterForm> {
           backgroundColor: AppColors.funGreen,
           isLoading: isLoading,
         ),
-        const SizedBox(height: 16),
       ],
     );
   }

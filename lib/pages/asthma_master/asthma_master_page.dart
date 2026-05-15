@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../components/app_page_container.dart';
-import 'asthma_master/views/master_view.dart';
-import 'asthma_master/views/master_form_view.dart';
+import '../../components/app_page_container.dart';
+import 'views/master_view.dart';
+import 'views/master_form_view.dart';
 
 class AsthmaMasterPage extends StatefulWidget {
   const AsthmaMasterPage({super.key});

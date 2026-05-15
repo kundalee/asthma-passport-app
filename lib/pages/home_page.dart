@@ -86,15 +86,12 @@ class _HomePageState extends State<HomePage> {
       header: _buildHeader(),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
         children: [
           // AQI and Weather Card
           _buildAQICard(),
-          const SizedBox(height: 12),
-
           // Today's Tests Section
           _buildTodayTestsSection(),
-          const SizedBox(height: 12),
-
           // Feature Buttons Grid
           _buildFeatureButtonsGrid(),
         ],
@@ -126,6 +123,7 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  spacing: 12,
                   children: [
                     if (isLoggedIn)
                       SvgPicture.asset(
@@ -134,10 +132,9 @@ class _HomePageState extends State<HomePage> {
                         height: 24,
                         colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                       ),
-                    if (isLoggedIn) const SizedBox(width: 12),
                     Text(
                       isLoggedIn ? userName : '登入',
-                      style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500, height: 1.0),
+                      style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500, height: 1.0, letterSpacing: 0),
                     ),
                   ],
                 ),
@@ -179,12 +176,12 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 4,
                       children: [
                         const Text(
                           'AQI',
-                          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.black, height: 1.71),
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
                         ),
-                        const SizedBox(height: 4),
                         Text(
                           '$aqi',
                           style: const TextStyle(
@@ -192,6 +189,7 @@ class _HomePageState extends State<HomePage> {
                             fontWeight: FontWeight.bold,
                             color: AppColors.funGreen,
                             height: 1.5,
+                            letterSpacing: 0,
                           ),
                         ),
                       ],
@@ -217,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                     child: _buildWeatherItem('濕度', '$humidity', '%'),
                   ),
                   Expanded(
-                    child: _buildWeatherItem('PM2.5', pm25.toStringAsFixed(1), 'μg/m3', unitStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 10, color: AppColors.funGreen, height: 2.25)),
+                    child: _buildWeatherItem('PM2.5', pm25.toStringAsFixed(1), 'μg/m3', unitStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.funGreen, height: 2.25, letterSpacing: 0)),
                   ),
                 ],
               ),
@@ -236,9 +234,9 @@ class _HomePageState extends State<HomePage> {
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 4,
       children: [
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.black, height: 1.71)),
-        const SizedBox(height: 4),
+        Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0)),
         if (unitStyle != null)
           RichText(
             text: TextSpan(
@@ -250,6 +248,7 @@ class _HomePageState extends State<HomePage> {
                     fontWeight: FontWeight.bold,
                     color: AppColors.funGreen,
                     height: 1.5,
+                    letterSpacing: 0,
                   ),
                 ),
                 WidgetSpan(
@@ -278,6 +277,7 @@ class _HomePageState extends State<HomePage> {
                   fontWeight: FontWeight.bold,
                   color: AppColors.funGreen,
                   height: 1.5,
+                  letterSpacing: 0,
                 ),
               ),
               Text(
@@ -287,6 +287,7 @@ class _HomePageState extends State<HomePage> {
                   fontWeight: FontWeight.bold,
                   color: AppColors.funGreen,
                   height: 1.5,
+                  letterSpacing: 0,
                 ),
               ),
             ],
@@ -311,8 +312,10 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
           Row(
+            spacing: 8,
             children: [
               SvgPicture.asset(
                 'assets/icons/diary.svg',
@@ -320,24 +323,19 @@ class _HomePageState extends State<HomePage> {
                 height: 24,
                 colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
               ),
-              const SizedBox(width: 8),
               const Text(
                 '今日檢測',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
               ),
             ],
           ),
-          const SizedBox(height: 8),
           ...List.generate(
             todayTests.length,
-            (index) => Padding(
-              padding: EdgeInsets.only(bottom: index < todayTests.length - 1 ? 8 : 0),
-              child: _buildTestItem(
-                todayTests[index]['name'] ?? '',
-                todayTests[index]['icon'] ?? testItems[index % 3]['icon'] ?? '',
-                todayTests[index]['status'] ?? 0,
-                onTap: () => _handleTestItemTap(todayTests[index]['name'] ?? ''),
-              ),
+            (index) => _buildTestItem(
+              todayTests[index]['name'] ?? '',
+              todayTests[index]['icon'] ?? testItems[index % 3]['icon'] ?? '',
+              todayTests[index]['status'] ?? 0,
+              onTap: () => _handleTestItemTap(todayTests[index]['name'] ?? ''),
             ),
           ),
         ],
@@ -361,6 +359,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
+              spacing: 12,
               children: [
                 Container(
                   padding: const EdgeInsets.all(6),
@@ -375,10 +374,9 @@ class _HomePageState extends State<HomePage> {
                               height: 24,
                   ),
                 ),
-                const SizedBox(width: 12),
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, height: 1.6),
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, height: 1.6, letterSpacing: 0),
                 ),
               ],
             ),
@@ -397,8 +395,10 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildFeatureButtonsGrid() {
     return Column(
+      spacing: 12,
       children: [
         Row(
+          spacing: 10,
           children: [
             Expanded(
               child: _buildFeatureButton(
@@ -414,7 +414,6 @@ class _HomePageState extends State<HomePage> {
                 isRow: true,
               ),
             ),
-            const SizedBox(width: 10),
             Expanded(
               child: _buildFeatureButton(
                 '氣喘知識',
@@ -431,8 +430,8 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        const SizedBox(height: 12),
         Row(
+          spacing: 4,
           children: [
             Expanded(
               child: _buildFeatureButton(
@@ -448,7 +447,6 @@ class _HomePageState extends State<HomePage> {
                 height: 108,
               ),
             ),
-            const SizedBox(width: 4),
             Expanded(
               child: _buildFeatureButton(
                 '氣喘達人',
@@ -463,7 +461,6 @@ class _HomePageState extends State<HomePage> {
                 height: 108,
               ),
             ),
-            const SizedBox(width: 4),
             Expanded(
               child: _buildFeatureButton(
                 '智能管家',
@@ -509,6 +506,7 @@ class _HomePageState extends State<HomePage> {
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 8,
                 children: [
                   Container(
                     width: 48,
@@ -526,15 +524,15 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
                   Text(
                     title,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
+                      color: Colors.white,
                       height: 1.6,
+                      letterSpacing: 0,
                     ),
                   ),
                 ],
@@ -542,6 +540,7 @@ class _HomePageState extends State<HomePage> {
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 8,
                 children: [
                   Container(
                     width: 48,
@@ -559,15 +558,15 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
                   Text(
                     title,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.w500,
+                      color: Colors.white,
                       height: 1.6,
+                      letterSpacing: 0,
                     ),
                   ),
                 ],
@@ -594,11 +593,10 @@ class _HomePageState extends State<HomePage> {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 24,
         children: [
           _buildNavButton('個人首頁', 'assets/icons/home.svg', AppColors.funGreen, true),
-          const SizedBox(width: 24),
           _buildNavButton('系統設定', 'assets/icons/setting.svg', AppColors.funGreen, false),
-          const SizedBox(width: 24),
           _buildNavButton('緊急聯絡', 'assets/icons/emergency.svg', Colors.red, false),
         ],
       ),
@@ -622,6 +620,7 @@ class _HomePageState extends State<HomePage> {
           color: isActive ? color : Colors.transparent,
         ),
         child: Row(
+          spacing: 4,
           children: [
             SvgPicture.asset(
               iconPath,
@@ -629,14 +628,14 @@ class _HomePageState extends State<HomePage> {
               height: 24,
               colorFilter: ColorFilter.mode(isActive ? Colors.white : color, BlendMode.srcIn),
             ),
-            const SizedBox(width: 4),
             Text(
               title,
               style: TextStyle(
-                color: isActive ? Colors.white : color,
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
+                color: isActive ? Colors.white : color,
                 height: 2,
+                letterSpacing: 0,
               ),
             ),
           ],
@@ -660,13 +659,13 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 12,
             children: [
               SvgPicture.asset(
                 'assets/icons/alert.svg',
                 width: 80,
                 height: 80,
               ),
-              const SizedBox(height: 12),
               const Text(
                 '功能開發中\n敬請期待',
                 style: TextStyle(
@@ -678,7 +677,6 @@ class _HomePageState extends State<HomePage> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
                 child: CustomButton(

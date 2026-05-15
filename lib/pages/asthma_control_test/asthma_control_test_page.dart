@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../components/app_page_container.dart';
-import '../services/api_service.dart';
-import 'asthma_control_test/views/act_view.dart';
-import 'asthma_control_test/views/act_selection_view.dart';
-import 'asthma_control_test/views/act_form_view.dart';
+import '../../components/app_page_container.dart';
+import '../../services/api_service.dart';
+import 'views/act_view.dart';
+import 'views/act_selection_view.dart';
+import 'views/act_form_view.dart';
 
 class AsthmaControlTestPage extends StatefulWidget {
   const AsthmaControlTestPage({super.key});

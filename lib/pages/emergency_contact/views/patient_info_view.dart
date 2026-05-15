@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/card_container.dart';
 import '../../../components/custom_button.dart';
-import '../../emergency_contact_service.dart';
+import '../../../services/emergency_contact_service.dart';
 
 class PatientInfoView extends StatefulWidget {
   final Function(int) onSwitchTab;

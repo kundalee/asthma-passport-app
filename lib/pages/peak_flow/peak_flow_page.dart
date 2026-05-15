@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../components/app_page_container.dart';
-import '../services/api_service.dart';
-import 'peak_flow/views/peak_flow_view.dart';
-import 'peak_flow/views/peak_flow_form_view.dart';
-import 'peak_flow/views/peak_flow_results_view.dart';
+import '../../components/app_page_container.dart';
+import '../../services/api_service.dart';
+import 'views/peak_flow_view.dart';
+import 'views/peak_flow_form_view.dart';
+import 'views/peak_flow_results_view.dart';
 
 class PeakFlowPage extends StatefulWidget {
   const PeakFlowPage({super.key});

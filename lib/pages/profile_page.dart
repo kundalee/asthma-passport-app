@@ -361,7 +361,7 @@ class _ProfilePageState extends State<ProfilePage> {
       onPressed: () async {
         await AuthService.logout();
         if (context.mounted) {
-          Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+          Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
         }
       },
       backgroundColor: AppColors.strongRed,

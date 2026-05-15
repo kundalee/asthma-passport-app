@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../components/app_page_container.dart';
-import '../services/api_service.dart';
-import 'asthma_diary/views/asthma_diary_view.dart';
-import 'asthma_diary/views/assessment_form_view.dart';
+import '../../components/app_page_container.dart';
+import '../../services/api_service.dart';
+import 'views/asthma_diary_view.dart';
+import 'views/assessment_form_view.dart';
 
 class AsthmaDiaryPage extends StatefulWidget {
   const AsthmaDiaryPage({super.key});
