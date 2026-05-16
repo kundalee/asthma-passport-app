@@ -20,6 +20,7 @@ class AuthService {
     return {
       'success': true,
       'token': token,
+      'is_first_login': true,
     };
   }
 

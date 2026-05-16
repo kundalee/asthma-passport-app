@@ -4,10 +4,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../components/app_page_container.dart';
-import '../components/custom_button.dart';
+import '../components/custom_dialog.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final bool showFirstLoginDialog;
+
+  const HomePage({super.key, this.showFirstLoginDialog = false});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -29,6 +31,11 @@ class _HomePageState extends State<HomePage> {
     _loadUserName();
     _loadWeatherData();
     _loadTodayTests();
+    if (widget.showFirstLoginDialog) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showFirstLoginDialog();
+      });
+    }
   }
 
   Future<void> _checkLoginStatus() async {
@@ -644,53 +651,34 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _showDevelopmentDialog() {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final horizontalPadding = (screenWidth * 0.05).clamp(16.0, 24.0);
-
+  void _showFirstLoginDialog() {
     showDialog(
       context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        insetPadding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 12,
-            children: [
-              SvgPicture.asset(
-                'assets/icons/alert.svg',
-                width: 80,
-                height: 80,
-              ),
-              const Text(
-                '功能開發中\n敬請期待',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.5,
-                  letterSpacing: 0,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: CustomButton(
-                  text: '確認',
-                  onPressed: () => Navigator.pop(context),
-                  backgroundColor: AppColors.funGreen,
-                  foregroundColor: Colors.white,
-                  height: 37,
-                  borderRadius: 4,
-                ),
-              ),
-            ],
-          ),
-        ),
+      builder: (context) => CustomDialog(
+        iconPath: 'assets/icons/alert-info.svg',
+        content: '請先完成會員資料設定來提供您全方位的氣喘保護措施',
+        buttonText: '前往編輯',
+        onButtonPressed: () {
+          Navigator.pop(context);
+          Navigator.of(context).pushNamed('/profile');
+        },
+      ),
+    );
+  }
+
+  void _showDevelopmentDialog({
+    String iconPath = 'assets/icons/alert.svg',
+    String content = '功能開發中\n敬請期待',
+    String buttonText = '確認',
+    VoidCallback? onButtonPressed,
+  }) {
+    showDialog(
+      context: context,
+      builder: (context) => CustomDialog(
+        iconPath: iconPath,
+        content: content,
+        buttonText: buttonText,
+        onButtonPressed: onButtonPressed,
       ),
     );
   }

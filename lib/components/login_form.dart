@@ -104,8 +104,11 @@ class _LoginFormState extends State<LoginForm> {
     if (!mounted) return;
 
     if (response['success']) {
+      final isFirstLogin = response['is_first_login'] ?? false;
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomePage()),
+        MaterialPageRoute(
+          builder: (context) => HomePage(showFirstLoginDialog: isFirstLogin),
+        ),
       );
     } else {
       setState(() => passwordError = '您輸入的密碼有誤，請重新輸入');
