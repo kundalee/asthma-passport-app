@@ -1,4 +1,5 @@
 import '../models/diary_models.dart';
+import '../models/passport_models.dart';
 import '../models/peak_flow_models.dart';
 import '../models/weather_models.dart';
 import 'api_client.dart';
@@ -22,16 +23,24 @@ class ApiService {
     ];
   }
 
-  static Future<Map<String, dynamic>> getPassport() async {
-    return {
-      'id': 'passport_123',
-      'name': '王曉明',
-      'dateOfBirth': '2024/01/15',
-      'code': '123456',
-      'sex': '男',
-      'age': 9,
-      'barcode': 'P<TAIWAN<SIAO<SMING<<<<<<<<<<<<<<<<<\nT23456<<<TWN2015081520300915<<<<<<<<<<',
-    };
+  static Future<ApiResult<PassportStatus>> getPassport(String dateStr) async {
+    final (statusCode, data) = await ApiClient.send('GET', '/passport/load?date_str=$dateStr', authenticated: true);
+
+    if (statusCode == 200) {
+      return ApiResult.success(PassportStatus.fromJson(data));
+    }
+
+    return ApiClient.failure(statusCode, data, '無法取得健康護照資料');
+  }
+
+  static Future<ApiResult<MedicationOptions>> getMedicationOptions() async {
+    final (statusCode, data) = await ApiClient.send('GET', '/passport/list', authenticated: true);
+
+    if (statusCode == 200) {
+      return ApiResult.success(MedicationOptions.fromJson(data['data']));
+    }
+
+    return ApiClient.failure(statusCode, data, '無法取得藥物清單');
   }
 
   static Future<ApiResult<DiaryStatus>> getDiaryStatus(String dateStr) async {

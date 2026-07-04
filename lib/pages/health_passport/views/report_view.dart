@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../models/passport_models.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/custom_button.dart';
 import '../../../components/card_container.dart';
 
 class HealthReportView extends StatelessWidget {
-  final Map<String, dynamic> data;
+  final PassportInfo info;
+  final PassportPlan plan;
   final Function(int) onSwitchView;
 
   const HealthReportView({
     super.key,
-    required this.data,
+    required this.info,
+    required this.plan,
     required this.onSwitchView,
   });
 
   @override
   Widget build(BuildContext context) {
-    final name = (data['name'] ?? '').toString();
-    final age = (data['age'] ?? '').toString();
+    final name = info.name;
+    final age = info.age;
+    final statusTitle = plan.statusTitle;
 
     return CardContainer(
         child: Column(
@@ -80,9 +84,9 @@ class HealthReportView extends StatelessWidget {
                     '前一個月控制狀況',
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71),
                   ),
-                  const Text(
-                    '良好',
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.funGreen, height: 1.0),
+                  Text(
+                    statusTitle,
+                    style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.funGreen, height: 1.0),
                   ),
                 ],
               ),

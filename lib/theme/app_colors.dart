@@ -63,6 +63,7 @@ class AppColors {
   static const Color sharkGray = Color(0xFF6B7280);
   static const Color sweetGrey = Color(0xFFD9D9D9);
   static const Color whiteMarble = Color(0xFFE5E7EB);
+  static const Color cultured = Color(0xFFF3F3F5);
   static const Color powder = Color(0xFFF2F4F8);
   static const Color richWhite = Color(0xFFF2F2F7);
   static const Color luxuryWhite = Color(0xFFF9FAFB);

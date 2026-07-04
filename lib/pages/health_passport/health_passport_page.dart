@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../models/passport_models.dart';
 import '../../services/api_service.dart';
 import '../../services/auth_service.dart';
 import '../../components/app_page_container.dart';
@@ -15,41 +16,47 @@ class HealthPassportPage extends StatefulWidget {
 }
 
 class _HealthPassportPageState extends State<HealthPassportPage> {
-  late Future<Map<String, dynamic>> passportData;
+  final DateTime _today = DateTime.now();
+  PassportStatus? passportStatus;
   int currentView = 0; // 0: passport, 1: report, 2: new_plan
+
+  String get _dateStr {
+    return '${_today.year}-${_today.month.toString().padLeft(2, '0')}-${_today.day.toString().padLeft(2, '0')}';
+  }
 
   @override
   void initState() {
     super.initState();
-    passportData = ApiService.getPassport();
+    _loadPassport();
+  }
+
+  Future<void> _loadPassport() async {
+    final result = await ApiService.getPassport(_dateStr);
+    if (result.success && result.data != null) {
+      setState(() {
+        passportStatus = result.data;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return AppPageContainer(
       header: _buildHeader(context),
-      content: FutureBuilder<Map<String, dynamic>>(
-        future: passportData,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-
-          final data = snapshot.data ?? {};
-          if (currentView == 0) {
-            return HealthPassportView(data: data, onLogout: () => _logout(context), onMenuTap: _switchView);
-          } else if (currentView == 1) {
-            return HealthReportView(data: data, onSwitchView: _switchView);
-          } else {
-            return NewPlanView(data: data, onSwitchView: _switchView);
-          }
-        },
-      ),
+      content: passportStatus == null
+          ? const Center(child: CircularProgressIndicator())
+          : _buildContent(passportStatus!),
     );
+  }
+
+  Widget _buildContent(PassportStatus status) {
+    if (currentView == 0) {
+      return HealthPassportView(info: status.info, onLogout: () => _logout(context), onMenuTap: _switchView);
+    } else if (currentView == 1) {
+      return HealthReportView(info: status.info, plan: status.plan, onSwitchView: _switchView);
+    } else {
+      return NewPlanView(info: status.info, onSwitchView: _switchView);
+    }
   }
 
   void _switchView(int view) {

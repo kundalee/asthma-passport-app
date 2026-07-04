@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../models/passport_models.dart';
 import '../../../theme/app_colors.dart';
 
 class HealthPassportView extends StatelessWidget {
-  final Map<String, dynamic> data;
+  final PassportInfo info;
   final VoidCallback onLogout;
   final Function(int)? onMenuTap;
 
   const HealthPassportView({
     super.key,
-    required this.data,
+    required this.info,
     required this.onLogout,
     this.onMenuTap,
   });
@@ -124,12 +125,12 @@ class HealthPassportView extends StatelessWidget {
   }
 
   Widget _buildPassportCard() {
-    final name = (data['name'] ?? '').toString();
-    final dateOfBirth = (data['dateOfBirth'] ?? '').toString();
-    final code = (data['code'] ?? '').toString();
-    final sex = (data['sex'] ?? '').toString();
-    final age = (data['age'] ?? '').toString();
-    final barcode = (data['barcode'] ?? '').toString();
+    final name = info.name;
+    final dateOfBirth = info.birthday;
+    final code = info.code;
+    final sex = info.sex;
+    final age = info.age;
+    final barcode = '${info.mrzLine1}\n${info.mrzLine2}';
 
     return Container(
       padding: const EdgeInsets.all(12),
