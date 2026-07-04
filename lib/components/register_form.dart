@@ -135,7 +135,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
     setState(() => isLoading = true);
 
-    final response = await AuthService.register(
+    final result = await AuthService.register(
       name,
       email,
       password,
@@ -144,13 +144,13 @@ class _RegisterFormState extends State<RegisterForm> {
 
     if (!mounted) return;
 
-    if (response['success']) {
+    if (result.success) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const HomePage()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response['message'] ?? '註冊失敗')),
+        SnackBar(content: Text(result.message ?? '註冊失敗')),
       );
     }
 

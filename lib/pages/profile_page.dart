@@ -18,8 +18,14 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String userName = '';
-  String userPhone = '';
-  String userEmail = '';
+  String gender = '未填寫';
+  String birthday = '未填寫';
+  String age = '-';
+  String height = '未填寫';
+  String weight = '未填寫';
+  String bmi = '-';
+  String bloodType = '未填寫';
+  String avatarUrl = '';
 
   @override
   void initState() {
@@ -32,6 +38,24 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       userName = name ?? '';
     });
+
+    final result = await AuthService.getProfile();
+    if (!mounted) return;
+
+    final profile = result.data;
+    if (result.success && profile != null) {
+      setState(() {
+        userName = profile.name.isNotEmpty ? profile.name : userName;
+        gender = profile.gender;
+        birthday = profile.birthday;
+        age = profile.age;
+        height = profile.height;
+        weight = profile.weight;
+        bmi = profile.bmi;
+        bloodType = profile.bloodType;
+        avatarUrl = profile.avatarUrl;
+      });
+    }
   }
 
   @override
@@ -96,7 +120,8 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               child: CircleAvatar(
                 backgroundColor: Colors.grey[300],
-                child: const Icon(Icons.person, size: 40, color: Colors.grey),
+                backgroundImage: avatarUrl.startsWith('http') ? NetworkImage(avatarUrl) : null,
+                child: avatarUrl.startsWith('http') ? null : const Icon(Icons.person, size: 40, color: Colors.grey),
               ),
             ),
             GestureDetector(
@@ -260,14 +285,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildInfoFields() {
     final fields = [
-      ('姓名', '王小明'),
-      ('性別', '男性'),
-      ('生日', '2016/03/15'),
-      ('年齡', '8歲'),
-      ('身高', '135 cm'),
-      ('體重', '28 kg'),
-      ('BMI', '15.4'),
-      ('血型', 'A型'),
+      ('姓名', userName),
+      ('性別', gender),
+      ('生日', birthday),
+      ('年齡', age),
+      ('身高', height),
+      ('體重', weight),
+      ('BMI', bmi),
+      ('血型', bloodType),
     ];
 
     return Container(

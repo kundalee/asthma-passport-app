@@ -12,6 +12,7 @@ import 'pages/history_records/history_records_page.dart';
 import 'pages/asthma_master/asthma_master_page.dart';
 import 'pages/system_settings_page.dart';
 import 'pages/emergency_contact/emergency_contact_page.dart';
+import 'services/navigation_service.dart';
 import 'theme/app_colors.dart';
 
 void main() {
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'Asthma Passport',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

@@ -100,11 +100,11 @@ class _LoginFormState extends State<LoginForm> {
       passwordError = null;
     });
 
-    final response = await AuthService.login(email, password);
+    final result = await AuthService.login(email, password);
     if (!mounted) return;
 
-    if (response['success']) {
-      final isFirstLogin = response['is_first_login'] ?? false;
+    if (result.success) {
+      final isFirstLogin = result.data?.isFirstLogin ?? false;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => HomePage(showFirstLoginDialog: isFirstLogin),
