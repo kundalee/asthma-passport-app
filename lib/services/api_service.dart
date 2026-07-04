@@ -1,4 +1,5 @@
 import '../models/diary_models.dart';
+import '../models/peak_flow_models.dart';
 import '../models/weather_models.dart';
 import 'api_client.dart';
 
@@ -73,16 +74,44 @@ class ApiService {
     return ApiClient.failure(statusCode, data, '儲存失敗');
   }
 
-  static Future<Map<String, dynamic>> getPeakFlowStatus() async {
-    return {
-      'measurementDate': '2025/12/10',
-      'isDaytimeCompleted': true,
-      'isEveningCompleted': false,
-      'daytimeValue': 350,
-      'daytimeStatus': 1, // 1: good, 2: moderate, 3: severe
-      'eveningValue': null,
-      'eveningStatus': null,
-    };
+  static Future<ApiResult<PeakFlowStatus>> getPeakFlowStatus(String dateStr) async {
+    final (statusCode, data) = await ApiClient.send('GET', '/pefr/load?date_str=$dateStr', authenticated: true);
+
+    if (statusCode == 200) {
+      return ApiResult.success(PeakFlowStatus.fromJson(data));
+    }
+
+    return ApiClient.failure(statusCode, data, '無法取得尖峰吐氣流量資料');
+  }
+
+  // 1: good control, 2: moderate control, 3: poor control
+  static int peakFlowStatusForValue(double value) {
+    if (value >= 280) return 1;
+    if (value >= 240) return 2;
+    return 3;
+  }
+
+  static Future<ApiResult<PeakFlowSaveResult>> savePeakFlowMeasurement({
+    required String dateStr,
+    required bool isDaytime,
+    required double value,
+  }) async {
+    final (statusCode, data) = await ApiClient.send(
+      'POST',
+      '/pefr/save',
+      body: {
+        'record_date': dateStr,
+        'pefr_value': value.round(),
+        'time_day': isDaytime ? 'm' : 'n',
+      },
+      authenticated: true,
+    );
+
+    if (statusCode == 200) {
+      return ApiResult.success(PeakFlowSaveResult.fromJson(data));
+    }
+
+    return ApiClient.failure(statusCode, data, '儲存失敗');
   }
 
   static Future<Map<String, dynamic>> getActStatus() async {
@@ -257,24 +286,6 @@ class ApiService {
     ];
 
     return isAdultTest ? adultQuestions : childQuestions;
-  }
-
-
-  static Future<int> submitPeakFlowMeasurement({
-    required String measurementDate,
-    required bool isDaytime,
-    required String measurementValue,
-  }) async {
-    // TODO: Replace with actual API call
-    // Sample logic: determine status based on measurement value
-    final value = int.tryParse(measurementValue) ?? 0;
-    if (value >= 280) {
-      return 1; // Good control
-    } else if (value >= 240) {
-      return 2; // Moderate control
-    } else {
-      return 3; // Poor control
-    }
   }
 
   static Future<Map<String, dynamic>> submitAssessment({

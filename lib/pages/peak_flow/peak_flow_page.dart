@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../components/app_page_container.dart';
+import '../../models/auth_models.dart';
+import '../../models/peak_flow_models.dart';
 import '../../services/api_service.dart';
+import '../../services/auth_service.dart';
 import 'views/peak_flow_view.dart';
 import 'views/peak_flow_form_view.dart';
 import 'views/peak_flow_results_view.dart';
@@ -14,38 +17,64 @@ class PeakFlowPage extends StatefulWidget {
 }
 
 class _PeakFlowPageState extends State<PeakFlowPage> {
-  String measurementDate = '2025/12/10';
-  bool isDaytimeCompleted = false;
-  bool isEveningCompleted = false;
-  String? daytimeValue;
-  String? eveningValue;
-  int? daytimeStatus;
-  int? eveningStatus;
+  final DateTime _today = DateTime.now();
+  PeakFlowStatus? peakFlowStatus;
+  UserProfile? userProfile;
   int currentView = 0; // 0: summary, 1: form, 2: results
   bool isDaytime = true;
   String? currentResultValue;
   int? currentResultStatus;
 
+  String get _dateStr {
+    return '${_today.year}-${_today.month.toString().padLeft(2, '0')}-${_today.day.toString().padLeft(2, '0')}';
+  }
+
+  String get measurementDate {
+    return '${_today.year}/${_today.month.toString().padLeft(2, '0')}/${_today.day.toString().padLeft(2, '0')}';
+  }
+
+  bool get isDaytimeCompleted => peakFlowStatus?.morning.isCompleted ?? false;
+  bool get isEveningCompleted => peakFlowStatus?.night.isCompleted ?? false;
+
+  String? get daytimeValue => _formatValue(peakFlowStatus?.morning.value);
+  String? get eveningValue => _formatValue(peakFlowStatus?.night.value);
+
+  int? get daytimeStatus {
+    final value = peakFlowStatus?.morning.value;
+    return value == null ? null : ApiService.peakFlowStatusForValue(value);
+  }
+
+  int? get eveningStatus {
+    final value = peakFlowStatus?.night.value;
+    return value == null ? null : ApiService.peakFlowStatusForValue(value);
+  }
+
+  String? _formatValue(double? value) {
+    return value?.toStringAsFixed(0);
+  }
+
   @override
   void initState() {
     super.initState();
     _loadPeakFlowStatus();
+    _loadUserProfile();
   }
 
   Future<void> _loadPeakFlowStatus() async {
-    try {
-      final data = await ApiService.getPeakFlowStatus();
+    final result = await ApiService.getPeakFlowStatus(_dateStr);
+    if (result.success && result.data != null) {
       setState(() {
-        measurementDate = data['measurementDate'] ?? '2025/12/10';
-        isDaytimeCompleted = data['isDaytimeCompleted'] ?? false;
-        isEveningCompleted = data['isEveningCompleted'] ?? false;
-        daytimeValue = data['daytimeValue']?.toString();
-        daytimeStatus = data['daytimeStatus'];
-        eveningValue = data['eveningValue']?.toString();
-        eveningStatus = data['eveningStatus'];
+        peakFlowStatus = result.data;
       });
-    } catch (e) {
-      // Keep default values if API fails
+    }
+  }
+
+  Future<void> _loadUserProfile() async {
+    final result = await AuthService.getProfile();
+    if (result.success && result.data != null) {
+      setState(() {
+        userProfile = result.data;
+      });
     }
   }
 
@@ -90,17 +119,23 @@ class _PeakFlowPageState extends State<PeakFlowPage> {
         isEveningCompleted: isEveningCompleted,
         daytimeValue: daytimeValue,
         eveningValue: eveningValue,
+        userName: userProfile?.name ?? '',
+        age: userProfile?.age ?? '-',
+        height: userProfile?.height ?? '未填寫',
+        weight: userProfile?.weight ?? '未填寫',
         onSwitchView: _switchView,
         onViewDaytimeResults: _viewDaytimeResults,
         onViewEveningResults: _viewEveningResults,
       );
     } else {
       content = PeakFlowResultsView(
+        dateStr: _dateStr,
         measurementDate: measurementDate,
         isDaytime: isDaytime,
         measurementValue: currentResultValue ?? '',
         status: currentResultStatus,
         onSwitchView: _switchView,
+        onSaved: _loadPeakFlowStatus,
       );
     }
 

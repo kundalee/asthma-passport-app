@@ -6,19 +6,23 @@ import '../../../components/card_container.dart';
 import '../../../services/api_service.dart';
 
 class PeakFlowResultsView extends StatefulWidget {
+  final String dateStr;
   final String measurementDate;
   final bool isDaytime;
   final String measurementValue;
   final int? status;
   final Function(int) onSwitchView;
+  final VoidCallback onSaved;
 
   const PeakFlowResultsView({
     super.key,
+    required this.dateStr,
     required this.measurementDate,
     required this.isDaytime,
     required this.measurementValue,
     this.status,
     required this.onSwitchView,
+    required this.onSaved,
   });
 
   @override
@@ -45,13 +49,32 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
     super.dispose();
   }
 
-  Future<void> _submitMeasurement() async {
-    final status = await ApiService.submitPeakFlowMeasurement(
-      measurementDate: widget.measurementDate,
+  // Just computes the status locally to preview the result box; nothing is
+  // saved yet, so 重新測量 can still freely redo the reading.
+  void _previewMeasurement() {
+    final value = double.tryParse(_inputController.text) ?? 0;
+    setState(() => _statusResult = ApiService.peakFlowStatusForValue(value));
+  }
+
+  // Actually persists the reading once the user confirms the preview.
+  Future<void> _confirmMeasurement() async {
+    final value = double.tryParse(_inputController.text) ?? 0;
+    final result = await ApiService.savePeakFlowMeasurement(
+      dateStr: widget.dateStr,
       isDaytime: widget.isDaytime,
-      measurementValue: _inputController.text,
+      value: value,
     );
-    setState(() => _statusResult = status);
+
+    if (!mounted) return;
+
+    if (result.success) {
+      setState(() => _showCompletedButtons = true);
+      widget.onSaved();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message ?? '儲存失敗')),
+      );
+    }
   }
 
   @override
@@ -422,39 +445,6 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
               height: 37,
             ),
           ),
-          SizedBox(
-            width: double.infinity,
-            child: CustomButton(
-              text: '查看歷史紀錄',
-              onPressed: () {},
-              backgroundColor: AppColors.sportyBlue,
-              padding: const EdgeInsets.all(12),
-              borderRadius: 4,
-              height: 37,
-            ),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: CustomButton(
-              text: '編輯檢測結果',
-              onPressed: () {
-                setState(() {
-                  _statusResult = null;
-                  _isEditingFromCompleted = true;
-                  _showCompletedButtons = false;
-                });
-              },
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-              border: const BorderSide(
-                color: AppColors.whiteMarble,
-                width: 1,
-              ),
-              padding: const EdgeInsets.all(12),
-              borderRadius: 4,
-              height: 37,
-            ),
-          ),
         ],
       );
     } else {
@@ -466,13 +456,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
             width: double.infinity,
             child: CustomButton(
               text: _statusResult == null ? '確認' : '完成紀錄',
-              onPressed: _statusResult == null
-                  ? _submitMeasurement
-                  : () {
-                      setState(() {
-                        _showCompletedButtons = true;
-                      });
-                    },
+              onPressed: _statusResult == null ? _previewMeasurement : _confirmMeasurement,
               backgroundColor: AppColors.funGreen,
               padding: const EdgeInsets.all(12),
               borderRadius: 4,

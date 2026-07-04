@@ -10,6 +10,10 @@ class PeakFlowFormView extends StatefulWidget {
   final bool isEveningCompleted;
   final String? daytimeValue;
   final String? eveningValue;
+  final String userName;
+  final String age;
+  final String height;
+  final String weight;
   final Function(int) onSwitchView;
   final Function()? onViewDaytimeResults;
   final Function()? onViewEveningResults;
@@ -21,6 +25,10 @@ class PeakFlowFormView extends StatefulWidget {
     required this.isEveningCompleted,
     this.daytimeValue,
     this.eveningValue,
+    required this.userName,
+    required this.age,
+    required this.height,
+    required this.weight,
     required this.onSwitchView,
     this.onViewDaytimeResults,
     this.onViewEveningResults,
@@ -185,10 +193,10 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
               letterSpacing: 0,
             ),
           ),
-          _buildInfoRow('姓名', '王曉明'),
-          _buildInfoRow('年齡', '13 歲'),
-          _buildInfoRow('身高', '146 cm'),
-          _buildInfoRow('體重', '42 kg'),
+          _buildInfoRow('姓名', widget.userName),
+          _buildInfoRow('年齡', widget.age),
+          _buildInfoRow('身高', widget.height),
+          _buildInfoRow('體重', widget.weight),
         ],
       ),
     );
