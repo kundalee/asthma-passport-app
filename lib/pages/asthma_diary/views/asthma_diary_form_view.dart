@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../models/diary_models.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/custom_button.dart';
 import '../../../components/card_container.dart';
 import '../../../services/api_service.dart';
 
 class AsthmaDiaryFormView extends StatefulWidget {
+  final String dateStr;
   final String measurementDate;
   final bool isAssessmentCompleted;
+  final List<DiaryQuestion> questions;
+  final int? totalScore;
+  final String? statusSummary;
   final Function(int) onSwitchView;
+  final VoidCallback onSaved;
 
   const AsthmaDiaryFormView({
     super.key,
+    required this.dateStr,
     required this.measurementDate,
     required this.isAssessmentCompleted,
+    required this.questions,
+    required this.totalScore,
+    required this.statusSummary,
     required this.onSwitchView,
+    required this.onSaved,
   });
 
   @override
@@ -23,140 +34,112 @@ class AsthmaDiaryFormView extends StatefulWidget {
 
 class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
   late List<int?> selectedAnswers;
-  late Future<List<Map<String, dynamic>>> questionsFuture;
   bool isEditMode = false;
   bool isSubmitted = false;
   int? totalScore;
-  int? controlLevel;
-  String? controlStatus;
+  String? statusSummary;
 
   @override
   void initState() {
     super.initState();
-    selectedAnswers = List<int?>.filled(5, null);
-    questionsFuture = _loadQuestions();
+    selectedAnswers = widget.questions.map((q) => q.selectedOptionId).toList();
   }
 
-  Future<List<Map<String, dynamic>>> _loadQuestions() async {
-    final questions = await ApiService.getAssessmentQuestions();
-    if (mounted) {
+  Future<void> _saveDiary() async {
+    final result = await ApiService.saveDiary(
+      dateStr: widget.dateStr,
+      questions: widget.questions,
+      selectedOptionIds: selectedAnswers,
+    );
+
+    if (!mounted) return;
+
+    if (result.success && result.data != null) {
       setState(() {
-        for (int i = 0; i < questions.length; i++) {
-          selectedAnswers[i] = questions[i]['selected_option_id'] ?? 0;
-        }
+        totalScore = result.data!.totalScore;
+        statusSummary = result.data!.statusSummary;
+        isSubmitted = true;
       });
-    }
-    return questions;
-  }
-
-  Future<void> _saveAssessment() async {
-    try {
-      final result = await ApiService.calculateAssessmentResult(
-        answers: selectedAnswers,
+      widget.onSaved();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message ?? '儲存失敗')),
       );
-
-      if (mounted) {
-        setState(() {
-          totalScore = result['totalScore'];
-          controlLevel = result['controlLevel'];
-          controlStatus = _getControlStatusMessage(result['controlLevel']);
-          isSubmitted = true;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving assessment: $e')),
-        );
-      }
     }
   }
 
-  String _getControlStatusMessage(int level) {
-    switch (level) {
-      case 1:
-        return '症狀控制良好，請繼續維持';
-      case 2:
-        return '控制不佳，建議用藥或回診';
-      default:
-        return '';
-    }
+  int _scoreForSelected(List<DiaryOption> options, int? selectedId) {
+    if (selectedId == null) return 0;
+    return options
+        .firstWhere(
+          (o) => o.id == selectedId,
+          orElse: () => const DiaryOption(id: -1, order: 0, text: '', score: 0),
+        )
+        .score;
   }
 
   @override
   Widget build(BuildContext context) {
+    final questions = widget.questions;
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 12,
         children: [
           _buildDateSection(),
-          FutureBuilder<List<Map<String, dynamic>>>(
-            future: questionsFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              }
-
-              final questions = snapshot.data ?? [];
-
-              return CardContainer(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                borderRadius: 10,
-                child: Column(
-                  spacing: 16,
-                  children: [
-                    _buildFormHeaderContent(),
-                    ...List.generate(
-                      questions.length,
-                      (index) {
-                        final question = questions[index];
-                        return Column(
-                          spacing: 16,
-                          children: [
-                            question['type'] == 'yes_no'
-                                ? _buildYesNoQuestion(
-                                    number: question['number'],
-                                    title: question['title'],
-                                    options: List<Map<String, dynamic>>.from(question['options'] ?? []),
-                                    selectedValue: selectedAnswers[index],
-                                    onChanged: (value) => setState(() => selectedAnswers[index] = value),
-                                  )
-                                : _buildScaleQuestion(
-                                    number: question['number'],
-                                    title: question['title'],
-                                    options: List<Map<String, dynamic>>.from(question['options'] ?? []),
-                                    selectedValue: selectedAnswers[index],
-                                    onChanged: (value) => setState(() => selectedAnswers[index] = value),
-                                  ),
-                            if (index < questions.length - 1)
-                              Divider(color: AppColors.sweetGrey, height: 2),
-                          ],
-                        );
-                      },
-                    ),
-                    if (!isSubmitted && (!widget.isAssessmentCompleted || isEditMode))
-                      SizedBox(
-                        width: double.infinity,
-                        child: CustomButton(
-                          text: '儲存記錄',
-                          onPressed: _saveAssessment,
-                          backgroundColor: AppColors.funGreen,
-                          padding: const EdgeInsets.all(12),
-                          borderRadius: 4,
-                          height: 37,
-                        ),
-                      ),
-                    if (isSubmitted) _buildResultsSummary(),
-                    if (widget.isAssessmentCompleted && !isEditMode && !isSubmitted) _buildResultsSummary(),
-                  ],
+          CardContainer(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            borderRadius: 10,
+            child: Column(
+              spacing: 16,
+              children: [
+                _buildFormHeaderContent(),
+                ...List.generate(
+                  questions.length,
+                  (index) {
+                    final question = questions[index];
+                    return Column(
+                      spacing: 16,
+                      children: [
+                        question.isYesNo
+                            ? _buildYesNoQuestion(
+                                number: question.order,
+                                title: question.text,
+                                options: question.options,
+                                selectedValue: selectedAnswers[index],
+                                onChanged: (value) => setState(() => selectedAnswers[index] = value),
+                              )
+                            : _buildScaleQuestion(
+                                number: question.order,
+                                title: question.text,
+                                options: question.options,
+                                selectedValue: selectedAnswers[index],
+                                onChanged: (value) => setState(() => selectedAnswers[index] = value),
+                              ),
+                        if (index < questions.length - 1)
+                          Divider(color: AppColors.sweetGrey, height: 2),
+                      ],
+                    );
+                  },
                 ),
-              );
-            },
+                if (!isSubmitted && (!widget.isAssessmentCompleted || isEditMode))
+                  SizedBox(
+                    width: double.infinity,
+                    child: CustomButton(
+                      text: '完成紀錄',
+                      onPressed: _saveDiary,
+                      backgroundColor: AppColors.funGreen,
+                      padding: const EdgeInsets.all(12),
+                      borderRadius: 4,
+                      height: 37,
+                    ),
+                  ),
+                if (isSubmitted) _buildResultsSummary(score: totalScore ?? 0, message: statusSummary ?? ''),
+                if (widget.isAssessmentCompleted && !isEditMode && !isSubmitted)
+                  _buildResultsSummary(score: widget.totalScore ?? 0, message: widget.statusSummary ?? ''),
+              ],
+            ),
           ),
         ],
       ),
@@ -218,7 +201,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
   Widget _buildYesNoQuestion({
     required int number,
     required String title,
-    required List<Map<String, dynamic>> options,
+    required List<DiaryOption> options,
     required int? selectedValue,
     required Function(int) onChanged,
   }) {
@@ -250,7 +233,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
               ),
               child: Center(
                 child: Text(
-                  selectedValue != null ? '$selectedValue 分' : '0 分',
+                  '${_scoreForSelected(options, selectedValue)} 分',
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -271,15 +254,15 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
               return Padding(
                 padding: EdgeInsets.only(bottom: index < options.length - 1 ? 8 : 0),
                 child: GestureDetector(
-                  onTap: () => onChanged(option['id'] as int),
+                  onTap: () => onChanged(option.id),
                   child: Container(
                     height: 37,
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
-                      color: selectedValue == option['id'] ? AppColors.honeydew : Colors.white,
+                      color: selectedValue == option.id ? AppColors.honeydew : Colors.white,
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(
-                        color: selectedValue == option['id'] ? AppColors.funGreen : AppColors.whiteMarble,
+                        color: selectedValue == option.id ? AppColors.funGreen : AppColors.whiteMarble,
                         width: 1,
                       ),
                     ),
@@ -287,12 +270,12 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
                       spacing: 24,
                       children: [
                         SvgPicture.asset(
-                          selectedValue == option['id'] ? 'assets/icons/select-on.svg' : 'assets/icons/select-off.svg',
+                          selectedValue == option.id ? 'assets/icons/select-on.svg' : 'assets/icons/select-off.svg',
                           width: 24,
                           height: 24,
                         ),
                         Text(
-                          option['label'] as String,
+                          option.text,
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -316,7 +299,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
   Widget _buildScaleQuestion({
     required int number,
     required String title,
-    required List<Map<String, dynamic>> options,
+    required List<DiaryOption> options,
     required int? selectedValue,
     required Function(int) onChanged,
   }) {
@@ -349,7 +332,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
               ),
               child: Center(
                 child: Text(
-                  selectedValue != null ? '$selectedValue 分' : '0 分',
+                  '${_scoreForSelected(options, selectedValue)} 分',
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -367,7 +350,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           spacing: 4,
           children: [
-            for (int index = 0; index < 5; index++)
+            for (int index = 0; index < options.length; index++)
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -379,9 +362,9 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
                       decoration: BoxDecoration(color: _getScaleBarColor(index)),
                     ),
                     GestureDetector(
-                      onTap: () => onChanged(index),
+                      onTap: () => onChanged(options[index].id),
                       child: SvgPicture.asset(
-                        selectedValue == index ? 'assets/icons/select-on.svg' : 'assets/icons/select-off.svg',
+                        selectedValue == options[index].id ? 'assets/icons/select-on.svg' : 'assets/icons/select-off.svg',
                         width: 24,
                         height: 24,
                       ),
@@ -389,7 +372,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
                     Column(
                       children: [
                         Text(
-                          '${options[index]['id']}',
+                          '${options[index].score}',
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 12,
@@ -400,7 +383,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
                           ),
                         ),
                         Text(
-                          options[index]['label'] as String,
+                          options[index].text,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 12,
@@ -432,12 +415,11 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
     return colors[index];
   }
 
-  Widget _buildResultsSummary() {
-    final isGood = controlLevel == 1;
+  Widget _buildResultsSummary({required int score, required String message}) {
+    final isGood = score <= 2;
     final statusColor = isGood ? AppColors.funGreen : Colors.red;
     final statusBgColor = isGood ? AppColors.honeydew : AppColors.babysBottom;
     final statusIcon = isGood ? 'assets/icons/check.svg' : 'assets/icons/undone.svg';
-    final statusMessage = controlStatus ?? '';
 
     return Column(
       spacing: 16,
@@ -463,7 +445,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
                     ),
                   ),
                   Text(
-                    '$totalScore 分',
+                    '$score 分',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w500,
@@ -496,7 +478,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
                     ),
                     Expanded(
                       child: Text(
-                        statusMessage,
+                        message,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -523,21 +505,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
             height: 37,
           ),
         ),
-        SizedBox(
-          width: double.infinity,
-          child: CustomButton(
-            text: '編輯記錄',
-            onPressed: () => setState(() => isSubmitted = false),
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black,
-            border: const BorderSide(color: AppColors.whiteMarble, width: 1),
-            padding: const EdgeInsets.all(12),
-            borderRadius: 4,
-            height: 37,
-          ),
-        ),
       ],
     );
   }
-
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../components/app_page_container.dart';
+import '../../models/diary_models.dart';
 import '../../services/api_service.dart';
 import 'views/asthma_diary_view.dart';
 import 'views/asthma_diary_form_view.dart';
@@ -13,10 +14,19 @@ class AsthmaDiaryPage extends StatefulWidget {
 }
 
 class _AsthmaDiaryPageState extends State<AsthmaDiaryPage> {
-  String measurementDate = '2025/12/10';
-  bool isAssessmentCompleted = false;
-  String? measurementTime;
+  final DateTime _today = DateTime.now();
+  DiaryStatus? diaryStatus;
   int currentView = 0; // 0: diary summary, 1: assessment form
+
+  String get _dateStr {
+    return '${_today.year}-${_today.month.toString().padLeft(2, '0')}-${_today.day.toString().padLeft(2, '0')}';
+  }
+
+  String get measurementDate {
+    return '${_today.year}/${_today.month.toString().padLeft(2, '0')}/${_today.day.toString().padLeft(2, '0')}';
+  }
+
+  bool get isAssessmentCompleted => diaryStatus?.isCompleted ?? false;
 
   @override
   void initState() {
@@ -25,15 +35,11 @@ class _AsthmaDiaryPageState extends State<AsthmaDiaryPage> {
   }
 
   Future<void> _loadDiaryStatus() async {
-    try {
-      final data = await ApiService.getAsthmaDiaryStatus();
+    final result = await ApiService.getDiaryStatus(_dateStr);
+    if (result.success && result.data != null) {
       setState(() {
-        measurementDate = data['measurementDate'] ?? '2025/12/10';
-        isAssessmentCompleted = data['selfAssessment'] ?? false;
-        measurementTime = data['measurementTime'];
+        diaryStatus = result.data;
       });
-    } catch (e) {
-      // Keep default values if API fails
     }
   }
 
@@ -51,13 +57,18 @@ class _AsthmaDiaryPageState extends State<AsthmaDiaryPage> {
           ? AsthmaDiaryView(
               measurementDate: measurementDate,
               isAssessmentCompleted: isAssessmentCompleted,
-              measurementTime: measurementTime,
+              measurementTime: isAssessmentCompleted ? measurementDate : null,
               onSwitchView: _switchView,
             )
           : AsthmaDiaryFormView(
+              dateStr: _dateStr,
               measurementDate: measurementDate,
               isAssessmentCompleted: isAssessmentCompleted,
+              questions: diaryStatus?.questions ?? [],
+              totalScore: diaryStatus?.totalScore,
+              statusSummary: diaryStatus?.statusSummary,
               onSwitchView: _switchView,
+              onSaved: _loadDiaryStatus,
             ),
     );
   }

@@ -1,3 +1,4 @@
+import '../models/diary_models.dart';
 import '../models/weather_models.dart';
 import 'api_client.dart';
 
@@ -32,13 +33,44 @@ class ApiService {
     };
   }
 
-  static Future<Map<String, dynamic>> getAsthmaDiaryStatus() async {
-    final bool isCompleted = false; // toggle between true and false
-    return {
-      'measurementDate': '2025/12/10',
-      'selfAssessment': isCompleted,
-      'measurementTime': isCompleted ? '2025/12/10' : null,
-    };
+  static Future<ApiResult<DiaryStatus>> getDiaryStatus(String dateStr) async {
+    final (statusCode, data) = await ApiClient.send('GET', '/diary/load?date_str=$dateStr', authenticated: true);
+
+    if (statusCode == 200) {
+      return ApiResult.success(DiaryStatus.fromJson(data));
+    }
+
+    return ApiClient.failure(statusCode, data, '無法取得氣喘日記資料');
+  }
+
+  static Future<ApiResult<DiarySaveResult>> saveDiary({
+    required String dateStr,
+    required List<DiaryQuestion> questions,
+    required List<int?> selectedOptionIds,
+  }) async {
+    final answers = <Map<String, dynamic>>[];
+    for (int i = 0; i < questions.length && i < selectedOptionIds.length; i++) {
+      final selectedId = selectedOptionIds[i];
+      if (selectedId == null) continue;
+      final option = questions[i].options.firstWhere(
+        (o) => o.id == selectedId,
+        orElse: () => const DiaryOption(id: -1, order: 0, text: '', score: 0),
+      );
+      answers.add({'question_id': questions[i].id, 'selected_value': option.score});
+    }
+
+    final (statusCode, data) = await ApiClient.send(
+      'POST',
+      '/diary/save',
+      body: {'record_date': dateStr, 'answers': answers},
+      authenticated: true,
+    );
+
+    if (statusCode == 200) {
+      return ApiResult.success(DiarySaveResult.fromJson(data));
+    }
+
+    return ApiClient.failure(statusCode, data, '儲存失敗');
   }
 
   static Future<Map<String, dynamic>> getPeakFlowStatus() async {
@@ -227,79 +259,6 @@ class ApiService {
     return isAdultTest ? adultQuestions : childQuestions;
   }
 
-  static Future<List<Map<String, dynamic>>> getAssessmentQuestions() async {
-    final bool isCompleted = false; // toggle between true and false
-    final bool isGood = false; // toggle between true (good) and false (bad)
-
-    final selectedAnswers = isCompleted
-        ? (isGood ? [0, 1, 1, 0, 0] : [3, 1, 1, 3, 0])
-        : [0, 0, 0, 0, 0];
-
-    return [
-      {
-        'number': 1,
-        'title': '夜間咳嗽',
-        'type': 'scale',
-        'options': [
-          {'id': 0, 'label': '無症狀'},
-          {'id': 1, 'label': '輕微'},
-          {'id': 2, 'label': '中度'},
-          {'id': 3, 'label': '嚴重'},
-          {'id': 4, 'label': '極嚴重'},
-        ],
-        'selected_option_id': selectedAnswers[0],
-      },
-      {
-        'number': 2,
-        'title': '胸悶或深吸困難',
-        'type': 'scale',
-        'options': [
-          {'id': 0, 'label': '無症狀'},
-          {'id': 1, 'label': '輕微'},
-          {'id': 2, 'label': '中度'},
-          {'id': 3, 'label': '嚴重'},
-          {'id': 4, 'label': '極嚴重'},
-        ],
-        'selected_option_id': selectedAnswers[1],
-      },
-      {
-        'number': 3,
-        'title': '白天咳嗽或呼吸困難',
-        'type': 'scale',
-        'options': [
-          {'id': 0, 'label': '無症狀'},
-          {'id': 1, 'label': '輕微'},
-          {'id': 2, 'label': '中度'},
-          {'id': 3, 'label': '嚴重'},
-          {'id': 4, 'label': '極嚴重'},
-        ],
-        'selected_option_id': selectedAnswers[2],
-      },
-      {
-        'number': 4,
-        'title': '白天喘喘',
-        'type': 'scale',
-        'options': [
-          {'id': 0, 'label': '無症狀'},
-          {'id': 1, 'label': '輕微'},
-          {'id': 2, 'label': '中度'},
-          {'id': 3, 'label': '嚴重'},
-          {'id': 4, 'label': '極嚴重'},
-        ],
-        'selected_option_id': selectedAnswers[3],
-      },
-      {
-        'number': 5,
-        'title': '運動後有喘喘嗎',
-        'type': 'yes_no',
-        'options': [
-          {'id': 0, 'label': '否'},
-          {'id': 1, 'label': '是'},
-        ],
-        'selected_option_id': selectedAnswers[4],
-      },
-    ];
-  }
 
   static Future<int> submitPeakFlowMeasurement({
     required String measurementDate,
@@ -363,33 +322,6 @@ class ApiService {
       } else {
         controlLevel = 2; // Not well controlled
       }
-    }
-
-    return {
-      'totalScore': totalScore,
-      'controlLevel': controlLevel,
-      'measurementDate': DateTime.now().toString().split(' ')[0],
-    };
-  }
-
-  static Future<Map<String, dynamic>> calculateAssessmentResult({
-    required List<int?> answers,
-  }) async {
-    // TODO: Replace with actual API call
-    // Calculate total score based on answers
-    int totalScore = 0;
-    for (final answer in answers) {
-      if (answer != null) {
-        totalScore += answer;
-      }
-    }
-
-    // Determine control level based on score
-    int controlLevel;
-    if (totalScore <= 2) {
-      controlLevel = 1; // Good control
-    } else {
-      controlLevel = 2; // Poor control
     }
 
     return {
