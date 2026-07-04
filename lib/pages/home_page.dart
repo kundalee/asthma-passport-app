@@ -3,6 +3,7 @@ import '../theme/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
+import '../services/location_service.dart';
 import '../components/app_page_container.dart';
 import '../components/custom_dialog.dart';
 
@@ -22,6 +23,8 @@ class _HomePageState extends State<HomePage> {
   double temperature = 0;
   int humidity = 0;
   double pm25 = 0;
+  double? latitude;
+  double? longitude;
   List<Map<String, dynamic>> todayTests = [];
 
   @override
@@ -29,7 +32,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _checkLoginStatus();
     _loadUserName();
-    _loadWeatherData();
+    _loadLocationAndWeather();
     _loadTodayTests();
     if (widget.showFirstLoginDialog) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -52,17 +55,26 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<void> _loadWeatherData() async {
-    try {
-      final data = await ApiService.getWeather('taipei');
+  Future<void> _loadLocationAndWeather() async {
+    final location = await LocationService.getCurrentLocation();
+    if (location != null) {
       setState(() {
-        aqi = data['aqi'] ?? 0;
-        temperature = (data['temperature'] ?? 0).toDouble();
-        humidity = data['humidity'] ?? 0;
-        pm25 = (data['pm25'] ?? 0).toDouble();
+        latitude = location.$1;
+        longitude = location.$2;
       });
-    } catch (e) {
-      // Weather data failed to load, keep default values
+    }
+
+    // TODO: Once station_name is resolved from (latitude, longitude), pass
+    // it here instead of the fixed '萬華'.
+    final result = await ApiService.getWeather('萬華');
+    final weather = result.data;
+    if (result.success && weather != null) {
+      setState(() {
+        aqi = weather.aqi;
+        temperature = weather.temperature;
+        humidity = weather.humidity;
+        pm25 = weather.pm25;
+      });
     }
   }
 

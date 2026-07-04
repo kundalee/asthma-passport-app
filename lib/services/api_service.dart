@@ -1,11 +1,15 @@
+import '../models/weather_models.dart';
+import 'api_client.dart';
+
 class ApiService {
-  static Future<Map<String, dynamic>> getWeather(String location) async {
-    return {
-      'aqi': 39,
-      'temperature': 24.5,
-      'humidity': 10,
-      'pm25': 12.3,
-    };
+  static Future<ApiResult<WeatherInfo>> getWeather(String stationName) async {
+    final (statusCode, data) = await ApiClient.send('GET', '/weather/info?station_name=$stationName');
+
+    if (statusCode == 200) {
+      return ApiResult.success(WeatherInfo.fromJson(data['data']));
+    }
+
+    return ApiClient.failure(statusCode, data, '無法取得天氣資訊');
   }
 
   static Future<List<Map<String, dynamic>>> getTodayTests() async {
