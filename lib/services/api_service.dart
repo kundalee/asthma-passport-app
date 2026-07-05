@@ -1,3 +1,4 @@
+import '../models/act_models.dart';
 import '../models/diary_models.dart';
 import '../models/passport_models.dart';
 import '../models/peak_flow_models.dart';
@@ -15,11 +16,30 @@ class ApiService {
     return ApiClient.failure(statusCode, data, '無法取得天氣資訊');
   }
 
+  static String _todayDateStr() {
+    final now = DateTime.now();
+    return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+  }
+
   static Future<List<Map<String, dynamic>>> getTodayTests() async {
+    final dateStr = _todayDateStr();
+
+    final diaryFuture = getDiaryStatus(dateStr);
+    final peakFlowFuture = getPeakFlowStatus(dateStr);
+    final actFuture = getActStatus(dateStr);
+
+    final diaryResult = await diaryFuture;
+    final peakFlowResult = await peakFlowFuture;
+    final actResult = await actFuture;
+
+    final isDiaryDone = diaryResult.data?.isCompleted ?? false;
+    final isPeakFlowDone = (peakFlowResult.data?.morning.isCompleted ?? false) && (peakFlowResult.data?.night.isCompleted ?? false);
+    final isActDone = actResult.data?.isCompleted ?? false;
+
     return [
-      {'id': 1, 'name': '氣喘日記', 'status': 0},
-      {'id': 2, 'name': '尖峰吐氣流量', 'status': 0},
-      {'id': 3, 'name': '氣喘控制測驗', 'status': 0},
+      {'id': 1, 'name': '氣喘日記', 'status': isDiaryDone ? 1 : 0},
+      {'id': 2, 'name': '尖峰吐氣流量', 'status': isPeakFlowDone ? 1 : 0},
+      {'id': 3, 'name': '氣喘控制測驗', 'status': isActDone ? 1 : 0},
     ];
   }
 
@@ -123,13 +143,14 @@ class ApiService {
     return ApiClient.failure(statusCode, data, '儲存失敗');
   }
 
-  static Future<Map<String, dynamic>> getActStatus() async {
-    final bool isCompleted = false; // toggle between true and false
-    return {
-      'measurementDate': '2025/12',
-      'selfAssessment': isCompleted,
-      'measurementTime': isCompleted ? '2025/12/10' : null,
-    };
+  static Future<ApiResult<ActStatus>> getActStatus(String dateStr) async {
+    final (statusCode, data) = await ApiClient.send('GET', '/act/load?date_str=$dateStr', authenticated: true);
+
+    if (statusCode == 200) {
+      return ApiResult.success(ActStatus.fromJson(data));
+    }
+
+    return ApiClient.failure(statusCode, data, '無法取得氣喘控制測驗資料');
   }
 
   static Future<List<Map<String, dynamic>>> getActQuestions(bool isAdultTest) async {

@@ -29,15 +29,17 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
   }
 
   Future<void> _loadActStatus() async {
-    try {
-      final data = await ApiService.getActStatus();
+    final now = DateTime.now();
+    final dateStr = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    final displayMonth = '${now.year}/${now.month.toString().padLeft(2, '0')}';
+
+    final result = await ApiService.getActStatus(dateStr);
+    if (result.success && result.data != null) {
       setState(() {
-        measurementDate = data['measurementDate'] ?? '2025/12';
-        isAssessmentCompleted = data['selfAssessment'] ?? false;
-        measurementTime = data['measurementTime'];
+        measurementDate = displayMonth;
+        isAssessmentCompleted = result.data!.isCompleted;
+        measurementTime = result.data!.isCompleted ? displayMonth : null;
       });
-    } catch (e) {
-      // Keep default values if API fails
     }
   }
 
