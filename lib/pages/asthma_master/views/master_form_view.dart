@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../models/master_models.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/form_card.dart';
 import '../../../components/card_container.dart';
@@ -21,9 +22,9 @@ class MasterFormView extends StatefulWidget {
 }
 
 class _MasterFormViewState extends State<MasterFormView> {
+  List<MasterQuestion> masterQuestions = [];
   List<Map<String, dynamic>> questionsData = [];
-  int? totalScore;
-  int? resultLevel;
+  MasterQuizResult? quizResult;
 
   @override
   void initState() {
@@ -32,26 +33,47 @@ class _MasterFormViewState extends State<MasterFormView> {
   }
 
   Future<void> _loadQuestions() async {
-    try {
-      final data = await ApiService.getMasterQuestions();
+    final result = await ApiService.getMasterQuestions();
+    if (result.success && result.data != null) {
       setState(() {
-        questionsData = List<Map<String, dynamic>>.from(data);
+        masterQuestions = result.data!.questions;
+        questionsData = masterQuestions
+          .map((q) => {
+            'title': q.text,
+            'options': q.options.map((o) => {'id': o.id, 'label': o.text}).toList(),
+          })
+          .toList();
       });
-    } catch (e) {
-      // Keep default values if API fails
     }
   }
 
   Future<void> _submitQuiz(List<int?> answers) async {
-    try {
-      final result = await ApiService.calculateMasterResult(answers: answers);
-      setState(() {
-        totalScore = result['totalScore'];
-        resultLevel = result['resultLevel'];
-      });
-    } catch (e) {
-      // Handle error
+    final payload = <Map<String, dynamic>>[];
+    for (int i = 0; i < masterQuestions.length && i < answers.length; i++) {
+      final selectedId = answers[i];
+      if (selectedId == null) continue;
+      final option = masterQuestions[i].options.firstWhere(
+        (o) => o.id == selectedId,
+        orElse: () => const MasterOption(id: -1, code: '', text: ''),
+      );
+      payload.add({'question_id': masterQuestions[i].id, 'selected_option_code': option.code});
     }
+
+    final result = await ApiService.saveMasterQuiz(payload);
+    if (!mounted) return;
+
+    if (result.success && result.data != null) {
+      setState(() => quizResult = result.data);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message ?? '儲存失敗')),
+      );
+    }
+  }
+
+  bool get _isMaster {
+    final result = quizResult;
+    return result != null && masterQuestions.isNotEmpty && result.correctAnswersCount == masterQuestions.length;
   }
 
   @override
@@ -91,8 +113,8 @@ class _MasterFormViewState extends State<MasterFormView> {
   }
 
   Widget _buildResultIcon() {
-    final iconColor = resultLevel == 1 ? AppColors.mustardGold : AppColors.digitalRed;
-    final iconPath = resultLevel == 1 ? 'assets/icons/crown.svg' : 'assets/icons/alert-info.svg';
+    final iconColor = _isMaster ? AppColors.mustardGold : AppColors.digitalRed;
+    final iconPath = _isMaster ? 'assets/icons/crown.svg' : 'assets/icons/alert-info.svg';
 
     return Container(
       width: 64,
@@ -117,7 +139,7 @@ class _MasterFormViewState extends State<MasterFormView> {
       spacing: 12,
       children: [
         Text(
-          _getResultTitle(),
+          quizResult?.summaryTitle ?? '',
           style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w500,
@@ -128,7 +150,7 @@ class _MasterFormViewState extends State<MasterFormView> {
           textAlign: TextAlign.center,
         ),
         Text(
-          _getResultSubtitle(),
+          quizResult?.summarySubtitle ?? '',
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
@@ -164,7 +186,7 @@ class _MasterFormViewState extends State<MasterFormView> {
             ),
           ),
           Text(
-            '${totalScore ?? 0} 分',
+            '${quizResult?.finalScore ?? 0} 分',
             style: const TextStyle(
               fontSize: 40,
               fontWeight: FontWeight.w500,
@@ -202,8 +224,7 @@ class _MasterFormViewState extends State<MasterFormView> {
         text: '再測一次',
         onPressed: () {
           setState(() {
-            totalScore = null;
-            resultLevel = null;
+            quizResult = null;
           });
           _loadQuestions();
           widget.onSwitchView(0);
@@ -229,15 +250,5 @@ class _MasterFormViewState extends State<MasterFormView> {
       ),
       textAlign: TextAlign.center,
     );
-  }
-
-  String _getResultTitle() {
-    return resultLevel == 1 ? '恭喜！氣喘達人' : '差一點就是達人了！';
-  }
-
-  String _getResultSubtitle() {
-    return resultLevel == 1
-        ? '你對氣喘防護有著頂尖的認識！'
-        : '你對氣喘防護的認識還不夠全面！';
   }
 }

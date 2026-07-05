@@ -1,5 +1,6 @@
 import '../models/act_models.dart';
 import '../models/diary_models.dart';
+import '../models/master_models.dart';
 import '../models/passport_models.dart';
 import '../models/peak_flow_models.dart';
 import '../models/weather_models.dart';
@@ -372,89 +373,29 @@ class ApiService {
     };
   }
 
-  static Future<List<Map<String, dynamic>>> getMasterQuestions() async {
-    return [
-      {
-        'number': 1,
-        'title': '問題一：我的氣喘能痊癒嗎 ?',
-        'type': 'scale',
-        'options': [
-          {'id': 1, 'label': '對於未發育的兒童而言，若有穩定治療控制，加上環境控制，是有機會可痊癒。', 'score': 20},
-          {'id': 2, 'label': '不能，需終生使用控制藥物。', 'score': 0},
-          {'id': 3, 'label': '能，長大會自行痊癒。', 'score': 0},
-        ],
-      },
-      {
-        'number': 2,
-        'title': '問題二：我的氣喘能痊癒嗎 ?',
-        'type': 'scale',
-        'options': [
-          {'id': 1, 'label': '對於未發育的兒童而言，若有穩定治療控制，加上環境控制，是有機會可痊癒。', 'score': 20},
-          {'id': 2, 'label': '不能，需終生使用控制藥物。', 'score': 0},
-          {'id': 3, 'label': '能，長大會自行痊癒。', 'score': 0},
-        ],
-      },
-      {
-        'number': 3,
-        'title': '問題三：我的氣喘能痊癒嗎 ?',
-        'type': 'scale',
-        'options': [
-          {'id': 1, 'label': '對於未發育的兒童而言，若有穩定治療控制，加上環境控制，是有機會可痊癒。', 'score': 20},
-          {'id': 2, 'label': '不能，需終生使用控制藥物。', 'score': 0},
-          {'id': 3, 'label': '能，長大會自行痊癒。', 'score': 0},
-        ],
-      },
-      {
-        'number': 4,
-        'title': '問題四：我的氣喘能痊癒嗎 ?',
-        'type': 'scale',
-        'options': [
-          {'id': 1, 'label': '對於未發育的兒童而言，若有穩定治療控制，加上環境控制，是有機會可痊癒。', 'score': 20},
-          {'id': 2, 'label': '不能，需終生使用控制藥物。', 'score': 0},
-          {'id': 3, 'label': '能，長大會自行痊癒。', 'score': 0},
-        ],
-      },
-      {
-        'number': 5,
-        'title': '問題五：我的氣喘能痊癒嗎 ?',
-        'type': 'scale',
-        'options': [
-          {'id': 1, 'label': '對於未發育的兒童而言，若有穩定治療控制，加上環境控制，是有機會可痊癒。', 'score': 20},
-          {'id': 2, 'label': '不能，需終生使用控制藥物。', 'score': 0},
-          {'id': 3, 'label': '能，長大會自行痊癒。', 'score': 0},
-        ],
-      },
-    ];
-  }
+  static Future<ApiResult<MasterQuiz>> getMasterQuestions() async {
+    final (statusCode, data) = await ApiClient.send('GET', '/quiz/load', authenticated: true);
 
-  static Future<Map<String, dynamic>> calculateMasterResult({
-    required List<int?> answers,
-  }) async {
-    // Get questions to access scoring data
-    final questions = await getMasterQuestions();
-
-    // Calculate total score based on selected answer scores
-    int totalScore = 0;
-    for (int i = 0; i < answers.length && i < questions.length; i++) {
-      if (answers[i] != null) {
-        final question = questions[i];
-        final options = List<Map<String, dynamic>>.from(question['options'] ?? []);
-        final selectedOption = options.firstWhere(
-          (opt) => opt['id'] == answers[i],
-          orElse: () => {'score': 0},
-        );
-        totalScore += (selectedOption['score'] as int? ?? 0);
-      }
+    if (statusCode == 200) {
+      return ApiResult.success(MasterQuiz.fromJson(data));
     }
 
-    // Determine result level
-    int resultLevel = totalScore == 100 ? 1 : 2;
+    return ApiClient.failure(statusCode, data, '無法取得測驗題目');
+  }
 
-    return {
-      'totalScore': totalScore,
-      'resultLevel': resultLevel,
-      'measurementDate': DateTime.now().toString().split(' ')[0],
-    };
+  static Future<ApiResult<MasterQuizResult>> saveMasterQuiz(List<Map<String, dynamic>> answers) async {
+    final (statusCode, data) = await ApiClient.send(
+      'POST',
+      '/quiz/save',
+      body: {'answers': answers},
+      authenticated: true,
+    );
+
+    if (statusCode == 200) {
+      return ApiResult.success(MasterQuizResult.fromJson(data));
+    }
+
+    return ApiClient.failure(statusCode, data, '無法儲存測驗結果');
   }
 
   static Future<List<String>> getHistoryMonths() async {
