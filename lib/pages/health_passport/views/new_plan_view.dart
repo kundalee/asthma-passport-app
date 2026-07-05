@@ -475,37 +475,48 @@ class _NewPlanViewState extends State<NewPlanView> {
                   ),
                 ),
                 const Divider(height: 2, color: AppColors.sweetGrey),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 8,
-                    children: [
-                      const Text(
-                        '控制藥物',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
-                      ),
-                      for (int i = 0; i < controlMedicationEntries.length; i++)
-                        _buildPreviewMedicationEntry(controlMedicationEntries[i], i),
-                    ],
+                if (selectedLevel == 'bad')
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    child: Image.asset(
+                      'assets/images/emergency_instruction.png',
+                      width: double.infinity,
+                      fit: BoxFit.contain,
+                    ),
+                  )
+                else ...[
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 8,
+                      children: [
+                        const Text(
+                          '控制藥物',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
+                        ),
+                        for (int i = 0; i < controlMedicationEntries.length; i++)
+                          _buildPreviewMedicationEntry(controlMedicationEntries[i], i),
+                      ],
+                    ),
                   ),
-                ),
-                const Divider(height: 2, color: AppColors.sweetGrey),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 8,
-                    children: [
-                      const Text(
-                        '緩解藥物',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
-                      ),
-                      for (int i = 0; i < reliefMedicationEntries.length; i++)
-                        _buildPreviewMedicationEntry(reliefMedicationEntries[i], i),
-                    ],
+                  const Divider(height: 2, color: AppColors.sweetGrey),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 8,
+                      children: [
+                        const Text(
+                          '緩解藥物',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
+                        ),
+                        for (int i = 0; i < reliefMedicationEntries.length; i++)
+                          _buildPreviewMedicationEntry(reliefMedicationEntries[i], i),
+                      ],
+                    ),
                   ),
-                ),
+                ],
                 const Divider(height: 2, color: AppColors.sweetGrey),
                 Container(
                   padding: const EdgeInsets.all(8),
