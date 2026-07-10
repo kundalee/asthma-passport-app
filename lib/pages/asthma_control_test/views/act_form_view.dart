@@ -213,7 +213,7 @@ class _ActFormViewState extends State<ActFormView> {
         case 1:
           return AppColors.honeydew;
         case 2:
-          return AppColors.butteryWhite2;
+          return AppColors.secondaryYellow;
         case 3:
           return AppColors.babysBottom;
         default:
@@ -224,7 +224,7 @@ class _ActFormViewState extends State<ActFormView> {
         case 1:
           return AppColors.honeydew;
         case 2:
-          return AppColors.butteryWhite2;
+          return AppColors.secondaryYellow;
         default:
           return Colors.grey.shade100;
       }
@@ -237,7 +237,7 @@ class _ActFormViewState extends State<ActFormView> {
         case 1:
           return AppColors.lightPastelMint;
         case 2:
-          return AppColors.brightCanaryYellow;
+          return AppColors.darkYellow;
         case 3:
           return AppColors.spicyPastelPink;
         default:
@@ -248,7 +248,7 @@ class _ActFormViewState extends State<ActFormView> {
         case 1:
           return AppColors.lightPastelMint;
         case 2:
-          return AppColors.brightCanaryYellow;
+          return AppColors.darkYellow;
         default:
           return Colors.grey;
       }

@@ -3,7 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/card_container.dart';
 import '../../../components/custom_button.dart';
-import '../../../services/emergency_contact_service.dart';
+import '../../../services/api_service.dart';
+import '../../../services/auth_service.dart';
 
 class PatientInfoView extends StatefulWidget {
   final Function(int) onSwitchTab;
@@ -18,25 +19,25 @@ class PatientInfoView extends StatefulWidget {
 }
 
 class _PatientInfoViewState extends State<PatientInfoView> {
-  final EmergencyContactService _service = EmergencyContactService();
-
   bool _basicExpanded = false;
   bool _allergyExpanded = false;
   bool _medicationExpanded = false;
   bool _isEditing = false;
 
-  final Map<String, String> _basicInfo = {
-    '姓名': '王小明',
-    '性別': '男性',
-    '生日': '2016/03/15',
-    '年齡': '8歲',
-    '身高': '135cm',
-    '體重': '28kg',
-    '血型': 'A型',
+  Map<String, String> _basicInfo = {
+    '姓名': '',
+    '性別': '',
+    '生日': '',
+    '年齡': '',
+    '身高': '',
+    '體重': '',
+    '血型': '',
   };
 
-  late List<String> _allergies;
-  late List<String> _medications;
+  List<String> _allergies = [];
+  List<String> _medications = [];
+  Map<String, String> _allergenIds = {};
+  Map<String, String> _medicationIds = {};
 
   late List<String> _editAllergies;
   late List<String> _editMedications;
@@ -47,8 +48,47 @@ class _PatientInfoViewState extends State<PatientInfoView> {
   @override
   void initState() {
     super.initState();
-    _allergies = _service.getAllergies();
-    _medications = _service.getMedications();
+    _loadProfile();
+    _loadAllergensAndMedications();
+  }
+
+  Future<void> _loadProfile() async {
+    final result = await AuthService.getProfile();
+    if (!mounted) return;
+    if (result.success && result.data != null) {
+      final profile = result.data!;
+      setState(() {
+        _basicInfo = {
+          '姓名': profile.name,
+          '性別': profile.gender,
+          '生日': profile.birthday,
+          '年齡': profile.age,
+          '身高': profile.height,
+          '體重': profile.weight,
+          '血型': profile.bloodType,
+        };
+      });
+    }
+  }
+
+  Future<void> _loadAllergensAndMedications() async {
+    final allergensFuture = ApiService.getAllergens();
+    final medicationsFuture = ApiService.getMedications();
+
+    final allergensResult = await allergensFuture;
+    final medicationsResult = await medicationsFuture;
+    if (!mounted) return;
+
+    setState(() {
+      if (allergensResult.success && allergensResult.data != null) {
+        _allergies = allergensResult.data!.map((a) => a.name).toList();
+        _allergenIds = {for (final a in allergensResult.data!) a.name: a.id.toString()};
+      }
+      if (medicationsResult.success && medicationsResult.data != null) {
+        _medications = medicationsResult.data!.map((m) => m.name).toList();
+        _medicationIds = {for (final m in medicationsResult.data!) m.name: m.id.toString()};
+      }
+    });
   }
 
   @override
@@ -70,14 +110,65 @@ class _PatientInfoViewState extends State<PatientInfoView> {
     });
   }
 
-  void _saveEditing() {
-    _service.saveAllergies(_editAllergies);
-    _service.saveMedications(_editMedications);
+  Future<void> _saveEditing() async {
+    final newAllergies = _editAllergies.where((a) => !_allergies.contains(a)).toList();
+    final removedAllergies = _allergies.where((a) => !_editAllergies.contains(a)).toList();
+
+    for (final allergen in newAllergies) {
+      final result = await ApiService.saveAllergen(allergen);
+      if (!mounted) return;
+      if (!result.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message ?? '儲存過敏原失敗，請稍後再試')),
+        );
+        return;
+      }
+    }
+
+    for (final allergen in removedAllergies) {
+      final id = _allergenIds[allergen];
+      if (id == null) continue;
+      final result = await ApiService.deleteAllergen(id);
+      if (!mounted) return;
+      if (!result.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message ?? '刪除過敏原失敗，請稍後再試')),
+        );
+        return;
+      }
+    }
+
+    final newMedications = _editMedications.where((m) => !_medications.contains(m)).toList();
+    final removedMedications = _medications.where((m) => !_editMedications.contains(m)).toList();
+
+    for (final medication in newMedications) {
+      final result = await ApiService.saveMedication(medication);
+      if (!mounted) return;
+      if (!result.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message ?? '儲存用藥資訊失敗，請稍後再試')),
+        );
+        return;
+      }
+    }
+
+    for (final medication in removedMedications) {
+      final id = _medicationIds[medication];
+      if (id == null) continue;
+      final result = await ApiService.deleteMedication(id);
+      if (!mounted) return;
+      if (!result.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message ?? '刪除用藥資訊失敗，請稍後再試')),
+        );
+        return;
+      }
+    }
+
     setState(() {
-      _allergies = List.from(_editAllergies);
-      _medications = List.from(_editMedications);
       _isEditing = false;
     });
+    await _loadAllergensAndMedications();
   }
 
   void _cancelEditing() {
@@ -104,6 +195,80 @@ class _PatientInfoViewState extends State<PatientInfoView> {
       _editMedications.add(text);
       _medicationInputController.clear();
     });
+  }
+
+  void _showAddTagDialog({
+    required String title,
+    required TextEditingController controller,
+    required VoidCallback onAdd,
+  }) {
+    controller.clear();
+    showDialog(
+      context: context,
+      builder: (dialogContext) => Dialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: AppColors.whiteMarble, width: 1),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 24,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.black, height: 1.6, letterSpacing: 0),
+              ),
+              TextField(
+                controller: controller,
+                autofocus: true,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.625, letterSpacing: 0),
+                decoration: InputDecoration(
+                  hintText: '請輸入新增項目',
+                  hintStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.625, letterSpacing: 0),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                  filled: true,
+                  fillColor: AppColors.powder,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.whiteMarble, width: 2)),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.whiteMarble, width: 2)),
+                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(color: AppColors.whiteMarble, width: 2)),
+                ),
+                onSubmitted: (_) {
+                  onAdd();
+                  Navigator.pop(dialogContext);
+                },
+              ),
+              Column(
+                spacing: 12,
+                children: [
+                  CustomButton(
+                    text: '新增',
+                    onPressed: () {
+                      onAdd();
+                      Navigator.pop(dialogContext);
+                    },
+                    backgroundColor: AppColors.funGreen,
+                    foregroundColor: Colors.white,
+                    height: 44,
+                    borderRadius: 4,
+                  ),
+                  CustomButton(
+                    text: '取消',
+                    onPressed: () => Navigator.pop(dialogContext),
+                    backgroundColor: AppColors.primaryRed,
+                    foregroundColor: Colors.white,
+                    height: 44,
+                    borderRadius: 4,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -139,29 +304,33 @@ class _PatientInfoViewState extends State<PatientInfoView> {
             title: '過敏史',
             expanded: _allergyExpanded,
             onTap: () => setState(() => _allergyExpanded = !_allergyExpanded),
-            backgroundColor: AppColors.babysBottom,
+            backgroundColor: AppColors.secondaryRed,
             items: _isEditing ? _editAllergies : _allergies,
-            chipColor: AppColors.babysBottom,
-            chipTextColor: const Color(0xFF82181A),
-            chipBorderColor: AppColors.spicyPastelPink,
-            inputController: _allergyInputController,
-            inputHint: '請輸入過敏原',
-            onAddTag: _addAllergyTag,
+            chipColor: AppColors.secondaryRed,
+            chipTextColor: AppColors.primaryRed,
+            chipBorderColor: AppColors.darkRed,
             onRemoveTag: (index) { setState(() => _editAllergies.removeAt(index)); },
+            onAddTagPressed: () => _showAddTagDialog(
+              title: '新增過敏原',
+              controller: _allergyInputController,
+              onAdd: _addAllergyTag,
+            ),
           ),
           _buildChipSection(
             title: '目前用藥',
             expanded: _medicationExpanded,
             onTap: () => setState(() => _medicationExpanded = !_medicationExpanded),
-            backgroundColor: AppColors.butteryWhite2,
+            backgroundColor: AppColors.secondaryYellow,
             items: _isEditing ? _editMedications : _medications,
-            chipColor: AppColors.butteryWhite2,
-            chipTextColor: AppColors.windsorTan,
-            chipBorderColor: AppColors.brightCanaryYellow,
-            inputController: _medicationInputController,
-            inputHint: '請輸入使用藥物',
-            onAddTag: _addMedicationTag,
+            chipColor: AppColors.secondaryYellow,
+            chipTextColor: AppColors.primaryYellow,
+            chipBorderColor: AppColors.darkYellow,
             onRemoveTag: (index) { setState(() => _editMedications.removeAt(index)); },
+            onAddTagPressed: () => _showAddTagDialog(
+              title: '新增用藥',
+              controller: _medicationInputController,
+              onAdd: _addMedicationTag,
+            ),
           ),
           if (_isEditing)
             Column(
@@ -177,7 +346,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
                 CustomButton(
                   text: '取消編輯',
                   onPressed: _cancelEditing,
-                  backgroundColor: AppColors.strongRed,
+                  backgroundColor: AppColors.primaryRed,
                   foregroundColor: Colors.white,
                   height: 44,
                 ),
@@ -209,7 +378,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
         decoration: BoxDecoration(
           color: backgroundColor,
           border: const Border(
-            bottom: BorderSide(color: Color(0xFFE5E7EB), width: 1),
+            bottom: BorderSide(color: AppColors.whiteMarble, width: 1),
           ),
         ),
         child: Row(
@@ -219,7 +388,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF101828),
+                color: AppColors.mirage,
                 height: 1.5,
                 letterSpacing: 0,
               ),
@@ -245,7 +414,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+        border: Border.all(color: AppColors.whiteMarble, width: 1),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
@@ -310,15 +479,13 @@ class _PatientInfoViewState extends State<PatientInfoView> {
     required Color chipColor,
     required Color chipTextColor,
     required Color chipBorderColor,
-    TextEditingController? inputController,
-    String? inputHint,
-    VoidCallback? onAddTag,
     void Function(int)? onRemoveTag,
+    VoidCallback? onAddTagPressed,
   }) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+        border: Border.all(color: AppColors.whiteMarble, width: 1),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
@@ -333,72 +500,101 @@ class _PatientInfoViewState extends State<PatientInfoView> {
             if (expanded) ...[
               Padding(
                 padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 12,
-                  children: [
-                    if (_isEditing && inputController != null)
-                      TextField(
-                        controller: inputController,
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xFF4A5565), height: 1.5, letterSpacing: 0),
-                        decoration: InputDecoration(
-                          hintText: inputHint,
-                          hintStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xFF4A5565), height: 1.5, letterSpacing: 0),
-                          contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: const BorderSide(color: Color(0xFFE5E7EB), width: 1),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: const BorderSide(color: Color(0xFFE5E7EB), width: 1),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            borderSide: BorderSide(color: Color(0xFFE5E7EB), width: 1),
-                          ),
-                        ),
-                        onSubmitted: (_) => onAddTag?.call(),
-                      ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Wrap(
-                        alignment: WrapAlignment.start,
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: items.map((item) {
-                          return Container(
-                            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                            decoration: BoxDecoration(
-                              color: chipColor,
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: chipBorderColor, width: 2),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  item,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: chipTextColor,
-                                    height: 1.5,
-                                    letterSpacing: 0,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ],
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Wrap(
+                    alignment: WrapAlignment.start,
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      ...List.generate(items.length, (index) {
+                        return _buildChip(
+                          text: items[index],
+                          chipColor: chipColor,
+                          chipTextColor: chipTextColor,
+                          chipBorderColor: chipBorderColor,
+                          onRemove: _isEditing ? () => onRemoveTag?.call(index) : null,
+                        );
+                      }),
+                      if (_isEditing) _buildAddTagChip(onTap: onAddTagPressed),
+                    ],
+                  ),
                 ),
               ),
             ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChip({
+    required String text,
+    required Color chipColor,
+    required Color chipTextColor,
+    required Color chipBorderColor,
+    VoidCallback? onRemove,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      decoration: BoxDecoration(
+        color: chipColor,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: chipBorderColor, width: 2),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8,
+        children: [
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: chipTextColor,
+              height: 1.5,
+              letterSpacing: 0,
+            ),
+          ),
+          if (onRemove != null)
+            GestureDetector(
+              onTap: onRemove,
+              child: SvgPicture.asset(
+                'assets/icons/undone.svg',
+                width: 24,
+                height: 24,
+                colorFilter: ColorFilter.mode(chipTextColor, BlendMode.srcIn),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAddTagChip({VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColors.midGray, width: 2),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 8,
+          children: [
+            const Text(
+              '新增',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.midGray, height: 1.625, letterSpacing: 0),
+            ),
+            SvgPicture.asset(
+              'assets/icons/add.svg',
+              width: 24,
+              height: 24,
+              colorFilter: const ColorFilter.mode(AppColors.midGray, BlendMode.srcIn),
+            ),
           ],
         ),
       ),

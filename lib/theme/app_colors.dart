@@ -22,31 +22,34 @@ class AppColors {
   static const Color gangsterGold = Color(0xFFFFD230);
   static const Color goldenPoppy = Color(0xFFFDC700);
   static const Color goldenPoppy70 = Color(0xB3FDC700);
-  static const Color brightCanaryYellow = Color(0xFFFFDF20);
+  static const Color darkYellow = Color(0xFFFFDF20); // Dark/Yellow
   static const Color glossyGold = Color(0xFFFFE082);
   static const Color tranquilYellow = Color(0xFFFEE685);
   static const Color lightYellow = Color(0xFFFFFFE0);
   static const Color beeswax = Color(0xFFFEF3C6);
   static const Color halfSpanishWhite = Color(0xFFFEF5DB);
-  static const Color butteryWhite2 = Color(0xFFFEFCE8);
+  static const Color secondaryYellow = Color(0xFFFEFCE8); // Secondary/Yellow
   static const Color butteryWhite = Color(0xFFFFFBEB);
 
   // Oranges & Browns
   static const Color newAmber = Color(0xFF7B3306);
   static const Color brown = Color(0xFF973C00);
   static const Color windsorTan = Color(0xFFA65F00);
+  static const Color primaryYellow = Color(0xFFBF8915); // Primary/Yellow
   static const Color rawSienna = Color(0xFFC35E18);
   static const Color metallicOrange = Color(0xFFF97316);
 
   // Reds & Pinks
   static const Color poppy = Color(0xFFDC2626);
-  static const Color strongRed = Color(0xFFE7000B);
+  static const Color primaryRed = Color(0xFFE7000B); // Primary/Red
   static const Color digitalRed = Color(0xFFFF0000);
   static const Color comfortingLightRed = Color(0xFFEF6464);
+  static const Color darkRed = Color(0xFFF54C5F); // Dark/Red
   static const Color spicyPastelPink = Color(0xFFFFC9C9);
   static const Color eva = Color(0xFFFDCDCD);
   static const Color lightPink = Color(0xFFFFB6C1);
   static const Color babysBottom = Color(0xFFFEF2F2);
+  static const Color secondaryRed = Color(0xFFFFF4F5); // Secondary/Red
 
   // Blues
   static const Color solidBlue = Color(0xFF155DFC);
@@ -60,7 +63,9 @@ class AppColors {
   // Greys & Whites
   static const Color mirage = Color(0xFF101828);
   static const Color hydrocarbon = Color(0xFF4A5565);
+  static const Color midGray = Color(0xFF65737A);
   static const Color sharkGray = Color(0xFF6B7280);
+  static const Color coolGray = Color(0xFF9CA3AF);
   static const Color sweetGrey = Color(0xFFD9D9D9);
   static const Color whiteMarble = Color(0xFFE5E7EB);
   static const Color cultured = Color(0xFFF3F3F5);

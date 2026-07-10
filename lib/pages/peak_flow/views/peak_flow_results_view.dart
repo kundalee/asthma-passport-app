@@ -367,8 +367,8 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
         statusText = '控制良好，請繼續保持';
         break;
       case 2:
-        backgroundColor = AppColors.butteryWhite2;
-        borderColor = AppColors.brightCanaryYellow;
+        backgroundColor = AppColors.secondaryYellow;
+        borderColor = AppColors.darkYellow;
         textColor = AppColors.windsorTan;
         iconPath = 'assets/icons/alert-info.svg';
         statusText = '目前氣道不穩定，如合併有氣喘症狀請使用氣喘緊急用藥，並持續觀察氣喘狀況';

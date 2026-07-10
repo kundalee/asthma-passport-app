@@ -17,7 +17,7 @@ class InstructionsBox extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.butteryWhite2,
+        color: AppColors.secondaryYellow,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.glossyGold, width: 1),
       ),

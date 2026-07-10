@@ -383,7 +383,7 @@ class _ProfilePageState extends State<ProfilePage> {
           Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
         }
       },
-      backgroundColor: AppColors.strongRed,
+      backgroundColor: AppColors.primaryRed,
       foregroundColor: Colors.white,
       borderRadius: 4,
       height: 37,

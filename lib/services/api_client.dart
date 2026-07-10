@@ -41,11 +41,19 @@ class ApiClient {
       }
 
       final uri = Uri.parse('${ApiConfig.baseUrl}$path');
-      final response = method == 'GET'
-          ? await http.get(uri, headers: headers)
-          : await http.post(uri, headers: headers, body: jsonEncode(body));
+      final http.Response response;
+      if (method == 'GET') {
+        response = await http.get(uri, headers: headers);
+      } else if (method == 'PUT') {
+        response = await http.put(uri, headers: headers, body: jsonEncode(body));
+      } else if (method == 'DELETE') {
+        response = await http.delete(uri, headers: headers, body: jsonEncode(body));
+      } else {
+        response = await http.post(uri, headers: headers, body: jsonEncode(body));
+      }
 
-      final data = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      final bodyText = utf8.decode(response.bodyBytes);
+      final data = bodyText.isEmpty ? <String, dynamic>{} : jsonDecode(bodyText) as Map<String, dynamic>;
       return (response.statusCode, data);
     } catch (e) {
       return (0, {'message': '無法連接伺服器，請稍後再試'});

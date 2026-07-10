@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../models/emergency_contact_models.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/card_container.dart';
 import '../../../components/custom_button.dart';
 import '../../../components/custom_text_field.dart';
-import '../../../services/emergency_contact_service.dart';
+import '../../../services/api_service.dart';
 
 class EmergencyContactsView extends StatefulWidget {
   final Function(int) onSwitchTab;
+  final List<ContactEntry> contacts;
+  final VoidCallback onSaved;
 
   const EmergencyContactsView({
     super.key,
     required this.onSwitchTab,
+    required this.contacts,
+    required this.onSaved,
   });
 
   @override
@@ -19,8 +25,7 @@ class EmergencyContactsView extends StatefulWidget {
 }
 
 class _EmergencyContactsViewState extends State<EmergencyContactsView> {
-  List<Map<String, String>> contacts = [];
-  final EmergencyContactService _service = EmergencyContactService();
+  late List<Map<String, String>> contacts;
 
   final Map<int, TextEditingController> _nameControllers = {};
   final Map<int, TextEditingController> _phoneControllers = {};
@@ -29,7 +34,15 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
   @override
   void initState() {
     super.initState();
-    contacts = _service.getPersonalContacts();
+    contacts = widget.contacts.map((c) => {'id': c.id?.toString() ?? '', 'name': c.name, 'phone': c.info}).toList();
+  }
+
+  @override
+  void didUpdateWidget(EmergencyContactsView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.contacts != oldWidget.contacts) {
+      contacts = widget.contacts.map((c) => {'id': c.id?.toString() ?? '', 'name': c.name, 'phone': c.info}).toList();
+    }
   }
 
   void _startEditing(int index) {
@@ -48,35 +61,67 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
     setState(() {
       _editingIndexes.remove(index);
       if (contacts[index]['name'] == '' && contacts[index]['phone'] == '') {
-        contacts = _service.deletePersonalContact(index);
+        contacts.removeAt(index);
         _rebuildControllerKeys(index);
       }
     });
   }
 
-  void _saveEditing(int index) {
+  Future<void> _saveEditing(int index) async {
     final name = _nameControllers[index]?.text ?? '';
     final phone = _phoneControllers[index]?.text ?? '';
     if (name.isEmpty && phone.isEmpty) return;
+
+    final existingId = contacts[index]['id'];
+    String? savedId = existingId;
+
+    final result = (existingId == null || existingId.isEmpty)
+        ? await ApiService.addContact(contactType: 'emergency', name: name, info: phone)
+        : await ApiService.updateContact(id: existingId, contactType: 'emergency', name: name, info: phone);
+    if (!mounted) return;
+
+    if (!result.success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message ?? '儲存失敗，請稍後再試')),
+      );
+      return;
+    }
+    savedId = result.data?.id?.toString() ?? existingId;
+    widget.onSaved();
 
     _nameControllers[index]?.dispose();
     _phoneControllers[index]?.dispose();
     _nameControllers.remove(index);
     _phoneControllers.remove(index);
     setState(() {
-      contacts = _service.updatePersonalContact(index, {'name': name, 'phone': phone});
+      contacts[index] = {'id': savedId ?? '', 'name': name, 'phone': phone};
       _editingIndexes.remove(index);
     });
   }
 
-  void _deleteContact(int index) {
+  Future<void> _deleteContact(int index) async {
+    final existingId = contacts[index]['id'];
+
+    if (existingId != null && existingId.isNotEmpty) {
+      final result = await ApiService.deleteContact(id: existingId, contactType: 'emergency');
+      if (!mounted) return;
+
+      if (!result.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message ?? '刪除失敗，請稍後再試')),
+        );
+        return;
+      }
+      widget.onSaved();
+    }
+
     _nameControllers[index]?.dispose();
     _phoneControllers[index]?.dispose();
     _nameControllers.remove(index);
     _phoneControllers.remove(index);
     _editingIndexes.remove(index);
     setState(() {
-      contacts = _service.deletePersonalContact(index);
+      contacts.removeAt(index);
       _rebuildControllerKeys(index);
     });
   }
@@ -103,7 +148,7 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
 
   void _addContact() {
     setState(() {
-      contacts = _service.addPersonalContact({'name': '', 'phone': ''});
+      contacts.add({'id': '', 'name': '', 'phone': ''});
       final newIndex = contacts.length - 1;
       _nameControllers[newIndex] = TextEditingController();
       _phoneControllers[newIndex] = TextEditingController();
@@ -179,6 +224,8 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
               backgroundColor: Colors.white,
               borderRadius: 4,
               dynamicBorderColor: false,
+              keyboardType: TextInputType.phone,
+              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9+\-() ]'))],
             ),
           ] else ...[
             Text(
@@ -197,7 +244,7 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
                 child: CustomButton(
                   text: isEditing ? '取消編輯' : '刪除資料',
                   onPressed: () => isEditing ? _cancelEditing(index) : _deleteContact(index),
-                  backgroundColor: AppColors.strongRed,
+                  backgroundColor: AppColors.primaryRed,
                   foregroundColor: Colors.white,
                   height: 37,
                 ),

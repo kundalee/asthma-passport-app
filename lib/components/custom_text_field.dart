@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../theme/app_colors.dart';
 
@@ -14,6 +15,8 @@ class CustomTextField extends StatefulWidget {
   final Color borderColor;
   final double borderRadius;
   final bool dynamicBorderColor;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
 
   const CustomTextField({
     super.key,
@@ -28,6 +31,8 @@ class CustomTextField extends StatefulWidget {
     this.borderColor = AppColors.whiteMarble,
     this.borderRadius = 10,
     this.dynamicBorderColor = true,
+    this.keyboardType,
+    this.inputFormatters,
   });
 
   @override
@@ -73,7 +78,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
     final currentBorderColor = hasError
-        ? AppColors.strongRed
+        ? AppColors.primaryRed
         : (widget.dynamicBorderColor && _hasText ? AppColors.funGreen : widget.borderColor);
 
     return Column(
@@ -84,6 +89,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
           child: TextField(
             controller: widget.controller,
             obscureText: widget.obscureText,
+            keyboardType: widget.keyboardType,
+            inputFormatters: widget.inputFormatters,
             textAlignVertical: TextAlignVertical.center,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.625, letterSpacing: 0),
             decoration: InputDecoration(
@@ -124,7 +131,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         if (hasError)
           Text(
             widget.errorText!,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.strongRed, height: 1.71, letterSpacing: 0),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.primaryRed, height: 1.71, letterSpacing: 0),
           ),
       ],
     );

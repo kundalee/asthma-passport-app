@@ -82,7 +82,7 @@ class _NewPlanViewState extends State<NewPlanView> {
 
   final Map<String, Color> resultColors = {
     'good': AppColors.honeydew,
-    'warning': AppColors.butteryWhite2,
+    'warning': AppColors.secondaryYellow,
     'bad': AppColors.babysBottom,
   };
 
@@ -361,7 +361,7 @@ class _NewPlanViewState extends State<NewPlanView> {
               child: CustomButton(
                 text: '取消填寫',
                 onPressed: () => widget.onSwitchView(1),
-                backgroundColor: AppColors.strongRed,
+                backgroundColor: AppColors.primaryRed,
                 padding: const EdgeInsets.all(12),
                 borderRadius: 4,
                 height: 37,

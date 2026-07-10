@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../models/emergency_contact_models.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/card_container.dart';
 import '../../../components/custom_button.dart';
 import '../../../components/custom_text_field.dart';
-import '../../../services/emergency_contact_service.dart';
+import '../../../services/api_service.dart';
 
 class MedicalResourcesView extends StatefulWidget {
   final Function(int) onSwitchTab;
+  final List<ContactEntry> contacts;
+  final VoidCallback onSaved;
 
   const MedicalResourcesView({
     super.key,
     required this.onSwitchTab,
+    required this.contacts,
+    required this.onSaved,
   });
 
   @override
@@ -19,8 +24,7 @@ class MedicalResourcesView extends StatefulWidget {
 }
 
 class _MedicalResourcesViewState extends State<MedicalResourcesView> {
-  List<Map<String, String>> contacts = [];
-  final EmergencyContactService _service = EmergencyContactService();
+  late List<Map<String, String>> contacts;
 
   // track which indexes are in edit mode, with their controllers
   final Map<int, TextEditingController> _titleControllers = {};
@@ -30,7 +34,15 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
   @override
   void initState() {
     super.initState();
-    contacts = _service.getMedicalContacts();
+    contacts = widget.contacts.map((c) => {'id': c.id?.toString() ?? '', 'title': c.name, 'contactInfo': c.info}).toList();
+  }
+
+  @override
+  void didUpdateWidget(MedicalResourcesView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.contacts != oldWidget.contacts) {
+      contacts = widget.contacts.map((c) => {'id': c.id?.toString() ?? '', 'title': c.name, 'contactInfo': c.info}).toList();
+    }
   }
 
   void _startEditing(int index) {
@@ -50,35 +62,67 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
       _editingIndexes.remove(index);
       // if this was a newly added empty contact, remove it
       if (contacts[index]['title'] == '' && contacts[index]['contactInfo'] == '') {
-        contacts = _service.deleteMedicalContact(index);
+        contacts.removeAt(index);
         _rebuildControllerKeys(index);
       }
     });
   }
 
-  void _saveEditing(int index) {
+  Future<void> _saveEditing(int index) async {
     final title = _titleControllers[index]?.text ?? '';
     final info = _infoControllers[index]?.text ?? '';
     if (title.isEmpty && info.isEmpty) return;
+
+    final existingId = contacts[index]['id'];
+    String? savedId = existingId;
+
+    final result = (existingId == null || existingId.isEmpty)
+        ? await ApiService.addContact(contactType: 'medical', name: title, info: info)
+        : await ApiService.updateContact(id: existingId, contactType: 'medical', name: title, info: info);
+    if (!mounted) return;
+
+    if (!result.success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message ?? '儲存失敗，請稍後再試')),
+      );
+      return;
+    }
+    savedId = result.data?.id?.toString() ?? existingId;
+    widget.onSaved();
 
     _titleControllers[index]?.dispose();
     _infoControllers[index]?.dispose();
     _titleControllers.remove(index);
     _infoControllers.remove(index);
     setState(() {
-      contacts = _service.updateMedicalContact(index, {'title': title, 'contactInfo': info});
+      contacts[index] = {'id': savedId ?? '', 'title': title, 'contactInfo': info};
       _editingIndexes.remove(index);
     });
   }
 
-  void _deleteContact(int index) {
+  Future<void> _deleteContact(int index) async {
+    final existingId = contacts[index]['id'];
+
+    if (existingId != null && existingId.isNotEmpty) {
+      final result = await ApiService.deleteContact(id: existingId, contactType: 'medical');
+      if (!mounted) return;
+
+      if (!result.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message ?? '刪除失敗，請稍後再試')),
+        );
+        return;
+      }
+      widget.onSaved();
+    }
+
     _titleControllers[index]?.dispose();
     _infoControllers[index]?.dispose();
     _titleControllers.remove(index);
     _infoControllers.remove(index);
     _editingIndexes.remove(index);
     setState(() {
-      contacts = _service.deleteMedicalContact(index);
+      contacts.removeAt(index);
       _rebuildControllerKeys(index);
     });
   }
@@ -112,7 +156,7 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
 
   void _addContact() {
     setState(() {
-      contacts = _service.addMedicalContact({'title': '', 'contactInfo': ''});
+      contacts.add({'id': '', 'title': '', 'contactInfo': ''});
       final newIndex = contacts.length - 1;
       _titleControllers[newIndex] = TextEditingController();
       _infoControllers[newIndex] = TextEditingController();
@@ -226,7 +270,7 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
                 child: CustomButton(
                   text: isEditing ? '取消編輯' : '刪除資料',
                   onPressed: () => isEditing ? _cancelEditing(index) : _deleteContact(index),
-                  backgroundColor: AppColors.strongRed,
+                  backgroundColor: AppColors.primaryRed,
                   foregroundColor: Colors.white,
                   height: 37,
                 ),

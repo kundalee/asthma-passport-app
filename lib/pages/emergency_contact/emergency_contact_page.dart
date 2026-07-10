@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../models/emergency_contact_models.dart';
+import '../../services/api_service.dart';
 import '../../theme/app_colors.dart';
 import '../../components/app_page_container.dart';
 import '../../components/custom_tab_bar.dart';
@@ -16,6 +18,23 @@ class EmergencyContactPage extends StatefulWidget {
 class _EmergencyContactPageState extends State<EmergencyContactPage> {
   int selectedTabIndex = 0;
   final List<String> tabs = ['醫療聯絡資源', '緊急連絡人', '病患基本資料'];
+  ContactList? contactList;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadContacts();
+  }
+
+  Future<void> _loadContacts() async {
+    final result = await ApiService.getContacts();
+    if (!mounted) return;
+    if (result.success && result.data != null) {
+      setState(() {
+        contactList = result.data;
+      });
+    }
+  }
 
   void _switchTab(int index) {
     setState(() {
@@ -67,9 +86,17 @@ class _EmergencyContactPageState extends State<EmergencyContactPage> {
   Widget _buildTabContent() {
     switch (selectedTabIndex) {
       case 0:
-        return MedicalResourcesView(onSwitchTab: _switchTab);
+        return MedicalResourcesView(
+          onSwitchTab: _switchTab,
+          contacts: contactList?.medical ?? [],
+          onSaved: _loadContacts,
+        );
       case 1:
-        return EmergencyContactsView(onSwitchTab: _switchTab);
+        return EmergencyContactsView(
+          onSwitchTab: _switchTab,
+          contacts: contactList?.emergency ?? [],
+          onSaved: _loadContacts,
+        );
       case 2:
         return PatientInfoView(onSwitchTab: _switchTab);
       default:

@@ -283,7 +283,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     return CustomButton(
       text: '取消編輯',
       onPressed: () => Navigator.pop(context),
-      backgroundColor: AppColors.strongRed,
+      backgroundColor: AppColors.primaryRed,
       foregroundColor: Colors.white,
       borderRadius: 4,
       height: 40,

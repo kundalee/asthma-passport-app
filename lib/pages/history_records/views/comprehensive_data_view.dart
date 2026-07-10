@@ -339,7 +339,7 @@ class ComprehensiveDataView extends StatelessWidget {
             ],
           ),
           _buildPefrStatusRow('綠燈（穩定控制', greenDays, AppColors.honeydew, AppColors.lightPastelMint, const Color(0xFF008235), AppColors.lightPastelMint, const Color(0xFF008236), totalDays),
-          _buildPefrStatusRow('黃燈 (警告)', yellowDays, AppColors.butteryWhite2, AppColors.brightCanaryYellow, AppColors.windsorTan, const Color(0xFFFFF085), AppColors.windsorTan, totalDays),
+          _buildPefrStatusRow('黃燈 (警告)', yellowDays, AppColors.secondaryYellow, AppColors.darkYellow, AppColors.windsorTan, const Color(0xFFFFF085), AppColors.windsorTan, totalDays),
           _buildPefrStatusRow('紅燈 (醫療急症)', redDays, AppColors.babysBottom, AppColors.spicyPastelPink, AppColors.digitalRed, AppColors.spicyPastelPink, AppColors.digitalRed, totalDays),
         ],
       ),
