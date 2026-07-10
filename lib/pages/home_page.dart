@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _checkLoginStatus() async {
     final token = await AuthService.getToken();
+    if (!mounted) return;
     setState(() {
       isLoggedIn = token != null;
     });
@@ -50,6 +51,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadUserName() async {
     final name = await AuthService.getUserName();
+    if (!mounted) return;
     setState(() {
       userName = name ?? '';
     });
@@ -58,6 +60,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _loadLocationAndWeather() async {
     final location = await LocationService.getCurrentLocation();
     if (location != null) {
+      if (!mounted) return;
       setState(() {
         latitude = location.$1;
         longitude = location.$2;
@@ -69,6 +72,7 @@ class _HomePageState extends State<HomePage> {
     final result = await ApiService.getWeather('萬華');
     final weather = result.data;
     if (result.success && weather != null) {
+      if (!mounted) return;
       setState(() {
         aqi = weather.aqi;
         temperature = weather.temperature;
@@ -79,8 +83,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadTodayTests() async {
+    final token = await AuthService.getToken();
+    if (token == null) return;
+
     try {
       final tests = await ApiService.getTodayTests();
+      if (!mounted) return;
       setState(() {
         todayTests = tests;
       });
