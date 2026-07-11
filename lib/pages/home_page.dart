@@ -16,13 +16,13 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   String userName = '';
   bool isLoggedIn = false;
-  int aqi = 0;
-  double temperature = 0;
-  int humidity = 0;
-  double pm25 = 0;
+  int? aqi;
+  double? temperature;
+  int? humidity;
+  double? pm25;
   double? latitude;
   double? longitude;
   List<Map<String, dynamic>> todayTests = [];
@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _checkLoginStatus();
     _loadUserName();
     _loadLocationAndWeather();
@@ -38,6 +39,19 @@ class _HomePageState extends State<HomePage> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showFirstLoginDialog();
       });
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadLocationAndWeather();
     }
   }
 
@@ -59,13 +73,23 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadLocationAndWeather() async {
     final location = await LocationService.getCurrentLocation();
-    if (location != null) {
+    if (location == null) {
       if (!mounted) return;
       setState(() {
-        latitude = location.$1;
-        longitude = location.$2;
+        latitude = null;
+        longitude = null;
+        aqi = null;
+        temperature = null;
+        humidity = null;
+        pm25 = null;
       });
+      return;
     }
+    if (!mounted) return;
+    setState(() {
+      latitude = location.$1;
+      longitude = location.$2;
+    });
 
     // TODO: Once station_name is resolved from (latitude, longitude), pass
     // it here instead of the fixed '萬華'.
@@ -240,7 +264,7 @@ class _HomePageState extends State<HomePage> {
                           style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
                         ),
                         Text(
-                          '$aqi',
+                          aqi == null ? '-' : '$aqi',
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -266,13 +290,13 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: _buildWeatherItem('溫度', temperature.toStringAsFixed(1), '°C'),
+                    child: _buildWeatherItem('溫度', temperature == null ? '-' : temperature!.toStringAsFixed(1), '°C'),
                   ),
                   Expanded(
-                    child: _buildWeatherItem('濕度', '$humidity', '%'),
+                    child: _buildWeatherItem('濕度', humidity == null ? '-' : '$humidity', '%'),
                   ),
                   Expanded(
-                    child: _buildWeatherItem('PM2.5', pm25.toStringAsFixed(1), 'μg/m3', unitStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.primaryGreen, height: 2.25, letterSpacing: 0)),
+                    child: _buildWeatherItem('PM2.5', pm25 == null ? '-' : pm25!.toStringAsFixed(1), 'μg/m3', unitStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.primaryGreen, height: 2.25, letterSpacing: 0)),
                   ),
                 ],
               ),

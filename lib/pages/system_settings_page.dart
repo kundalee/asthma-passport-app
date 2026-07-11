@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geolocator/geolocator.dart';
 import '../theme/app_colors.dart';
 import '../components/app_page_container.dart';
 import '../components/card_container.dart';
@@ -53,8 +54,10 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
       '當前地理位置設定',
       '彰化基督教醫院官方網站',
       '空氣品質監測網',
+      '意見調查',
       '關於氣喘健康護照',
     ];
+    const dividerAfterIndexes = {0, 3};
 
     return SingleChildScrollView(
       child: CardContainer(
@@ -67,7 +70,7 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
             (index) => Column(
               children: [
                 _buildSettingItem(settingItems[index], () => _handleSettingTap(index)),
-                if (index < settingItems.length - 1) const Divider(color: AppColors.sweetGrey, height: 2),
+                if (dividerAfterIndexes.contains(index)) const Divider(color: AppColors.sweetGrey, height: 2),
               ],
             ),
           ),
@@ -109,10 +112,16 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
   }
 
   void _handleSettingTap(int index) {
+    if (index == 0) {
+      Geolocator.openAppSettings();
+      return;
+    }
+
     final messages = [
       '位置設定功能開發中',
       '彰化基督教醫院官方網站 功能開發中',
       '空氣品質監測網 功能開發中',
+      '意見調查 功能開發中',
       '關於氣喘健康護照 功能開發中',
     ];
 
