@@ -123,18 +123,25 @@ class _HomePageState extends State<HomePage> {
           _buildFeatureButtonsGrid(),
         ],
       ),
-      bottomNavigation: _buildBottomNavigation(),
     );
   }
 
   Widget _buildHeader() {
     return Container(
       height: 44,
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       color: Colors.white,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Row(
+            spacing: 8,
+            children: [
+              _buildHeaderNavButton('assets/icons/home.svg', AppColors.funGreen, true, null),
+              _buildHeaderNavButton('assets/icons/setting.svg', AppColors.funGreen, false, () => Navigator.of(context).pushNamed('/system-settings')),
+              _buildHeaderNavButton('assets/icons/emergency.svg', Colors.red, false, () => Navigator.of(context).pushNamed('/emergency-contact')),
+            ],
+          ),
           GestureDetector(
             onTap: isLoggedIn
                 ? () => Navigator.of(context).pushNamed('/profile')
@@ -169,6 +176,26 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildHeaderNavButton(String iconPath, Color color, bool isActive, VoidCallback? onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+        decoration: BoxDecoration(
+          border: Border.all(color: color, width: 2),
+          borderRadius: BorderRadius.circular(4),
+          color: isActive ? color : Colors.transparent,
+        ),
+        child: SvgPicture.asset(
+          iconPath,
+          width: 24,
+          height: 24,
+          colorFilter: ColorFilter.mode(isActive ? Colors.white : color, BlendMode.srcIn),
+        ),
       ),
     );
   }
@@ -598,75 +625,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-      ),
-    );
-  }
-
-  Widget _buildBottomNavigation() {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.whiteMarble, width: 1),
-        boxShadow: [
-          BoxShadow(
-            offset: const Offset(0, 4),
-            blurRadius: 4,
-            spreadRadius: 0,
-            color: Colors.black.withValues(alpha: 0.25),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        spacing: 24,
-        children: [
-          _buildNavButton('個人首頁', 'assets/icons/home.svg', AppColors.funGreen, true),
-          _buildNavButton('系統設定', 'assets/icons/setting.svg', AppColors.funGreen, false),
-          _buildNavButton('緊急聯絡', 'assets/icons/emergency.svg', Colors.red, false),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavButton(String title, String iconPath, Color color, bool isActive) {
-    return GestureDetector(
-      onTap: () {
-        if (title == '系統設定') {
-          Navigator.of(context).pushNamed('/system-settings');
-        } else if (title == '緊急聯絡') {
-          Navigator.of(context).pushNamed('/emergency-contact');
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          border: Border.all(color: color, width: 2),
-          borderRadius: BorderRadius.circular(4),
-          color: isActive ? color : Colors.transparent,
-        ),
-        child: Row(
-          spacing: 4,
-          children: [
-            SvgPicture.asset(
-              iconPath,
-              width: 24,
-              height: 24,
-              colorFilter: ColorFilter.mode(isActive ? Colors.white : color, BlendMode.srcIn),
-            ),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: isActive ? Colors.white : color,
-                height: 2,
-                letterSpacing: 0,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

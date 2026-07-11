@@ -18,7 +18,6 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
       header: _buildHeader(),
       contentPadding: EdgeInsets.zero,
       content: _buildContent(),
-      bottomNavigation: _buildBottomNavigation(),
     );
   }
 
@@ -28,12 +27,22 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
       color: Colors.white,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: SvgPicture.asset(
+              'assets/icons/back.svg',
+              width: 24,
+              height: 24,
+              colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+            ),
+          ),
           const Text(
             '系統設定',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black, height: 1.0),
           ),
+          const SizedBox(width: 24),
         ],
       ),
     );
@@ -92,73 +101,6 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
               width: 24,
               height: 24,
               colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBottomNavigation() {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.whiteMarble, width: 1),
-        boxShadow: [
-          BoxShadow(
-            offset: const Offset(0, 4),
-            blurRadius: 4,
-            spreadRadius: 0,
-            color: Colors.black.withValues(alpha: 0.25),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        spacing: 24,
-        children: [
-          _buildNavButton('個人首頁', Icons.home, AppColors.funGreen, false),
-          _buildNavButton('系統設定', Icons.settings, AppColors.funGreen, true),
-          _buildNavButton('緊急聯絡', Icons.warning, Colors.red, false),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavButton(String title, IconData icon, Color color, bool isActive) {
-    return GestureDetector(
-      onTap: () {
-        if (title == '個人首頁') {
-          Navigator.of(context).pushReplacementNamed('/home');
-        } else if (title == '緊急聯絡') {
-          Navigator.of(context).pushReplacementNamed('/emergency-contact');
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          border: Border.all(color: color, width: 2),
-          borderRadius: BorderRadius.circular(4),
-          color: isActive ? color : Colors.transparent,
-        ),
-        child: Row(
-          spacing: 4,
-          children: [
-            Icon(
-              icon,
-              color: isActive ? Colors.white : color,
-              size: 24,
-            ),
-            Text(
-              title,
-              style: TextStyle(
-                color: isActive ? Colors.white : color,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                height: 2,
-              ),
             ),
           ],
         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../models/emergency_contact_models.dart';
 import '../../services/api_service.dart';
-import '../../theme/app_colors.dart';
 import '../../components/app_page_container.dart';
 import '../../components/custom_tab_bar.dart';
 import 'views/medical_resources_view.dart';
@@ -54,7 +54,6 @@ class _EmergencyContactPageState extends State<EmergencyContactPage> {
           _buildTabContent(),
         ],
       ),
-      bottomNavigation: _buildBottomNavigation(),
     );
   }
 
@@ -64,12 +63,22 @@ class _EmergencyContactPageState extends State<EmergencyContactPage> {
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
       color: Colors.white,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: SvgPicture.asset(
+              'assets/icons/back.svg',
+              width: 24,
+              height: 24,
+              colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+            ),
+          ),
           const Text(
             '緊急聯絡',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black, height: 1.0),
           ),
+          const SizedBox(width: 24),
         ],
       ),
     );
@@ -104,70 +113,4 @@ class _EmergencyContactPageState extends State<EmergencyContactPage> {
     }
   }
 
-  Widget _buildBottomNavigation() {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.whiteMarble, width: 1),
-        boxShadow: [
-          BoxShadow(
-            offset: const Offset(0, 4),
-            blurRadius: 4,
-            spreadRadius: 0,
-            color: Colors.black.withValues(alpha: 0.25),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        spacing: 24,
-        children: [
-          _buildNavButton('個人首頁', Icons.home, AppColors.funGreen, false),
-          _buildNavButton('系統設定', Icons.settings, AppColors.funGreen, false),
-          _buildNavButton('緊急聯絡', Icons.warning, Colors.red, true),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavButton(String title, IconData icon, Color color, bool isActive) {
-    return GestureDetector(
-      onTap: () {
-        if (title == '個人首頁') {
-          Navigator.of(context).pushReplacementNamed('/home');
-        } else if (title == '系統設定') {
-          Navigator.of(context).pushReplacementNamed('/system-settings');
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          border: Border.all(color: color, width: 2),
-          borderRadius: BorderRadius.circular(4),
-          color: isActive ? color : Colors.transparent,
-        ),
-        child: Row(
-          spacing: 4,
-          children: [
-            Icon(
-              icon,
-              color: isActive ? Colors.white : color,
-              size: 24,
-            ),
-            Text(
-              title,
-              style: TextStyle(
-                color: isActive ? Colors.white : color,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                height: 2,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
