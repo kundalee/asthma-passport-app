@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import '../models/act_models.dart';
 import '../models/diary_models.dart';
 import '../models/emergency_contact_models.dart';
@@ -23,13 +21,12 @@ class ApiService {
 
   static Future<ApiResult<ContactList>> getContacts() async {
     final (statusCode, data) = await ApiClient.send('GET', '/contact/load', authenticated: true);
-    debugPrint('getContacts response: statusCode=$statusCode, data=$data');
 
     if (statusCode == 200) {
       return ApiResult.success(ContactList.fromJson(data['data']));
     }
 
-    return ApiClient.failure(statusCode, data, '無法取得聯絡資訊');
+    return ApiClient.failure(statusCode, data, '無法取得聯絡資訊', authenticated: true);
   }
 
   // /contact/save only creates new contacts - there's no update endpoint yet.
@@ -38,20 +35,18 @@ class ApiService {
     required String name,
     required String info,
   }) async {
-    debugPrint('addContact: contactType=$contactType, name=$name, info=$info');
     final (statusCode, data) = await ApiClient.send(
       'POST',
       '/contact/save',
       body: {'contact_type': contactType, 'name': name, 'info': info},
       authenticated: true,
     );
-    debugPrint('addContact response: statusCode=$statusCode, data=$data');
 
     if (statusCode == 200) {
       return ApiResult.success(ContactEntry.fromJson(data['data']));
     }
 
-    return ApiClient.failure(statusCode, data, '無法儲存聯絡資訊');
+    return ApiClient.failure(statusCode, data, '無法儲存聯絡資訊', authenticated: true);
   }
 
   static Future<ApiResult<ContactEntry>> updateContact({
@@ -60,44 +55,39 @@ class ApiService {
     required String name,
     required String info,
   }) async {
-    debugPrint('updateContact: id=$id, contactType=$contactType, name=$name, info=$info');
     final (statusCode, data) = await ApiClient.send(
       'PUT',
       '/contact/update?target=$id',
       body: {'contact_type': contactType, 'name': name, 'info': info},
       authenticated: true,
     );
-    debugPrint('updateContact response: statusCode=$statusCode, data=$data');
 
     if (statusCode == 200) {
       return ApiResult.success(ContactEntry.fromJson(data['data']));
     }
 
-    return ApiClient.failure(statusCode, data, '無法更新聯絡資訊');
+    return ApiClient.failure(statusCode, data, '無法更新聯絡資訊', authenticated: true);
   }
 
   static Future<ApiResult<void>> deleteContact({
     required String id,
     required String contactType,
   }) async {
-    debugPrint('deleteContact: id=$id, contactType=$contactType');
     final (statusCode, data) = await ApiClient.send(
       'DELETE',
       '/contact/delete?target=$id&contact_type=$contactType',
       authenticated: true,
     );
-    debugPrint('deleteContact response: statusCode=$statusCode, data=$data');
 
     if (statusCode == 200) {
       return const ApiResult.success();
     }
 
-    return ApiClient.failure(statusCode, data, '無法刪除聯絡資訊');
+    return ApiClient.failure(statusCode, data, '無法刪除聯絡資訊', authenticated: true);
   }
 
   static Future<ApiResult<List<AllergenEntry>>> getAllergens() async {
     final (statusCode, data) = await ApiClient.send('GET', '/allergen/load', authenticated: true);
-    debugPrint('getAllergens response: statusCode=$statusCode, data=$data');
 
     if (statusCode == 200) {
       final list = (data['data'] as List<dynamic>? ?? [])
@@ -106,64 +96,57 @@ class ApiService {
       return ApiResult.success(list);
     }
 
-    return ApiClient.failure(statusCode, data, '無法取得過敏原清單');
+    return ApiClient.failure(statusCode, data, '無法取得過敏原清單', authenticated: true);
   }
 
   static Future<ApiResult<AllergenEntry>> saveAllergen(String allergen) async {
-    debugPrint('saveAllergen: allergen=$allergen');
     final (statusCode, data) = await ApiClient.send(
       'POST',
       '/allergen/save',
       body: {'allergens': [allergen]},
       authenticated: true,
     );
-    debugPrint('saveAllergen response: statusCode=$statusCode, data=$data');
 
     if (statusCode == 200) {
       return ApiResult.success(AllergenEntry.fromJson(data['data']));
     }
 
-    return ApiClient.failure(statusCode, data, '無法儲存過敏原');
+    return ApiClient.failure(statusCode, data, '無法儲存過敏原', authenticated: true);
   }
 
   static Future<ApiResult<AllergenEntry>> updateAllergen({
     required String id,
     required String name,
   }) async {
-    debugPrint('updateAllergen: id=$id, name=$name');
     final (statusCode, data) = await ApiClient.send(
       'PUT',
       '/allergen/update?target=$id&new_name=$name',
       authenticated: true,
     );
-    debugPrint('updateAllergen response: statusCode=$statusCode, data=$data');
 
     if (statusCode == 200) {
       return ApiResult.success(AllergenEntry.fromJson(data['data']));
     }
 
-    return ApiClient.failure(statusCode, data, '無法更新過敏原');
+    return ApiClient.failure(statusCode, data, '無法更新過敏原', authenticated: true);
   }
 
   static Future<ApiResult<void>> deleteAllergen(String id) async {
-    debugPrint('deleteAllergen: id=$id');
     final (statusCode, data) = await ApiClient.send(
       'DELETE',
       '/allergen/delete?target=$id',
       authenticated: true,
     );
-    debugPrint('deleteAllergen response: statusCode=$statusCode, data=$data');
 
     if (statusCode == 200) {
       return const ApiResult.success();
     }
 
-    return ApiClient.failure(statusCode, data, '無法刪除過敏原');
+    return ApiClient.failure(statusCode, data, '無法刪除過敏原', authenticated: true);
   }
 
   static Future<ApiResult<List<MedicationEntry>>> getMedications() async {
     final (statusCode, data) = await ApiClient.send('GET', '/medication/load', authenticated: true);
-    debugPrint('getMedications response: statusCode=$statusCode, data=$data');
 
     if (statusCode == 200) {
       final list = (data['data'] as List<dynamic>? ?? [])
@@ -172,59 +155,53 @@ class ApiService {
       return ApiResult.success(list);
     }
 
-    return ApiClient.failure(statusCode, data, '無法取得用藥清單');
+    return ApiClient.failure(statusCode, data, '無法取得用藥清單', authenticated: true);
   }
 
   static Future<ApiResult<MedicationEntry>> saveMedication(String medication) async {
-    debugPrint('saveMedication: medication=$medication');
     final (statusCode, data) = await ApiClient.send(
       'POST',
       '/medication/save',
       body: {'medications': [medication]},
       authenticated: true,
     );
-    debugPrint('saveMedication response: statusCode=$statusCode, data=$data');
 
     if (statusCode == 200) {
       return ApiResult.success(MedicationEntry.fromJson(data['data']));
     }
 
-    return ApiClient.failure(statusCode, data, '無法儲存用藥資訊');
+    return ApiClient.failure(statusCode, data, '無法儲存用藥資訊', authenticated: true);
   }
 
   static Future<ApiResult<MedicationEntry>> updateMedication({
     required String id,
     required String name,
   }) async {
-    debugPrint('updateMedication: id=$id, name=$name');
     final (statusCode, data) = await ApiClient.send(
       'PUT',
       '/medication/update?target=$id&new_name=$name',
       authenticated: true,
     );
-    debugPrint('updateMedication response: statusCode=$statusCode, data=$data');
 
     if (statusCode == 200) {
       return ApiResult.success(MedicationEntry.fromJson(data['data']));
     }
 
-    return ApiClient.failure(statusCode, data, '無法更新用藥資訊');
+    return ApiClient.failure(statusCode, data, '無法更新用藥資訊', authenticated: true);
   }
 
   static Future<ApiResult<void>> deleteMedication(String id) async {
-    debugPrint('deleteMedication: id=$id');
     final (statusCode, data) = await ApiClient.send(
       'DELETE',
       '/medication/delete?target=$id',
       authenticated: true,
     );
-    debugPrint('deleteMedication response: statusCode=$statusCode, data=$data');
 
     if (statusCode == 200) {
       return const ApiResult.success();
     }
 
-    return ApiClient.failure(statusCode, data, '無法刪除用藥資訊');
+    return ApiClient.failure(statusCode, data, '無法刪除用藥資訊', authenticated: true);
   }
 
   static String _todayDateStr() {
@@ -261,7 +238,7 @@ class ApiService {
       return ApiResult.success(PassportStatus.fromJson(data));
     }
 
-    return ApiClient.failure(statusCode, data, '無法取得健康護照資料');
+    return ApiClient.failure(statusCode, data, '無法取得健康護照資料', authenticated: true);
   }
 
   static Future<ApiResult<MedicationOptions>> getMedicationOptions() async {
@@ -271,7 +248,7 @@ class ApiService {
       return ApiResult.success(MedicationOptions.fromJson(data['data']));
     }
 
-    return ApiClient.failure(statusCode, data, '無法取得藥物清單');
+    return ApiClient.failure(statusCode, data, '無法取得藥物清單', authenticated: true);
   }
 
   static Future<ApiResult<DiaryStatus>> getDiaryStatus(String dateStr) async {
@@ -281,7 +258,7 @@ class ApiService {
       return ApiResult.success(DiaryStatus.fromJson(data));
     }
 
-    return ApiClient.failure(statusCode, data, '無法取得氣喘日記資料');
+    return ApiClient.failure(statusCode, data, '無法取得氣喘日記資料', authenticated: true);
   }
 
   static Future<ApiResult<DiarySaveResult>> saveDiary({
@@ -311,7 +288,7 @@ class ApiService {
       return ApiResult.success(DiarySaveResult.fromJson(data));
     }
 
-    return ApiClient.failure(statusCode, data, '儲存失敗');
+    return ApiClient.failure(statusCode, data, '儲存失敗', authenticated: true);
   }
 
   static Future<ApiResult<PeakFlowStatus>> getPeakFlowStatus(String dateStr) async {
@@ -321,7 +298,7 @@ class ApiService {
       return ApiResult.success(PeakFlowStatus.fromJson(data));
     }
 
-    return ApiClient.failure(statusCode, data, '無法取得尖峰吐氣流量資料');
+    return ApiClient.failure(statusCode, data, '無法取得尖峰吐氣流量資料', authenticated: true);
   }
 
   // 1: good control, 2: moderate control, 3: poor control
@@ -351,7 +328,7 @@ class ApiService {
       return ApiResult.success(PeakFlowSaveResult.fromJson(data));
     }
 
-    return ApiClient.failure(statusCode, data, '儲存失敗');
+    return ApiClient.failure(statusCode, data, '儲存失敗', authenticated: true);
   }
 
   static Future<ApiResult<ActStatus>> getActStatus(String dateStr) async {
@@ -361,7 +338,7 @@ class ApiService {
       return ApiResult.success(ActStatus.fromJson(data));
     }
 
-    return ApiClient.failure(statusCode, data, '無法取得氣喘控制測驗資料');
+    return ApiClient.failure(statusCode, data, '無法取得氣喘控制測驗資料', authenticated: true);
   }
 
   static Future<List<Map<String, dynamic>>> getActQuestions(bool isAdultTest) async {
@@ -590,7 +567,7 @@ class ApiService {
       return ApiResult.success(MasterQuiz.fromJson(data));
     }
 
-    return ApiClient.failure(statusCode, data, '無法取得測驗題目');
+    return ApiClient.failure(statusCode, data, '無法取得測驗題目', authenticated: true);
   }
 
   static Future<ApiResult<MasterQuizResult>> saveMasterQuiz(List<Map<String, dynamic>> answers) async {
@@ -605,7 +582,7 @@ class ApiService {
       return ApiResult.success(MasterQuizResult.fromJson(data));
     }
 
-    return ApiClient.failure(statusCode, data, '無法儲存測驗結果');
+    return ApiClient.failure(statusCode, data, '無法儲存測驗結果', authenticated: true);
   }
 
   static Future<List<String>> getHistoryMonths() async {

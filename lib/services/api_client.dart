@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../config/api_config.dart';
@@ -33,6 +34,7 @@ class ApiClient {
     Map<String, dynamic>? body,
     bool authenticated = false,
   }) async {
+    debugPrint('API $method $path body=${_redact(body)}');
     try {
       final headers = {'Content-Type': 'application/json'};
       if (authenticated) {
@@ -54,21 +56,37 @@ class ApiClient {
 
       final bodyText = utf8.decode(response.bodyBytes);
       final data = bodyText.isEmpty ? <String, dynamic>{} : jsonDecode(bodyText) as Map<String, dynamic>;
+      debugPrint('API $method $path -> ${response.statusCode} $data');
       return (response.statusCode, data);
     } catch (e) {
+      debugPrint('API $method $path failed: $e');
       return (0, {'message': '無法連接伺服器，請稍後再試'});
     }
   }
 
-  // Builds the failure result for a non-success response. A 401 means the
-  // stored token is invalid/expired: clears the local session and sends
-  // the user back to login, so callers don't each need to handle it.
-  static Future<ApiResult<T>> failure<T>(int statusCode, Map<String, dynamic> data, String fallbackMessage) async {
-    if (statusCode == 401) {
+  // Masks password fields so credentials never hit the debug log.
+  static Map<String, dynamic>? _redact(Map<String, dynamic>? body) {
+    if (body == null) return null;
+    return body.map((key, value) => MapEntry(key, key.toLowerCase().contains('password') ? '***' : value));
+  }
+
+  // Builds the failure result for a non-success response. For requests that
+  // carried a token, a 401 means the stored token is invalid/expired: clears
+  // the local session and sends the user back to login, so callers don't
+  // each need to handle it. For unauthenticated requests (e.g. login itself)
+  // a 401 is just a business-logic error like wrong credentials, not an
+  // expired session, so it's surfaced as a normal failure instead.
+  static Future<ApiResult<T>> failure<T>(
+    int statusCode,
+    Map<String, dynamic> data,
+    String fallbackMessage, {
+    bool authenticated = false,
+  }) async {
+    if (statusCode == 401 && authenticated) {
       await AuthService.logout();
       navigatorKey.currentState?.pushNamedAndRemoveUntil('/', (route) => false);
       return ApiResult.failure('登入已過期，請重新登入');
     }
-    return ApiResult.failure(data['message'] ?? fallbackMessage);
+    return ApiResult.failure(data['detail'] ?? data['message'] ?? fallbackMessage);
   }
 }

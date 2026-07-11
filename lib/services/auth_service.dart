@@ -53,7 +53,7 @@ class AuthService {
       return ApiResult.success(UserProfile.fromJson(data['data']));
     }
 
-    return ApiClient.failure(statusCode, data, '無法取得個人資料');
+    return ApiClient.failure(statusCode, data, '無法取得個人資料', authenticated: true);
   }
 
   static Future<void> logout() async {
