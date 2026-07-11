@@ -155,6 +155,18 @@ class _NewPlanViewState extends State<NewPlanView> {
     });
   }
 
+  void _deleteControlMedication(int index) {
+    setState(() {
+      controlMedicationEntries.removeAt(index).dispose();
+    });
+  }
+
+  void _deleteReliefMedication(int index) {
+    setState(() {
+      reliefMedicationEntries.removeAt(index).dispose();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (showPreview) {
@@ -329,6 +341,7 @@ class _NewPlanViewState extends State<NewPlanView> {
               entries: controlMedicationEntries,
               options: controlMedications,
               onAdd: _addControlMedication,
+              onDelete: _deleteControlMedication,
             ),
             _buildMedicationSection(
               title: '開立氣喘緩解藥物',
@@ -336,6 +349,7 @@ class _NewPlanViewState extends State<NewPlanView> {
               entries: reliefMedicationEntries,
               options: reliefMedications,
               onAdd: _addReliefMedication,
+              onDelete: _deleteReliefMedication,
             ),
           ],
           if (selectedLevel == 'acute') _buildEmergencySection(),
@@ -707,23 +721,38 @@ class _NewPlanViewState extends State<NewPlanView> {
     required List<_MedicationEntry> entries,
     required List<String> options,
     required VoidCallback onAdd,
+    required void Function(int) onDelete,
   }) {
-    return Column(
-      spacing: 12,
-      children: [
-        for (int i = 0; i < entries.length; i++)
-          CardContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 12,
-              children: [
-                _buildMedicationSectionHeader(title),
-                _buildMedicationEntry(entries, options, i),
-                if (i == entries.length - 1) _buildAddMedicationButton(buttonText, onAdd),
-              ],
-            ),
-          ),
-      ],
+    return CardContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
+        children: [
+          _buildMedicationSectionHeader(title),
+          for (int i = 0; i < entries.length; i++) ...[
+            _buildMedicationEntry(entries, options, i),
+            if (i > 0) _buildDeleteMedicationButton(() => onDelete(i)),
+            if (i < entries.length - 1) const Divider(height: 2, color: AppColors.sweetGrey),
+          ],
+          _buildAddMedicationButton(buttonText, onAdd),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDeleteMedicationButton(VoidCallback onDelete) {
+    return SizedBox(
+      width: double.infinity,
+      child: CustomButton(
+        text: '刪除',
+        onPressed: onDelete,
+        backgroundColor: Colors.white,
+        foregroundColor: AppColors.primaryRed,
+        border: const BorderSide(color: AppColors.primaryRed, width: 1),
+        padding: const EdgeInsets.all(12),
+        borderRadius: 4,
+        height: 37,
+      ),
     );
   }
 
