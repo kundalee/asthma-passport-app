@@ -97,14 +97,17 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _handleTestItemTap(String testName) {
+  Future<void> _handleTestItemTap(String testName) async {
     if (testName == '氣喘日記') {
-      Navigator.of(context).pushNamed('/asthma-diary');
+      await Navigator.of(context).pushNamed('/asthma-diary');
     } else if (testName == '尖峰吐氣流量') {
-      Navigator.of(context).pushNamed('/peak-flow');
+      await Navigator.of(context).pushNamed('/peak-flow');
     } else if (testName == '氣喘控制測驗') {
-      Navigator.of(context).pushNamed('/asthma-control-test');
+      await Navigator.of(context).pushNamed('/asthma-control-test');
+    } else {
+      return;
     }
+    _loadTodayTests();
   }
 
   @override
