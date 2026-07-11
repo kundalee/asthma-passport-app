@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../components/app_page_container.dart';
-import 'views/knowledge_selection_view.dart';
+import '../../components/custom_tab_bar.dart';
 import 'views/knowledge_list_view.dart';
 
 class AsthmaKnowledgePage extends StatefulWidget {
@@ -12,37 +12,34 @@ class AsthmaKnowledgePage extends StatefulWidget {
 }
 
 class _AsthmaKnowledgePageState extends State<AsthmaKnowledgePage> {
-  int currentView = 0; // 0: selection
+  int selectedLanguageIndex = 0;
+  final List<String> languages = ['國語', '台語'];
 
-  void _switchView(int view) {
+  void _switchLanguage(int index) {
     setState(() {
-      currentView = view;
+      selectedLanguageIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget content;
-    if (currentView == 0) {
-      content = KnowledgeSelectionView(
-        onSwitchView: _switchView,
-      );
-    } else {
-      content = KnowledgeListView(
-        onSwitchView: _switchView,
-      );
-    }
-
     return AppPageContainer(
       header: _buildHeader(context),
-      contentPadding: EdgeInsets.zero,
-      content: content,
+      content: Column(
+        spacing: 8,
+        children: [
+          CustomTabBar(
+            tabs: languages,
+            selectedTabIndex: selectedLanguageIndex,
+            onTabChanged: _switchLanguage,
+          ),
+          KnowledgeListView(selectedLanguageIndex: selectedLanguageIndex),
+        ],
+      ),
     );
   }
 
   Widget _buildHeader(BuildContext context) {
-    String headerTitle = '氣喘知識';
-
     return Container(
       height: 44,
       padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 20),
@@ -61,9 +58,9 @@ class _AsthmaKnowledgePageState extends State<AsthmaKnowledgePage> {
               colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
             ),
           ),
-          Text(
-            headerTitle,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black, height: 1.0),
+          const Text(
+            '氣喘知識',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black, height: 1.0),
           ),
           const SizedBox(width: 24),
         ],
