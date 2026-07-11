@@ -88,15 +88,6 @@ class _NewPlanViewState extends State<NewPlanView> {
     'acute': AppColors.primaryRed,
   };
 
-  // Only the 'full' copy was specified; the rest are a best-effort
-  // placeholder pending real copy.
-  final Map<String, String> planInstructions = {
-    'full': '服用控制藥物，當運動或接觸過敏原後有症狀使用快速緩解藥物',
-    'partial': '服用控制藥物，當運動或接觸過敏原後有症狀使用快速緩解藥物',
-    'poor': '服用控制藥物，當運動或接觸過敏原後有症狀使用快速緩解藥物',
-    'acute': '服用控制藥物，當運動或接觸過敏原後有症狀使用快速緩解藥物',
-  };
-
   final List<_MedicationEntry> controlMedicationEntries = [_MedicationEntry()];
   final List<_MedicationEntry> reliefMedicationEntries = [_MedicationEntry()];
   late TextEditingController notesController;
@@ -386,7 +377,7 @@ class _NewPlanViewState extends State<NewPlanView> {
 
   Widget _buildPreviewReport() {
     final levelTitle = levelDescriptions[selectedLevel] ?? '';
-    final levelInstruction = planInstructions[selectedLevel] ?? '';
+    final levelPoints = resultPoints[selectedLevel] ?? [];
     final levelBgColor = resultColors[selectedLevel] ?? AppColors.honeydew;
     final levelIconColor = resultIconColors[selectedLevel] ?? AppColors.primaryGreen;
 
@@ -455,31 +446,43 @@ class _NewPlanViewState extends State<NewPlanView> {
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                         decoration: BoxDecoration(color: levelBgColor, borderRadius: BorderRadius.circular(10)),
-                        child: Row(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           spacing: 8,
                           children: [
-                            SvgPicture.asset(
-                              levelIconPath,
-                              width: 24,
-                              height: 24,
-                              colorFilter: ColorFilter.mode(levelIconColor, BlendMode.srcIn),
+                            Row(
+                              spacing: 8,
+                              children: [
+                                SvgPicture.asset(
+                                  levelIconPath,
+                                  width: 24,
+                                  height: 24,
+                                  colorFilter: ColorFilter.mode(levelIconColor, BlendMode.srcIn),
+                                ),
+                                Text(
+                                  levelTitle,
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: levelIconColor, height: 1.5, letterSpacing: 0),
+                                ),
+                              ],
                             ),
-                            Expanded(
-                              child: Column(
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: 4,
+                              children: levelPoints.map((point) => Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                spacing: 4,
                                 children: [
-                                  Text(
-                                    levelTitle,
-                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: levelIconColor, height: 1.5, letterSpacing: 0),
+                                  const Text(
+                                    '• ',
+                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
                                   ),
-                                  Text(
-                                    levelInstruction,
-                                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
+                                  Expanded(
+                                    child: Text(
+                                      point,
+                                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
+                                    ),
                                   ),
                                 ],
-                              ),
+                              )).toList(),
                             ),
                           ],
                         ),
@@ -633,7 +636,14 @@ class _NewPlanViewState extends State<NewPlanView> {
           _buildPreviewRow('- 使用劑量：夜晚', entry.nighttimeDose ?? '未指派'),
         ],
         if (entry.notesController.text.isNotEmpty)
-          _buildPreviewRow('備註', entry.notesController.text),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
+            children: [
+              const Text('備註', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0)),
+              Text(entry.notesController.text, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0)),
+            ],
+          ),
       ],
     );
   }
