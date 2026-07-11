@@ -232,7 +232,7 @@ class ApiService {
   }
 
   static Future<ApiResult<PassportStatus>> getPassport(String dateStr) async {
-    final (statusCode, data) = await ApiClient.send('GET', '/passport/load?date_str=$dateStr', authenticated: true);
+    final (statusCode, data) = await ApiClient.send('GET', '/passport/load?target_date=$dateStr', authenticated: true);
 
     if (statusCode == 200) {
       return ApiResult.success(PassportStatus.fromJson(data));
@@ -252,7 +252,7 @@ class ApiService {
   }
 
   static Future<ApiResult<DiaryStatus>> getDiaryStatus(String dateStr) async {
-    final (statusCode, data) = await ApiClient.send('GET', '/diary/load?date_str=$dateStr', authenticated: true);
+    final (statusCode, data) = await ApiClient.send('GET', '/diary/load?target_date=$dateStr', authenticated: true);
 
     if (statusCode == 200) {
       return ApiResult.success(DiaryStatus.fromJson(data));
@@ -292,7 +292,7 @@ class ApiService {
   }
 
   static Future<ApiResult<PeakFlowStatus>> getPeakFlowStatus(String dateStr) async {
-    final (statusCode, data) = await ApiClient.send('GET', '/pefr/load?date_str=$dateStr', authenticated: true);
+    final (statusCode, data) = await ApiClient.send('GET', '/pefr/load?target_date=$dateStr', authenticated: true);
 
     if (statusCode == 200) {
       return ApiResult.success(PeakFlowStatus.fromJson(data));
@@ -332,7 +332,7 @@ class ApiService {
   }
 
   static Future<ApiResult<ActStatus>> getActStatus(String dateStr) async {
-    final (statusCode, data) = await ApiClient.send('GET', '/act/load?date_str=$dateStr', authenticated: true);
+    final (statusCode, data) = await ApiClient.send('GET', '/act/load?target_date=$dateStr', authenticated: true);
 
     if (statusCode == 200) {
       return ApiResult.success(ActStatus.fromJson(data));
