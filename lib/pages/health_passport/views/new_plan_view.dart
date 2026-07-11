@@ -40,64 +40,61 @@ class _NewPlanViewState extends State<NewPlanView> {
   bool isLevelExpanded = false;
 
   final Map<String, String> levelDescriptions = {
-    'good': '控制良好',
-    'warning': '症狀加重',
-    'bad': '症狀嚴重',
-  };
-
-  final Map<String, String> levelDetails = {
-    'good': '病患過去一個月狀況穩定',
-    'warning': '病患過去一個月狀況不佳，需多加留意',
-    'bad': '病患過去一個月症狀嚴重，需多加診斷',
-  };
-
-  final Map<String, String> resultTitles = {
-    'good': '維持目前行動計畫',
-    'warning': '請留意症狀變化',
-    'bad': '需採取緊急措施',
+    'full': '氣喘完全控制',
+    'partial': '氣喘部分控制',
+    'poor': '氣喘控制不佳',
+    'acute': '氣喘急性發作',
   };
 
   final Map<String, List<String>> resultPoints = {
-    'good': [
-      'needing reliever medicine no more than 2 days/week',
-      'no asthma at night',
-      'no asthma when I wake up',
-      'can do all my activities',
+    'full': [
+      '需要氣喘緩解症狀的藥物每週不超過 2 天。',
+      '夜間無氣喘症狀。',
+      '白天沒有氣喘症狀。',
+      '我能完成我的所有活動。',
     ],
-    'warning': [
-      'needing reliever medicine more',
-      'than usual OR more than 2 days/week',
-      'woke up overnight with asthma',
-      'had asthma when I woke up',
-      'can\'t do all my activities',
+    'partial': [
+      '需要氣喘SABA緩解藥物比平常多或每週超過 2 天。',
+      '半夜會因氣喘醒來。',
+      '白天有氣喘症狀。',
+      '因氣喘而使活動受限。',
     ],
-    'bad': [
-      'reliever medicine not working at all',
-      'can\'t speak a full sentence',
-      'extreme difficulty breathing',
-      'feel asthma is out of control',
-      'lips turning blue',
+    'poor': [
+      '氣喘SABA緩解藥物效果未達3小時。',
+      '夜間經常因氣喘症狀醒來。',
+      '白天有氣喘症狀。',
+      '感覺呼吸困難。',
+    ],
+    'acute': [
+      '氣喘SABA緩解藥物完全無效。',
+      '無法說完整一句話。',
+      '呼吸極度困難。',
+      '感覺氣喘已失控。',
+      '嘴唇發紫。',
     ],
   };
 
   final Map<String, Color> resultColors = {
-    'good': AppColors.honeydew,
-    'warning': AppColors.secondaryYellow,
-    'bad': AppColors.babysBottom,
+    'full': AppColors.secondaryGreen,
+    'partial': AppColors.secondaryYellow,
+    'poor': AppColors.secondaryOrange,
+    'acute': AppColors.secondaryRed,
   };
 
   final Map<String, Color> resultIconColors = {
-    'good': AppColors.funGreen,
-    'warning': AppColors.windsorTan,
-    'bad': AppColors.poppy,
+    'full': AppColors.primaryGreen,
+    'partial': AppColors.primaryYellow,
+    'poor': AppColors.primaryOrange,
+    'acute': AppColors.primaryRed,
   };
 
-  // Only the 'good' copy was specified; 'warning'/'bad' are a best-effort
+  // Only the 'full' copy was specified; the rest are a best-effort
   // placeholder pending real copy.
   final Map<String, String> planInstructions = {
-    'good': '服用控制藥物，當運動或接觸過敏原後有症狀使用快速緩解藥物',
-    'warning': '服用控制藥物，當運動或接觸過敏原後有症狀使用快速緩解藥物',
-    'bad': '服用控制藥物，當運動或接觸過敏原後有症狀使用快速緩解藥物',
+    'full': '服用控制藥物，當運動或接觸過敏原後有症狀使用快速緩解藥物',
+    'partial': '服用控制藥物，當運動或接觸過敏原後有症狀使用快速緩解藥物',
+    'poor': '服用控制藥物，當運動或接觸過敏原後有症狀使用快速緩解藥物',
+    'acute': '服用控制藥物，當運動或接觸過敏原後有症狀使用快速緩解藥物',
   };
 
   final List<_MedicationEntry> controlMedicationEntries = [_MedicationEntry()];
@@ -185,7 +182,7 @@ class _NewPlanViewState extends State<NewPlanView> {
                     'assets/icons/document.svg',
                     width: 24,
                     height: 24,
-                    colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+                    colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
                   ),
                   const Text(
                     '填寫新的行動計畫',
@@ -325,7 +322,7 @@ class _NewPlanViewState extends State<NewPlanView> {
               ],
             ),
           ),
-          if (selectedLevel == 'good' || selectedLevel == 'warning') ...[
+          if (selectedLevel == 'full' || selectedLevel == 'partial' || selectedLevel == 'poor') ...[
             _buildMedicationSection(
               title: '開立氣喘控制藥物',
               buttonText: '新增氣喘控制藥物',
@@ -341,7 +338,7 @@ class _NewPlanViewState extends State<NewPlanView> {
               onAdd: _addReliefMedication,
             ),
           ],
-          if (selectedLevel == 'bad') _buildEmergencySection(),
+          if (selectedLevel == 'acute') _buildEmergencySection(),
           if (selectedLevel != null) ...[
             _buildNotesSection(),
             _buildDoctorConfirmationSection(),
@@ -350,7 +347,7 @@ class _NewPlanViewState extends State<NewPlanView> {
               child: CustomButton(
                 text: '預覽行動計畫',
                 onPressed: () => setState(() => showPreview = true),
-                backgroundColor: AppColors.funGreen,
+                backgroundColor: AppColors.primaryGreen,
                 padding: const EdgeInsets.all(12),
                 borderRadius: 4,
                 height: 37,
@@ -374,15 +371,17 @@ class _NewPlanViewState extends State<NewPlanView> {
   }
 
   Widget _buildPreviewReport() {
-    final levelTitle = resultTitles[selectedLevel] ?? '';
+    final levelTitle = levelDescriptions[selectedLevel] ?? '';
     final levelInstruction = planInstructions[selectedLevel] ?? '';
     final levelBgColor = resultColors[selectedLevel] ?? AppColors.honeydew;
-    final levelIconColor = resultIconColors[selectedLevel] ?? AppColors.funGreen;
+    final levelIconColor = resultIconColors[selectedLevel] ?? AppColors.primaryGreen;
 
     String levelIconPath;
-    if (selectedLevel == 'warning') {
+    if (selectedLevel == 'partial') {
       levelIconPath = 'assets/icons/alert-info.svg';
-    } else if (selectedLevel == 'bad') {
+    } else if (selectedLevel == 'poor') {
+      levelIconPath = 'assets/icons/alert.svg';
+    } else if (selectedLevel == 'acute') {
       levelIconPath = 'assets/icons/emergency.svg';
     } else {
       levelIconPath = 'assets/icons/check.svg';
@@ -404,7 +403,7 @@ class _NewPlanViewState extends State<NewPlanView> {
                       'assets/icons/document.svg',
                       width: 24,
                       height: 24,
-                      colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+                      colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
                     ),
                     const Text(
                       '行動計畫指派報告',
@@ -475,7 +474,7 @@ class _NewPlanViewState extends State<NewPlanView> {
                   ),
                 ),
                 const Divider(height: 2, color: AppColors.sweetGrey),
-                if (selectedLevel == 'bad')
+                if (selectedLevel == 'acute')
                   Container(
                     padding: const EdgeInsets.all(8),
                     child: Image.asset(
@@ -566,7 +565,7 @@ class _NewPlanViewState extends State<NewPlanView> {
             child: CustomButton(
               text: '返回首頁',
               onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
-              backgroundColor: AppColors.funGreen,
+              backgroundColor: AppColors.primaryGreen,
               padding: const EdgeInsets.all(12),
               borderRadius: 4,
               height: 37,
@@ -630,69 +629,70 @@ class _NewPlanViewState extends State<NewPlanView> {
       return const SizedBox.shrink();
     }
 
-    final title = resultTitles[selectedLevel] ?? '';
+    final title = levelDescriptions[selectedLevel] ?? '';
     final points = resultPoints[selectedLevel] ?? [];
     final bgColor = resultColors[selectedLevel] ?? Colors.white;
     final iconColor = resultIconColors[selectedLevel] ?? Colors.grey;
-    final isGood = selectedLevel == 'good';
-    final isWarning = selectedLevel == 'warning';
 
     String iconPath;
 
-    if (isGood) {
-      iconPath = 'assets/icons/check.svg';
-    } else if (isWarning) {
+    if (selectedLevel == 'partial') {
       iconPath = 'assets/icons/alert-info.svg';
-    } else {
+    } else if (selectedLevel == 'poor') {
+      iconPath = 'assets/icons/alert-info.svg';
+    } else if (selectedLevel == 'acute') {
       iconPath = 'assets/icons/emergency.svg';
+    } else {
+      iconPath = 'assets/icons/check.svg';
     }
 
     return CardContainer(
       backgroundColor: bgColor,
       borderRadius: 10,
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 8,
         children: [
-          SvgPicture.asset(
-            iconPath,
-            width: 24,
-            height: 24,
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+          Row(
+            spacing: 8,
+            children: [
+              SvgPicture.asset(
+                iconPath,
+                width: 24,
+                height: 24,
+                colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+              ),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: iconColor,
+                  height: 1.5,
+                  letterSpacing: 0
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: Column(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 4,
+            children: points.map((point) => Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 4,
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: iconColor,
-                    height: 1.5,
-                    letterSpacing: 0
+                const Text(
+                  '• ',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
+                ),
+                Expanded(
+                  child: Text(
+                    point,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
                   ),
                 ),
-                ...points.map((point) => Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      '• ',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
-                    ),
-                    Expanded(
-                      child: Text(
-                        point,
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
-                      ),
-                    ),
-                  ],
-                )),
               ],
-            ),
+            )).toList(),
           ),
         ],
       ),
@@ -750,7 +750,7 @@ class _NewPlanViewState extends State<NewPlanView> {
       child: CustomButton(
         text: buttonText,
         onPressed: onAdd,
-        backgroundColor: AppColors.funGreen,
+        backgroundColor: AppColors.primaryGreen,
         padding: const EdgeInsets.all(12),
         borderRadius: 4,
         height: 37,
@@ -1014,7 +1014,6 @@ class _NewPlanViewState extends State<NewPlanView> {
       final entry = entries[index];
       final key = entry.key;
       final title = entry.value;
-      final detail = levelDetails[key] ?? '';
       final isSelected = selectedLevel == key;
       final isLast = index == entries.length - 1;
 
@@ -1031,24 +1030,15 @@ class _NewPlanViewState extends State<NewPlanView> {
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
-                      ),
-                      if (isSelected)
-                        const Icon(Icons.check, color: AppColors.funGreen, size: 20),
-                    ],
-                  ),
                   Text(
-                    detail,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
+                    title,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
                   ),
+                  if (isSelected)
+                    const Icon(Icons.check, color: AppColors.primaryGreen, size: 20),
                 ],
               ),
             ),

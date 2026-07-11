@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                     leftText: '登入',
                     rightText: '註冊',
                     onChanged: (value) => setState(() => isLogin = value),
-                    activeColor: AppColors.funGreen,
+                    activeColor: AppColors.primaryGreen,
                   ),
                   // Forms
                   isLogin ? const LoginForm() : const RegisterForm(),
@@ -94,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: AppColors.funGreen,
+                              color: AppColors.primaryGreen,
                               height: 1.71,
                               letterSpacing: 0,
                               decoration: TextDecoration.underline,
@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: AppColors.funGreen,
+                              color: AppColors.primaryGreen,
                               height: 1.71,
                               letterSpacing: 0,
                               decoration: TextDecoration.underline,

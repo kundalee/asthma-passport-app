@@ -35,7 +35,7 @@ class HealthReportView extends StatelessWidget {
                   'assets/icons/document.svg',
                   width: 24,
                   height: 24,
-                  colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
                 ),
                 const Text(
                   '近期紀錄簡報',
@@ -86,7 +86,7 @@ class HealthReportView extends StatelessWidget {
                   ),
                   Text(
                     statusTitle,
-                    style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.funGreen, height: 1.0),
+                    style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.primaryGreen, height: 1.0),
                   ),
                 ],
               ),
@@ -96,7 +96,7 @@ class HealthReportView extends StatelessWidget {
               child: CustomButton(
                 text: '填寫新計畫',
                 onPressed: () => onSwitchView(2),
-                backgroundColor: AppColors.funGreen,
+                backgroundColor: AppColors.primaryGreen,
                 padding: const EdgeInsets.all(12),
                 borderRadius: 4,
                 height: 37,
@@ -105,8 +105,8 @@ class HealthReportView extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: CustomButton(
-                text: '查看已指派計畫',
-                onPressed: () => onSwitchView(0),
+                text: '下載報告',
+                onPressed: () => {},
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.black,
                 border: const BorderSide(color: AppColors.whiteMarble, width: 1),

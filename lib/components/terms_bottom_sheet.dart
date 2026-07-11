@@ -95,7 +95,7 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: _isAgreed ? AppColors.funGreen : Colors.black,
+                              color: _isAgreed ? AppColors.primaryGreen : Colors.black,
                               width: 2,
                             ),
                           ),
@@ -123,7 +123,7 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                   CustomButton(
                     text: '確認',
                     onPressed: _isAgreed ? widget.onConfirm : () {},
-                    backgroundColor: _isAgreed ? AppColors.funGreen : AppColors.richWhite,
+                    backgroundColor: _isAgreed ? AppColors.primaryGreen : AppColors.richWhite,
                     height: 48,
                   ),
                   const SizedBox(height: 32),

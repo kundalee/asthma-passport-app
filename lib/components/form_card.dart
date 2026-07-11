@@ -69,7 +69,7 @@ class _FormCardState extends State<FormCard> {
                   width: 24,
                   height: 24,
                   colorFilter: const ColorFilter.mode(
-                    AppColors.funGreen,
+                    AppColors.primaryGreen,
                     BlendMode.srcIn,
                   ),
                 );
@@ -77,7 +77,7 @@ class _FormCardState extends State<FormCard> {
                 return Expanded(
                   child: Container(
                     height: 4,
-                    color: AppColors.funGreen,
+                    color: AppColors.primaryGreen,
                   ),
                 );
               }
@@ -154,7 +154,7 @@ class _FormCardState extends State<FormCard> {
         decoration: BoxDecoration(
           color: isSelected ? AppColors.honeydew : Colors.white,
           border: Border.all(
-            color: isSelected ? AppColors.funGreen : AppColors.whiteMarble,
+            color: isSelected ? AppColors.primaryGreen : AppColors.whiteMarble,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(4),
@@ -203,7 +203,7 @@ class _FormCardState extends State<FormCard> {
                 }
               : () {},
           foregroundColor: Colors.white,
-          backgroundColor: AppColors.funGreen,
+          backgroundColor: AppColors.primaryGreen,
           height: 37,
           borderRadius: 4,
         ),

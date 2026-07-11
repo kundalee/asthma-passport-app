@@ -33,7 +33,7 @@ class ComprehensiveDataView extends StatelessWidget {
           CustomButton(
             text: '下載報告',
             onPressed: () {},
-            backgroundColor: AppColors.funGreen,
+            backgroundColor: AppColors.primaryGreen,
             foregroundColor: Colors.white,
             borderRadius: 4,
             height: 37,

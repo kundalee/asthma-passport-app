@@ -73,7 +73,7 @@ class ActView extends StatelessWidget {
       width: 64,
       height: 64,
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.funGreen, width: 4),
+        border: Border.all(color: AppColors.primaryGreen, width: 4),
         borderRadius: BorderRadius.circular(40),
       ),
       child: Center(
@@ -81,7 +81,7 @@ class ActView extends StatelessWidget {
           'assets/icons/exam.svg',
           width: 40,
           height: 40,
-          colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+          colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
         ),
       ),
     );

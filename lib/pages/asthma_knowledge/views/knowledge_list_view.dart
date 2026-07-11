@@ -70,7 +70,7 @@ class KnowledgeListView extends StatelessWidget {
               'assets/icons/arrow-right.svg',
               width: 24,
               height: 24,
-              colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
             ),
           ],
         ),

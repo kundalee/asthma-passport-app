@@ -4,8 +4,6 @@ class PassportInfo {
   final String sex;
   final String age;
   final String birthday;
-  final String mrzLine1;
-  final String mrzLine2;
 
   const PassportInfo({
     required this.name,
@@ -13,19 +11,38 @@ class PassportInfo {
     required this.sex,
     required this.age,
     required this.birthday,
-    required this.mrzLine1,
-    required this.mrzLine2,
   });
 
   factory PassportInfo.fromJson(Map<String, dynamic> json) {
     return PassportInfo(
       name: json['name'] ?? '',
       code: json['code'] ?? '',
-      sex: json['sex'] ?? '',
-      age: json['age']?.toString() ?? '',
-      birthday: json['birthday'] ?? '',
-      mrzLine1: json['mrz_line1'] ?? '',
-      mrzLine2: json['mrz_line2'] ?? '',
+      sex: json['sex'] ?? '未填寫',
+      age: json['age']?.toString() ?? '-',
+      birthday: json['birthday'] ?? '未填寫',
+    );
+  }
+}
+
+class PassportMedication {
+  final String name;
+  final String dose;
+  final String freq;
+  final String note;
+
+  const PassportMedication({
+    required this.name,
+    required this.dose,
+    required this.freq,
+    required this.note,
+  });
+
+  factory PassportMedication.fromJson(Map<String, dynamic> json) {
+    return PassportMedication(
+      name: json['name'] ?? '',
+      dose: json['dose'] ?? '',
+      freq: json['freq'] ?? '',
+      note: json['note'] ?? '',
     );
   }
 }
@@ -36,8 +53,8 @@ class PassportPlan {
   final String statusLevel;
   final String statusTitle;
   final String statusDesc;
-  final List<String> controlMeds;
-  final List<String> reliefMeds;
+  final List<PassportMedication> controlMeds;
+  final List<PassportMedication> reliefMeds;
   final String notes;
   final String doctorName;
 
@@ -60,8 +77,12 @@ class PassportPlan {
       statusLevel: json['status_level'] ?? '',
       statusTitle: json['status_title'] ?? '',
       statusDesc: json['status_desc'] ?? '',
-      controlMeds: List<String>.from(json['control_meds'] ?? []),
-      reliefMeds: List<String>.from(json['relief_meds'] ?? []),
+      controlMeds: (json['control_meds'] as List<dynamic>? ?? [])
+          .map((m) => PassportMedication.fromJson(m as Map<String, dynamic>))
+          .toList(),
+      reliefMeds: (json['relief_meds'] as List<dynamic>? ?? [])
+          .map((m) => PassportMedication.fromJson(m as Map<String, dynamic>))
+          .toList(),
       notes: json['notes'] ?? '',
       doctorName: json['doctor_name'] ?? '',
     );

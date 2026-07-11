@@ -122,7 +122,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
             child: CustomButton(
               text: isComplete ? '查看測驗結果' : '開始紀錄',
               onPressed: onViewResults ?? () {},
-              backgroundColor: isComplete ? AppColors.sportyBlue : AppColors.funGreen,
+              backgroundColor: isComplete ? AppColors.sportyBlue : AppColors.primaryGreen,
               padding: const EdgeInsets.all(12),
               borderRadius: 4,
               height: 37,
@@ -155,7 +155,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
           'assets/icons/document.svg',
           width: 24,
           height: 24,
-          colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+          colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
         ),
         Expanded(
           child: Text(
@@ -227,7 +227,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
-              color: AppColors.funGreen,
+              color: AppColors.primaryGreen,
               height: 1.5,
               letterSpacing: 0,
             ),

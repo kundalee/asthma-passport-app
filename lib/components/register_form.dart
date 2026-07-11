@@ -231,7 +231,7 @@ class _RegisterFormState extends State<RegisterForm> {
         CustomButton(
           text: '註冊',
           onPressed: _showTermsAndRegister,
-          backgroundColor: AppColors.funGreen,
+          backgroundColor: AppColors.primaryGreen,
           isLoading: isLoading,
         ),
       ],

@@ -149,7 +149,7 @@ class _LoginFormState extends State<LoginForm> {
         CustomButton(
           text: '登入',
           onPressed: _handleLogin,
-          backgroundColor: AppColors.funGreen,
+          backgroundColor: AppColors.primaryGreen,
           isLoading: isLoading,
         ),
         // Divider
@@ -229,7 +229,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
             child: const Text(
               '忘記密碼？',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.funGreen, height: 1.71, letterSpacing: 0),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.primaryGreen, height: 1.71, letterSpacing: 0),
             ),
           ),
         ),

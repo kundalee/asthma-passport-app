@@ -44,7 +44,7 @@ class StatusContainer extends StatelessWidget {
                   'assets/icons/document.svg',
                   width: 24,
                   height: 24,
-                  colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+                  colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
                 ),
                 Text(
                   title!,
@@ -75,7 +75,7 @@ class StatusContainer extends StatelessWidget {
           CustomButton(
             text: isComplete ? '查看測驗結果' : '開始紀錄',
             onPressed: onPressed,
-            backgroundColor: isComplete ? AppColors.sportyBlue : AppColors.funGreen,
+            backgroundColor: isComplete ? AppColors.sportyBlue : AppColors.primaryGreen,
             foregroundColor: Colors.white,
             borderRadius: 4,
             height: 37,

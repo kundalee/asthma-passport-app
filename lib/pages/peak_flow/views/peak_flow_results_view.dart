@@ -362,7 +362,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
       case 1:
         backgroundColor = AppColors.honeydew;
         borderColor = AppColors.lightPastelMint;
-        textColor = AppColors.funGreen;
+        textColor = AppColors.primaryGreen;
         iconPath = 'assets/icons/check.svg';
         statusText = '控制良好，請繼續保持';
         break;
@@ -383,7 +383,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
       default:
         backgroundColor = AppColors.honeydew;
         borderColor = AppColors.lightPastelMint;
-        textColor = AppColors.funGreen;
+        textColor = AppColors.primaryGreen;
         iconPath = 'assets/icons/check.svg';
         statusText = '控制良好，請繼續保持';
     }
@@ -439,7 +439,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
             child: CustomButton(
               text: '返回首頁',
               onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
-              backgroundColor: AppColors.funGreen,
+              backgroundColor: AppColors.primaryGreen,
               padding: const EdgeInsets.all(12),
               borderRadius: 4,
               height: 37,
@@ -457,7 +457,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
             child: CustomButton(
               text: _statusResult == null ? '確認' : '完成紀錄',
               onPressed: _statusResult == null ? _previewMeasurement : _confirmMeasurement,
-              backgroundColor: AppColors.funGreen,
+              backgroundColor: AppColors.primaryGreen,
               padding: const EdgeInsets.all(12),
               borderRadius: 4,
               height: 37,

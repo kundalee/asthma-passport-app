@@ -129,7 +129,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
                     child: CustomButton(
                       text: '完成紀錄',
                       onPressed: _saveDiary,
-                      backgroundColor: AppColors.funGreen,
+                      backgroundColor: AppColors.primaryGreen,
                       padding: const EdgeInsets.all(12),
                       borderRadius: 4,
                       height: 37,
@@ -181,7 +181,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
             'assets/icons/calendar.svg',
             width: 24,
             height: 24,
-            colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+            colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
           ),
           Text(
             '測驗日期：${widget.measurementDate}',
@@ -262,7 +262,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
                       color: selectedValue == option.id ? AppColors.honeydew : Colors.white,
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(
-                        color: selectedValue == option.id ? AppColors.funGreen : AppColors.whiteMarble,
+                        color: selectedValue == option.id ? AppColors.primaryGreen : AppColors.whiteMarble,
                         width: 1,
                       ),
                     ),
@@ -406,7 +406,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
 
   Color _getScaleBarColor(int index) {
     final colors = [
-      AppColors.funGreen,
+      AppColors.primaryGreen,
       AppColors.conifer,
       AppColors.mustardGold,
       AppColors.comfortingLightRed,
@@ -417,7 +417,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
 
   Widget _buildResultsSummary({required int score, required String message}) {
     final isGood = score <= 2;
-    final statusColor = isGood ? AppColors.funGreen : Colors.red;
+    final statusColor = isGood ? AppColors.primaryGreen : Colors.red;
     final statusBgColor = isGood ? AppColors.honeydew : AppColors.babysBottom;
     final statusIcon = isGood ? 'assets/icons/check.svg' : 'assets/icons/undone.svg';
 
@@ -499,7 +499,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
           child: CustomButton(
             text: '返回首頁',
             onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
-            backgroundColor: AppColors.funGreen,
+            backgroundColor: AppColors.primaryGreen,
             padding: const EdgeInsets.all(12),
             borderRadius: 4,
             height: 37,

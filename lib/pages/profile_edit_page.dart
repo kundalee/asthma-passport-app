@@ -272,7 +272,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
           Navigator.pop(context);
         }
       },
-      backgroundColor: AppColors.funGreen,
+      backgroundColor: AppColors.primaryGreen,
       foregroundColor: Colors.white,
       borderRadius: 4,
       height: 40,

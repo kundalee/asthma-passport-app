@@ -190,7 +190,7 @@ class _MasterFormViewState extends State<MasterFormView> {
             style: const TextStyle(
               fontSize: 40,
               fontWeight: FontWeight.w500,
-              color: AppColors.funGreen,
+              color: AppColors.primaryGreen,
               height: 1.0,
               letterSpacing: 0,
             ),
@@ -210,7 +210,7 @@ class _MasterFormViewState extends State<MasterFormView> {
           Navigator.of(context).pushReplacementNamed('/');
         },
         foregroundColor: Colors.white,
-        backgroundColor: AppColors.funGreen,
+        backgroundColor: AppColors.primaryGreen,
         height: 37,
         borderRadius: 4,
       ),

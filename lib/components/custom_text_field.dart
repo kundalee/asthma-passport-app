@@ -79,7 +79,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
     final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
     final currentBorderColor = hasError
         ? AppColors.primaryRed
-        : (widget.dynamicBorderColor && _hasText ? AppColors.funGreen : widget.borderColor);
+        : (widget.dynamicBorderColor && _hasText ? AppColors.primaryGreen : widget.borderColor);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

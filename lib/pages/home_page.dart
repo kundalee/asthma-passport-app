@@ -140,8 +140,8 @@ class _HomePageState extends State<HomePage> {
           Row(
             spacing: 8,
             children: [
-              _buildHeaderNavButton('assets/icons/home.svg', AppColors.funGreen, true, null),
-              _buildHeaderNavButton('assets/icons/setting.svg', AppColors.funGreen, false, () => Navigator.of(context).pushNamed('/system-settings')),
+              _buildHeaderNavButton('assets/icons/home.svg', AppColors.primaryGreen, true, null),
+              _buildHeaderNavButton('assets/icons/setting.svg', AppColors.primaryGreen, false, () => Navigator.of(context).pushNamed('/system-settings')),
               _buildHeaderNavButton('assets/icons/emergency.svg', Colors.red, false, () => Navigator.of(context).pushNamed('/emergency-contact')),
             ],
           ),
@@ -154,7 +154,7 @@ class _HomePageState extends State<HomePage> {
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.funGreen,
+                  color: AppColors.primaryGreen,
                   borderRadius: BorderRadius.circular(isLoggedIn ? 8 : 24),
                 ),
                 child: Row(
@@ -244,7 +244,7 @@ class _HomePageState extends State<HomePage> {
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.funGreen,
+                            color: AppColors.primaryGreen,
                             height: 1.5,
                             letterSpacing: 0,
                           ),
@@ -272,7 +272,7 @@ class _HomePageState extends State<HomePage> {
                     child: _buildWeatherItem('濕度', '$humidity', '%'),
                   ),
                   Expanded(
-                    child: _buildWeatherItem('PM2.5', pm25.toStringAsFixed(1), 'μg/m3', unitStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.funGreen, height: 2.25, letterSpacing: 0)),
+                    child: _buildWeatherItem('PM2.5', pm25.toStringAsFixed(1), 'μg/m3', unitStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.primaryGreen, height: 2.25, letterSpacing: 0)),
                   ),
                 ],
               ),
@@ -303,7 +303,7 @@ class _HomePageState extends State<HomePage> {
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.funGreen,
+                    color: AppColors.primaryGreen,
                     height: 1.5,
                     letterSpacing: 0,
                   ),
@@ -332,7 +332,7 @@ class _HomePageState extends State<HomePage> {
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.funGreen,
+                  color: AppColors.primaryGreen,
                   height: 1.5,
                   letterSpacing: 0,
                 ),
@@ -342,7 +342,7 @@ class _HomePageState extends State<HomePage> {
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.funGreen,
+                  color: AppColors.primaryGreen,
                   height: 1.5,
                   letterSpacing: 0,
                 ),
@@ -378,7 +378,7 @@ class _HomePageState extends State<HomePage> {
                 'assets/icons/diary.svg',
                 width: 24,
                 height: 24,
-                colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
               ),
               const Text(
                 '今日檢測',
@@ -421,8 +421,8 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: isDone ? AppColors.funGreen : Colors.transparent,
-                    border: Border.all(color: AppColors.funGreen, width: 2),
+                    color: isDone ? AppColors.primaryGreen : Colors.transparent,
+                    border: Border.all(color: AppColors.primaryGreen, width: 2),
                     borderRadius: BorderRadius.circular(40),
                   ),
                   child: SvgPicture.asset(
@@ -442,7 +442,7 @@ class _HomePageState extends State<HomePage> {
                 'assets/icons/arrow-right.svg',
                 width: 24,
                 height: 24,
-                colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
               ),
           ],
         ),

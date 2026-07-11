@@ -30,7 +30,7 @@ class PeakFlowView extends StatefulWidget {
           CustomButton(
             text: '檢視前一個月資料',
             onPressed: () {},
-            backgroundColor: AppColors.funGreen,
+            backgroundColor: AppColors.primaryGreen,
             foregroundColor: Colors.white,
             borderRadius: 4,
             height: 37,

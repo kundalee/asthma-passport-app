@@ -55,7 +55,7 @@ class CustomDialog extends StatelessWidget {
               child: CustomButton(
                 text: buttonText,
                 onPressed: onButtonPressed ?? () => Navigator.pop(context),
-                backgroundColor: AppColors.funGreen,
+                backgroundColor: AppColors.primaryGreen,
                 foregroundColor: Colors.white,
                 height: 37,
                 borderRadius: 4,

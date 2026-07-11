@@ -38,7 +38,7 @@ class HealthPassportView extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             AppColors.sensationalGreen,
-            AppColors.funGreen,
+            AppColors.primaryGreen,
           ],
         ),
         borderRadius: const BorderRadius.only(
@@ -83,7 +83,7 @@ class HealthPassportView extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             AppColors.sensationalGreen,
-            AppColors.funGreen,
+            AppColors.primaryGreen,
           ],
         ),
         borderRadius: const BorderRadius.only(
@@ -130,7 +130,6 @@ class HealthPassportView extends StatelessWidget {
     final code = info.code;
     final sex = info.sex;
     final age = info.age;
-    final barcode = '${info.mrzLine1}\n${info.mrzLine2}';
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -176,7 +175,7 @@ class HealthPassportView extends StatelessWidget {
                       spacing: 12,
                       children: [
                         Expanded(flex: 60, child: _buildInfoRow('SEX / 性別', sex)),
-                        Expanded(flex: 40, child: _buildInfoRow('AGE / 年齡', age.isNotEmpty ? '$age 歲' : '')),
+                        Expanded(flex: 40, child: _buildInfoRow('AGE / 年齡', age == '-' ? age : '$age 歲')),
                       ],
                     ),
                     Row(
@@ -200,16 +199,27 @@ class HealthPassportView extends StatelessWidget {
               color: AppColors.beeswax,
               borderRadius: BorderRadius.circular(4),
             ),
-            child: Center(
-              child: Text(
-                barcode,
-                style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w400, color: AppColors.newAmber, height: 1.0, letterSpacing: 2),
-                textAlign: TextAlign.center,
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildBarcodeLine(),
+                _buildBarcodeLine(),
+              ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBarcodeLine() {
+    return Text(
+      '<' * 200,
+      maxLines: 1,
+      softWrap: false,
+      overflow: TextOverflow.clip,
+      style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w400, color: AppColors.newAmber, height: 1.0, letterSpacing: 2),
+      textAlign: TextAlign.center,
     );
   }
 

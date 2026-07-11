@@ -249,7 +249,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
                       onAdd();
                       Navigator.pop(dialogContext);
                     },
-                    backgroundColor: AppColors.funGreen,
+                    backgroundColor: AppColors.primaryGreen,
                     foregroundColor: Colors.white,
                     height: 44,
                     borderRadius: 4,
@@ -285,7 +285,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
                 'assets/icons/user.svg',
                 width: 24,
                 height: 24,
-                colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+                colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
               ),
               const Text(
                 '病患基本資料',
@@ -339,7 +339,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
                 CustomButton(
                   text: '儲存編輯',
                   onPressed: _saveEditing,
-                  backgroundColor: AppColors.funGreen,
+                  backgroundColor: AppColors.primaryGreen,
                   foregroundColor: Colors.white,
                   height: 44,
                 ),
@@ -356,7 +356,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
             CustomButton(
               text: '編輯基本資料',
               onPressed: _startEditing,
-              backgroundColor: AppColors.funGreen,
+              backgroundColor: AppColors.primaryGreen,
               foregroundColor: Colors.white,
               height: 40,
             ),

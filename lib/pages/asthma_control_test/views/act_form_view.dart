@@ -80,7 +80,7 @@ class _ActFormViewState extends State<ActFormView> {
               Navigator.of(context).pushReplacementNamed('/');
             },
             foregroundColor: Colors.white,
-            backgroundColor: AppColors.funGreen,
+            backgroundColor: AppColors.primaryGreen,
             height: 37,
             borderRadius: 4,
           ),
@@ -99,7 +99,7 @@ class _ActFormViewState extends State<ActFormView> {
             'assets/icons/document.svg',
             width: 24,
             height: 24,
-            colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+            colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
           ),
           const Text(
             '測驗結果',
@@ -145,7 +145,7 @@ class _ActFormViewState extends State<ActFormView> {
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.funGreen,
+                  color: AppColors.primaryGreen,
                   height: 1.0,
                   letterSpacing: 0,
                 ),
@@ -259,7 +259,7 @@ class _ActFormViewState extends State<ActFormView> {
     if (widget.isAdultTest) {
       switch (level) {
         case 1:
-          return AppColors.funGreen;
+          return AppColors.primaryGreen;
         case 2:
           return AppColors.windsorTan;
         case 3:
@@ -270,7 +270,7 @@ class _ActFormViewState extends State<ActFormView> {
     } else {
       switch (level) {
         case 1:
-          return AppColors.funGreen;
+          return AppColors.primaryGreen;
         case 2:
           return AppColors.windsorTan;
         default:

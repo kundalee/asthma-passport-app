@@ -87,9 +87,9 @@ class CalendarGrid extends StatelessWidget {
                   color: status == 0
                       ? Colors.red
                       : status == 1
-                          ? AppColors.funGreen
+                          ? AppColors.primaryGreen
                           : Colors.white,
-                  border: isToday ? Border.all(color: Colors.black, width: 2) : isSelected ? Border.all(color: AppColors.funGreen, width: 2) : null,
+                  border: isToday ? Border.all(color: Colors.black, width: 2) : isSelected ? Border.all(color: AppColors.primaryGreen, width: 2) : null,
                 ),
                 child: Center(
                   child: Text(

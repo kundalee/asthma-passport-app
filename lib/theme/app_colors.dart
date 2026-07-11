@@ -5,7 +5,7 @@ class AppColors {
 
   // Greens
   static const Color sensationalGreen = Color(0xFF004D2C);
-  static const Color funGreen = Color(0xFF006D37);
+  static const Color primaryGreen = Color(0xFF006D37); // Primary/Green
   static const Color philippineGreen = Color(0xFF008242);
   static const Color jade = Color(0xFF00AC6A);
   static const Color malachite = Color(0xFF06C755);
@@ -16,6 +16,7 @@ class AppColors {
   static const Color lightPastelMint = Color(0xFFB9F8CF);
   static const Color honeydew = Color(0xFFF0FDF4);
   static const Color harp = Color(0xFFE6F4EC);
+  static const Color secondaryGreen = Color(0xFFD9F4E5); // Secondary/Green
 
   // Yellows & Golds
   static const Color mustardGold = Color(0xFFF0B100);
@@ -37,7 +38,9 @@ class AppColors {
   static const Color windsorTan = Color(0xFFA65F00);
   static const Color primaryYellow = Color(0xFFBF8915); // Primary/Yellow
   static const Color rawSienna = Color(0xFFC35E18);
+  static const Color primaryOrange = Color(0xFFDA4F1E); // Primary/Orange
   static const Color metallicOrange = Color(0xFFF97316);
+  static const Color secondaryOrange = Color(0xFFF5DED6); // Secondary/Orange
 
   // Reds & Pinks
   static const Color poppy = Color(0xFFDC2626);

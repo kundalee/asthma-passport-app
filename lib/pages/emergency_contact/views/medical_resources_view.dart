@@ -182,7 +182,7 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
           CustomButton(
             text: '+ 新增緊急醫療連絡',
             onPressed: _addContact,
-            backgroundColor: AppColors.funGreen,
+            backgroundColor: AppColors.primaryGreen,
             foregroundColor: Colors.white,
             height: 44,
           ),
@@ -260,7 +260,7 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
             ),
             Text(
               contacts[index]['contactInfo'] ?? '',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: AppColors.funGreen, height: 1.6),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: AppColors.primaryGreen, height: 1.6),
             ),
           ],
           Row(
@@ -279,7 +279,7 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
                 child: CustomButton(
                   text: isEditing ? '儲存編輯' : '編輯資料',
                   onPressed: () => isEditing ? _saveEditing(index) : _startEditing(index),
-                  backgroundColor: AppColors.funGreen,
+                  backgroundColor: AppColors.primaryGreen,
                   foregroundColor: Colors.white,
                   height: 37,
                 ),

@@ -84,7 +84,7 @@ class AsthmaDiaryView extends StatelessWidget {
       width: 64,
       height: 64,
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.funGreen, width: 4),
+        border: Border.all(color: AppColors.primaryGreen, width: 4),
         borderRadius: BorderRadius.circular(40),
       ),
       child: Center(
@@ -92,7 +92,7 @@ class AsthmaDiaryView extends StatelessWidget {
           'assets/icons/note.svg',
           width: 40,
           height: 40,
-          colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+          colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
         ),
       ),
     );

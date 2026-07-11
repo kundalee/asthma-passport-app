@@ -174,7 +174,7 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
           CustomButton(
             text: '+ 新增緊急聯絡人',
             onPressed: _addContact,
-            backgroundColor: AppColors.funGreen,
+            backgroundColor: AppColors.primaryGreen,
             foregroundColor: Colors.white,
             height: 44,
           ),
@@ -191,7 +191,7 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
           'assets/icons/parent.svg',
           width: 24,
           height: 24,
-          colorFilter: const ColorFilter.mode(AppColors.funGreen, BlendMode.srcIn),
+          colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
         ),
         const Text(
           '緊急醫療救護專線',
@@ -234,7 +234,7 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
             ),
             Text(
               contacts[index]['phone'] ?? '',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: AppColors.funGreen, height: 1.6),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: AppColors.primaryGreen, height: 1.6),
             ),
           ],
           Row(
@@ -253,7 +253,7 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
                 child: CustomButton(
                   text: isEditing ? '儲存編輯' : '編輯資料',
                   onPressed: () => isEditing ? _saveEditing(index) : _startEditing(index),
-                  backgroundColor: AppColors.funGreen,
+                  backgroundColor: AppColors.primaryGreen,
                   foregroundColor: Colors.white,
                   height: 37,
                 ),
