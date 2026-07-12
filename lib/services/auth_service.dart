@@ -26,6 +26,23 @@ class AuthService {
     return ApiClient.failure(statusCode, data, '登入失敗');
   }
 
+  static Future<ApiResult<LoginResult>> loginWithGoogle(String idToken) async {
+    final (statusCode, data) = await ApiClient.send(
+      'POST',
+      '/user/login/google',
+      body: {'id_token': idToken},
+    );
+
+    if (statusCode == 200) {
+      final result = LoginResult.fromJson(data);
+      await saveToken(result.token);
+      await saveUserName(result.userName);
+      return ApiResult.success(result);
+    }
+
+    return ApiClient.failure(statusCode, data, '登入失敗');
+  }
+
   static Future<ApiResult<LoginResult>> register(String name, String email, String password, String confirmPassword) async {
     final (statusCode, data) = await ApiClient.send(
       'POST',

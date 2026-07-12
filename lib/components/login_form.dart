@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../theme/app_colors.dart';
 import 'custom_text_field.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,6 +18,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   bool obscurePassword = false;
   bool isLoading = false;
+  bool isGoogleLoading = false;
   late TextEditingController emailController;
   late TextEditingController passwordController;
   String? emailError;
@@ -60,10 +62,51 @@ class _LoginFormState extends State<LoginForm> {
         title: 'APP使用條款及隱私權保護聲明',
         onConfirm: () {
           Navigator.pop(context);
-          // TODO: Call third-party login API
+          if (provider == 'Google') {
+            _handleGoogleLogin();
+          }
+          // TODO: Call LINE login API
         },
       ),
     );
+  }
+
+  void _handleGoogleLogin() async {
+    setState(() => isGoogleLoading = true);
+
+    try {
+      final account = await GoogleSignIn(scopes: ['email']).signIn();
+      if (account == null) return; // user cancelled
+
+      final auth = await account.authentication;
+      final idToken = auth.idToken;
+      if (idToken == null) {
+        _showError('登入失敗，請稍後再試');
+        return;
+      }
+
+      final result = await AuthService.loginWithGoogle(idToken);
+      if (!mounted) return;
+
+      if (result.success) {
+        final isFirstLogin = result.data?.isFirstLogin ?? false;
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => HomePage(showFirstLoginDialog: isFirstLogin),
+          ),
+        );
+      } else {
+        _showError(result.message ?? '登入失敗，請稍後再試');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => isGoogleLoading = false);
+      }
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   bool _isValidEmail(String email) {
@@ -184,6 +227,7 @@ class _LoginFormState extends State<LoginForm> {
           onPressed: () => _showTermsAndThirdPartyLogin('Google'),
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
+          isLoading: isGoogleLoading,
           icon: SvgPicture.asset(
             'assets/icons/google.svg',
             width: 24,
