@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show PlatformException;
+import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../theme/app_colors.dart';
 import 'custom_text_field.dart';
@@ -19,6 +21,7 @@ class _LoginFormState extends State<LoginForm> {
   bool obscurePassword = false;
   bool isLoading = false;
   bool isGoogleLoading = false;
+  bool isLineLoading = false;
   late TextEditingController emailController;
   late TextEditingController passwordController;
   String? emailError;
@@ -64,8 +67,9 @@ class _LoginFormState extends State<LoginForm> {
           Navigator.pop(context);
           if (provider == 'Google') {
             _handleGoogleLogin();
+          } else if (provider == 'LINE') {
+            _handleLineLogin();
           }
-          // TODO: Call LINE login API
         },
       ),
     );
@@ -101,6 +105,42 @@ class _LoginFormState extends State<LoginForm> {
     } finally {
       if (mounted) {
         setState(() => isGoogleLoading = false);
+      }
+    }
+  }
+
+  void _handleLineLogin() async {
+    setState(() => isLineLoading = true);
+
+    try {
+      final result = await LineSDK.instance.login(scopes: ['profile', 'openid', 'email']);
+      final idToken = result.accessToken.idTokenRaw;
+      if (idToken == null) {
+        _showError('登入失敗，請稍後再試');
+        return;
+      }
+
+      final loginResult = await AuthService.loginWithLine(idToken);
+      if (!mounted) return;
+
+      if (loginResult.success) {
+        final isFirstLogin = loginResult.data?.isFirstLogin ?? false;
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => HomePage(showFirstLoginDialog: isFirstLogin),
+          ),
+        );
+      } else {
+        _showError(loginResult.message ?? '登入失敗，請稍後再試');
+      }
+    } on PlatformException {
+      // Covers user cancellation and native SDK errors alike — LINE's error
+      // codes differ between iOS/Android, so there's no single reliable
+      // "cancelled" code to special-case here.
+      _showError('登入失敗，請稍後再試');
+    } finally {
+      if (mounted) {
+        setState(() => isLineLoading = false);
       }
     }
   }
@@ -214,6 +254,7 @@ class _LoginFormState extends State<LoginForm> {
           text: '使用 LINE 登入',
           onPressed: () => _showTermsAndThirdPartyLogin('LINE'),
           backgroundColor: AppColors.malachite,
+          isLoading: isLineLoading,
           icon: SvgPicture.asset(
             'assets/icons/line.svg',
             width: 24,

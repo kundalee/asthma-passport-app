@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'config/line_auth_config.dart';
 import 'pages/login_page.dart';
 import 'pages/home_page.dart';
 import 'pages/profile_page.dart';
@@ -16,6 +18,8 @@ import 'services/navigation_service.dart';
 import 'theme/app_colors.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  LineSDK.instance.setup(LineAuthConfig.channelId);
   runApp(const MyApp());
 }
 

@@ -46,9 +46,10 @@ lib/
 
 ## Services
 
-- `AuthService` — login/register/session persistence. `login` calls the real backend (`POST /user/login`); `register` is still mocked pending a backend endpoint. `loginWithGoogle` calls `POST /user/login/google` (see [Google Sign-In](#google-sign-in) below).
+- `AuthService` — login/register/session persistence. `login` calls the real backend (`POST /user/login`); `register` is still mocked pending a backend endpoint. `loginWithGoogle`/`loginWithLine` call `POST /user/login/google`/`POST /user/login/line` (see below).
 - `ApiService` — app data (weather, tests, passport, history, etc.). Currently mocked; endpoints will be wired up as they become available.
 
-## Google Sign-In
+## Third-party login
 
-The login screen's "使用 Google 登入" button uses the `google_sign_in` package, backed by OAuth clients in a dedicated Google Cloud Console project (iOS + Android, no Web client). See [`docs/google-sign-in.md`](docs/google-sign-in.md) for the full setup steps, current client IDs/config, and what's still outstanding (backend endpoint, release-build SHA-1, publishing).
+- **Google Sign-In** — the "使用 Google 登入" button uses the `google_sign_in` package, backed by OAuth clients in a dedicated Google Cloud Console project (iOS + Android, no Web client). See [`docs/google-sign-in.md`](docs/google-sign-in.md) for setup steps, current client IDs/config, and outstanding items (backend endpoint, release-build SHA-1, publishing).
+- **LINE Login** — the "使用 LINE 登入" button uses the `flutter_line_sdk` package, backed by a single LINE Login channel shared across platforms. See [`docs/line-login.md`](docs/line-login.md) for setup steps and outstanding items (email permission application, backend endpoint).
