@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../components/app_page_container.dart';
+import '../../models/act_models.dart';
 import '../../services/api_service.dart';
 import 'views/act_view.dart';
 import 'views/act_selection_view.dart';
@@ -21,6 +22,9 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
   int? controlLevel;
   bool isAdultTest = true;
   int currentView = 0; // 0: summary, 1: selection, 2: form
+  String? targetGroup;
+  String recordDate = '';
+  List<ActQuestion> actQuestions = [];
 
   @override
   void initState() {
@@ -39,6 +43,9 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
         measurementDate = displayMonth;
         isAssessmentCompleted = result.data!.isCompleted;
         measurementTime = result.data!.isCompleted ? displayMonth : null;
+        targetGroup = result.data!.targetGroup;
+        recordDate = dateStr;
+        actQuestions = result.data!.questions;
       });
     }
   }
@@ -54,25 +61,6 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
       totalScore = result['totalScore'];
       controlLevel = result['controlLevel'];
     });
-  }
-
-  Future<void> _submitAssessment() async {
-    try {
-      final response = await ApiService.submitAssessment(
-        isAdultTest: isAdultTest,
-        totalScore: totalScore ?? 0,
-        controlLevel: controlLevel ?? 1,
-      );
-
-      if (response['success'] == true) {
-        setState(() {
-          isAssessmentCompleted = true;
-          measurementTime = response['measurementDate'];
-        });
-      }
-    } catch (e) {
-      // Handle error
-    }
   }
 
   void _selectTestType(bool isAdult) {
@@ -93,16 +81,18 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
       );
     } else if (currentView == 1) {
       content = ActSelectionView(
+        targetGroup: targetGroup,
         onSwitchView: _switchView,
         onSelectTestType: _selectTestType,
       );
     } else {
       content = ActFormView(
         measurementDate: measurementDate,
+        recordDate: recordDate,
         isAdultTest: isAdultTest,
+        questions: actQuestions,
         onSwitchView: _switchView,
         onAssessmentCalculated: _handleAssessmentCalculated,
-        onSubmitAssessment: _submitAssessment,
       );
     }
 

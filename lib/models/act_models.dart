@@ -50,11 +50,33 @@ class ActQuestion {
   }
 }
 
+class SaveActResult {
+  final int id;
+  final int totalScore;
+  // Result tier code from the backend: 1 = well controlled, 2 = second tier,
+  // 3 = worst tier (adult only; child only ever returns 1 or 2).
+  final int? statusSummary;
+
+  const SaveActResult({
+    required this.id,
+    required this.totalScore,
+    required this.statusSummary,
+  });
+
+  factory SaveActResult.fromJson(Map<String, dynamic> json) {
+    return SaveActResult(
+      id: json['id'] as int,
+      totalScore: (json['total_score'] as num?)?.toInt() ?? 0,
+      statusSummary: (json['status_summary'] as num?)?.toInt(),
+    );
+  }
+}
+
 class ActStatus {
   final String targetGroup;
   final bool isCompleted;
   final int? totalScore;
-  final String? statusSummary;
+  final int? statusSummary;
   final List<ActQuestion> questions;
 
   const ActStatus({
@@ -73,7 +95,7 @@ class ActStatus {
       targetGroup: json['target_group'] ?? '',
       isCompleted: json['is_completed'] ?? false,
       totalScore: (json['total_score'] as num?)?.toInt(),
-      statusSummary: json['status_summary'] as String?,
+      statusSummary: (json['status_summary'] as num?)?.toInt(),
       questions: questions,
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../models/act_models.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/form_card.dart';
 import '../../../components/card_container.dart';
@@ -8,18 +9,20 @@ import '../../../services/api_service.dart';
 
 class ActFormView extends StatefulWidget {
   final String measurementDate;
+  final String recordDate;
   final bool isAdultTest;
+  final List<ActQuestion> questions;
   final Function(int) onSwitchView;
   final Function(Map<String, dynamic>) onAssessmentCalculated;
-  final VoidCallback? onSubmitAssessment;
 
   const ActFormView({
     super.key,
     required this.measurementDate,
+    required this.recordDate,
     required this.isAdultTest,
+    required this.questions,
     required this.onSwitchView,
     required this.onAssessmentCalculated,
-    this.onSubmitAssessment,
   });
 
   @override
@@ -27,25 +30,16 @@ class ActFormView extends StatefulWidget {
 }
 
 class _ActFormViewState extends State<ActFormView> {
-  List<Map<String, dynamic>> questionsData = [];
   int? totalScore;
   int? controlLevel;
 
-  @override
-  void initState() {
-    super.initState();
-    _loadQuestions();
-  }
-
-  Future<void> _loadQuestions() async {
-    try {
-      final data = await ApiService.getActQuestions(widget.isAdultTest);
-      setState(() {
-        questionsData = List<Map<String, dynamic>>.from(data);
-      });
-    } catch (e) {
-      // Keep default values if API fails
-    }
+  List<Map<String, dynamic>> get questionsData {
+    return widget.questions
+        .map((q) => {
+              'title': q.text,
+              'options': q.options.map((o) => {'id': o.id, 'label': o.text}).toList(),
+            })
+        .toList();
   }
 
   @override
@@ -76,7 +70,6 @@ class _ActFormViewState extends State<ActFormView> {
           CustomButton(
             text: '完成紀錄',
             onPressed: () {
-              widget.onSubmitAssessment?.call();
               Navigator.of(context).pushReplacementNamed('/');
             },
             foregroundColor: Colors.white,
@@ -192,18 +185,31 @@ class _ActFormViewState extends State<ActFormView> {
   }
 
   Future<void> _submitTest(List<int?> answers) async {
-    try {
-      final result = await ApiService.calculateActResult(
-        isAdultTest: widget.isAdultTest,
-        answers: answers,
-      );
+    final payload = <Map<String, dynamic>>[];
+    for (var i = 0; i < widget.questions.length; i++) {
+      final question = widget.questions[i];
+      final selectedOptionId = answers[i];
+      final selectedOption = question.options.firstWhere((o) => o.id == selectedOptionId);
+      payload.add({'question_id': question.id, 'selected_value': selectedOption.score});
+    }
+
+    final result = await ApiService.saveAct(widget.recordDate, payload);
+    if (!mounted) return;
+
+    if (result.success && result.data != null) {
+      final calculated = {
+        'totalScore': result.data!.totalScore,
+        'controlLevel': result.data!.statusSummary,
+      };
       setState(() {
-        totalScore = result['totalScore'];
-        controlLevel = result['controlLevel'];
+        totalScore = calculated['totalScore'];
+        controlLevel = calculated['controlLevel'];
       });
-      widget.onAssessmentCalculated(result);
-    } catch (e) {
-      // Handle error
+      widget.onAssessmentCalculated(calculated);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message ?? '儲存失敗')),
+      );
     }
   }
 
