@@ -5,6 +5,7 @@ import '../components/app_page_container.dart';
 import '../components/card_container.dart';
 import '../components/custom_button.dart';
 import '../components/custom_dropdown.dart';
+import '../services/auth_service.dart';
 
 class ProfileEditPage extends StatefulWidget {
   const ProfileEditPage({super.key});
@@ -14,6 +15,12 @@ class ProfileEditPage extends StatefulWidget {
 }
 
 class _ProfileEditPageState extends State<ProfileEditPage> {
+  static const _genderOptions = ['男性', '女性'];
+  static const _bloodTypeOptions = ['A型', 'B型', 'AB型', 'O型'];
+  // Placeholder values UserProfile falls back to when a field isn't set;
+  // they're for display only and shouldn't populate the edit form.
+  static const _placeholderValues = {'未填寫', '-'};
+
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _heightController;
@@ -34,6 +41,40 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     _selectedGender = null;
     _selectedBloodType = null;
     _selectedBirthDate = null;
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    final result = await AuthService.getProfile();
+    if (!mounted) return;
+
+    final profile = result.data;
+    if (result.success && profile != null) {
+      setState(() {
+        _nameController.text = profile.name;
+        _emailController.text = profile.email;
+        _heightController.text = _valueOrEmpty(profile.height);
+        _weightController.text = _valueOrEmpty(profile.weight);
+        _selectedGender = _genderOptions.contains(profile.gender) ? profile.gender : null;
+        _selectedBloodType = _bloodTypeOptions.contains(profile.bloodType) ? profile.bloodType : null;
+        _selectedBirthDate = _parseBirthday(profile.birthday);
+      });
+    }
+  }
+
+  String _valueOrEmpty(String value) => _placeholderValues.contains(value) ? '' : value;
+
+  // GET /user/profile returns birthday as "YYYY/MM/DD", not ISO 8601, so
+  // DateTime.tryParse can't read it directly.
+  DateTime? _parseBirthday(String value) {
+    if (_placeholderValues.contains(value)) return null;
+    final parts = value.split('/');
+    if (parts.length != 3) return DateTime.tryParse(value);
+    final year = int.tryParse(parts[0]);
+    final month = int.tryParse(parts[1]);
+    final day = int.tryParse(parts[2]);
+    if (year == null || month == null || day == null) return null;
+    return DateTime(year, month, day);
   }
 
   @override
@@ -68,12 +109,12 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                       spacing: 16,
                       children: [
                         Expanded(
-                          child: _buildLabeledDropdown('性別', _selectedGender, ['男性', '女性'], (value) {
+                          child: _buildLabeledDropdown('性別', _selectedGender, _genderOptions, (value) {
                             setState(() => _selectedGender = value);
                           }, '請選擇'),
                         ),
                         Expanded(
-                          child: _buildLabeledDropdown('血型', _selectedBloodType, ['A型', 'B型', 'AB型', 'O型'], (value) {
+                          child: _buildLabeledDropdown('血型', _selectedBloodType, _bloodTypeOptions, (value) {
                             setState(() => _selectedBloodType = value);
                           }, '請選擇'),
                         ),
@@ -266,10 +307,24 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   Widget _buildSaveButton() {
     return CustomButton(
       text: '儲存編輯',
-      onPressed: () {
+      onPressed: () async {
         if (_formKey.currentState?.validate() ?? false) {
-          // TODO: Save profile data
-          Navigator.pop(context);
+          final result = await AuthService.updateProfile(
+            name: _nameController.text,
+            gender: _selectedGender,
+            birthday: _selectedBirthDate,
+            height: _heightController.text,
+            weight: _weightController.text,
+            bloodType: _selectedBloodType,
+          );
+          if (!mounted) return;
+          if (result.success) {
+            Navigator.pop(context);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(result.message ?? '更新個人資料失敗')),
+            );
+          }
         }
       },
       backgroundColor: AppColors.primaryGreen,

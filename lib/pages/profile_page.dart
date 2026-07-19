@@ -47,8 +47,8 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         userName = profile.name.isNotEmpty ? profile.name : userName;
         gender = profile.gender;
-        birthday = profile.birthday;
-        age = profile.age;
+        birthday = _formatBirthday(profile.birthday);
+        age = profile.age == '-' ? profile.age : '${profile.age}歲';
         height = profile.height;
         weight = profile.weight;
         bmi = profile.bmi;
@@ -56,6 +56,15 @@ class _ProfilePageState extends State<ProfilePage> {
         avatarUrl = profile.avatarUrl;
       });
     }
+  }
+
+  // GET /user/profile returns birthday as ISO "YYYY-MM-DD"; normalize to the
+  // app's "YYYY/MM/DD" display convention (used by the edit page's picker).
+  // Falls back to the raw value for placeholders like "未填寫".
+  String _formatBirthday(String value) {
+    final parsed = DateTime.tryParse(value);
+    if (parsed == null) return value;
+    return '${parsed.year.toString().padLeft(4, '0')}/${parsed.month.toString().padLeft(2, '0')}/${parsed.day.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -148,6 +157,21 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Future<void> _handleAvatarSelected(XFile image) async {
+    final result = await AuthService.updateAvatar(image);
+    if (!mounted) return;
+
+    if (result.success && result.data != null) {
+      setState(() {
+        avatarUrl = result.data!.avatarUrl;
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message ?? '更新頭像失敗')),
+      );
+    }
+  }
+
   Future<void> _pickImage() async {
     try {
       final imagePicker = ImagePicker();
@@ -171,7 +195,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.pop(context);
                 final XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
                 if (image != null) {
-                  // TODO: Handle selected image
+                  await _handleAvatarSelected(image);
                 }
               },
               child: Text(
@@ -190,7 +214,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.pop(context);
                 final XFile? image = await imagePicker.pickImage(source: ImageSource.camera);
                 if (image != null) {
-                  // TODO: Handle captured image
+                  await _handleAvatarSelected(image);
                 }
               },
               child: Text(
@@ -337,11 +361,12 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       child: GestureDetector(
-        onTap: () {
-          Navigator.push(
+        onTap: () async {
+          await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ProfileEditPage()),
           );
+          if (mounted) _loadUserData();
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

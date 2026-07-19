@@ -64,6 +64,45 @@ class ApiClient {
     }
   }
 
+  // Multipart variant of send(), for endpoints that accept a file alongside
+  // form fields (e.g. avatar upload). Mirrors send()'s error shape so
+  // callers handle both the same way.
+  static Future<(int statusCode, Map<String, dynamic> data)> sendMultipart(
+    String method,
+    String path, {
+    Map<String, String>? fields,
+    String? fileFieldName,
+    List<int>? fileBytes,
+    String? fileName,
+    bool authenticated = false,
+  }) async {
+    debugPrint('API $method $path multipart fields=$fields');
+    try {
+      final headers = <String, String>{};
+      if (authenticated) {
+        final token = await AuthService.getToken();
+        headers['Authorization'] = 'Bearer $token';
+      }
+
+      final uri = Uri.parse('${ApiConfig.baseUrl}$path');
+      final request = http.MultipartRequest(method, uri)..headers.addAll(headers);
+      if (fields != null) request.fields.addAll(fields);
+      if (fileFieldName != null && fileBytes != null) {
+        request.files.add(http.MultipartFile.fromBytes(fileFieldName, fileBytes, filename: fileName));
+      }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      final bodyText = utf8.decode(response.bodyBytes);
+      final data = bodyText.isEmpty ? <String, dynamic>{} : jsonDecode(bodyText) as Map<String, dynamic>;
+      debugPrint('API $method $path -> ${response.statusCode} $data');
+      return (response.statusCode, data);
+    } catch (e) {
+      debugPrint('API $method $path failed: $e');
+      return (0, {'message': '無法連接伺服器，請稍後再試'});
+    }
+  }
+
   // Masks password fields so credentials never hit the debug log.
   static Map<String, dynamic>? _redact(Map<String, dynamic>? body) {
     if (body == null) return null;
