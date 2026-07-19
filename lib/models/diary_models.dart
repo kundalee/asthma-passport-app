@@ -56,7 +56,9 @@ class DiaryQuestion {
 class DiaryStatus {
   final bool isCompleted;
   final int? totalScore;
-  final String? statusSummary;
+  // Result code from the backend: 1 = well controlled (score <= 2),
+  // 2 = poor control (score > 2).
+  final int? statusSummary;
   final List<DiaryQuestion> questions;
 
   const DiaryStatus({
@@ -73,7 +75,7 @@ class DiaryStatus {
     return DiaryStatus(
       isCompleted: json['is_completed'] ?? false,
       totalScore: (json['total_score'] as num?)?.toInt(),
-      statusSummary: json['status_summary'] as String?,
+      statusSummary: (json['status_summary'] as num?)?.toInt(),
       questions: questions,
     );
   }
@@ -82,7 +84,7 @@ class DiaryStatus {
 class DiarySaveResult {
   final int id;
   final int totalScore;
-  final String statusSummary;
+  final int? statusSummary;
 
   const DiarySaveResult({
     required this.id,
@@ -94,7 +96,7 @@ class DiarySaveResult {
     return DiarySaveResult(
       id: json['id'] as int,
       totalScore: (json['total_score'] as num?)?.toInt() ?? 0,
-      statusSummary: json['status_summary'] ?? '',
+      statusSummary: (json['status_summary'] as num?)?.toInt(),
     );
   }
 }

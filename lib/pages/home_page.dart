@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         todayTests = tests;
       });
     } catch (e) {
-      // Today tests failed to load, keep empty list
+      debugPrint('_loadTodayTests failed: $e');
     }
   }
 
