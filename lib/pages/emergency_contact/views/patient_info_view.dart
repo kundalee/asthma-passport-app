@@ -62,7 +62,7 @@ class _PatientInfoViewState extends State<PatientInfoView> {
           '姓名': profile.name,
           '性別': profile.gender,
           '生日': profile.birthday,
-          '年齡': profile.age,
+          '年齡': profile.age == '-' ? profile.age : '${profile.age}歲',
           '身高': profile.height,
           '體重': profile.weight,
           '血型': profile.bloodType,

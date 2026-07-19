@@ -203,7 +203,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
             ),
           ),
           _buildInfoRow('姓名', widget.userName),
-          _buildInfoRow('年齡', widget.age),
+          _buildInfoRow('年齡', widget.age == '-' ? widget.age : '${widget.age}歲'),
           _buildInfoRow('身高', widget.height),
           _buildInfoRow('體重', widget.weight),
         ],
