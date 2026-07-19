@@ -21,7 +21,8 @@ class HealthReportView extends StatelessWidget {
   Widget build(BuildContext context) {
     final name = info.name;
     final age = info.age;
-    final statusTitle = plan.statusTitle;
+    final statusTitle = passportStatusTitles[plan.statusLevel] ?? '尚未填寫';
+    final recordDate = plan.recordDate?.replaceAll('-', '/');
 
     return CardContainer(
         child: Column(
@@ -115,6 +116,11 @@ class HealthReportView extends StatelessWidget {
                 height: 37,
               ),
             ),
+            if (recordDate != null)
+              Text(
+                '前一次填寫日期：$recordDate',
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
+              ),
           ],
         ),
     );

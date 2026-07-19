@@ -19,6 +19,7 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
   final DateTime _today = DateTime.now();
   PassportStatus? passportStatus;
   int currentView = 0; // 0: passport, 1: report, 2: new_plan
+  bool isPlanPreview = false;
 
   String get _dateStr {
     return '${_today.year}-${_today.month.toString().padLeft(2, '0')}-${_today.day.toString().padLeft(2, '0')}';
@@ -43,6 +44,9 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
   Widget build(BuildContext context) {
     return AppPageContainer(
       header: _buildHeader(context),
+      contentPadding: currentView == 2 && isPlanPreview
+          ? EdgeInsets.only(top: 12)
+          : const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
       content: passportStatus == null
           ? const Center(child: CircularProgressIndicator())
           : _buildContent(passportStatus!),
@@ -55,7 +59,11 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
     } else if (currentView == 1) {
       return HealthReportView(info: status.info, plan: status.plan, onSwitchView: _switchView);
     } else {
-      return NewPlanView(info: status.info, onSwitchView: _switchView);
+      return NewPlanView(
+        info: status.info,
+        onSwitchView: _switchView,
+        onPreviewChanged: (value) => setState(() => isPlanPreview = value),
+      );
     }
   }
 

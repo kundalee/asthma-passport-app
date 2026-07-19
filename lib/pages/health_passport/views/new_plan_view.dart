@@ -23,11 +23,13 @@ class _MedicationEntry {
 class NewPlanView extends StatefulWidget {
   final PassportInfo info;
   final Function(int) onSwitchView;
+  final ValueChanged<bool>? onPreviewChanged;
 
   const NewPlanView({
     super.key,
     required this.info,
     required this.onSwitchView,
+    this.onPreviewChanged,
   });
 
   @override
@@ -95,12 +97,22 @@ class _NewPlanViewState extends State<NewPlanView> {
   List<String> controlMedications = [];
   List<String> reliefMedications = [];
   bool showPreview = false;
+  bool isSaving = false;
+
+  // Matches the backend's status_level codes (1-4, see passportStatusTitles).
+  static const Map<String, int> _backendStatusLevels = {
+    'full': 1,
+    'partial': 2,
+    'poor': 3,
+    'acute': 4,
+  };
 
   @override
   void initState() {
     super.initState();
     final now = DateTime.now();
-    final today = '${now.year}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}';
+    final today =
+        '${now.year}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}';
     dateController = TextEditingController(text: today);
     notesController = TextEditingController();
     doctorNameController = TextEditingController();
@@ -122,10 +134,18 @@ class _NewPlanViewState extends State<NewPlanView> {
     dateController.dispose();
     notesController.dispose();
     doctorNameController.dispose();
-    for (final medication in [...controlMedicationEntries, ...reliefMedicationEntries]) {
+    for (final medication in [
+      ...controlMedicationEntries,
+      ...reliefMedicationEntries
+    ]) {
       medication.dispose();
     }
     super.dispose();
+  }
+
+  void _setShowPreview(bool value) {
+    setState(() => showPreview = value);
+    widget.onPreviewChanged?.call(value);
   }
 
   void _toggleLevelDropdown() {
@@ -158,6 +178,55 @@ class _NewPlanViewState extends State<NewPlanView> {
     });
   }
 
+  List<Map<String, dynamic>> _medicationPayload(
+      String medType, List<_MedicationEntry> entries) {
+    return entries
+        .where((entry) => entry.medicationName != null)
+        .map((entry) => {
+              'med_type': medType,
+              'name': entry.medicationName,
+              'dose': entry.daytimeDose ?? '',
+              'freq': entry.nighttimeDose ?? '',
+              'note': entry.notesController.text.isNotEmpty
+                  ? entry.notesController.text
+                  : null,
+            })
+        .toList();
+  }
+
+  Future<void> _submitPlan() async {
+    setState(() => isSaving = true);
+
+    final recordDate = dateController.text.replaceAll('/', '-');
+    final medications = selectedLevel == 'acute'
+        ? <Map<String, dynamic>>[]
+        : [
+            ..._medicationPayload('control', controlMedicationEntries),
+            ..._medicationPayload('relief', reliefMedicationEntries),
+          ];
+
+    final result = await ApiService.savePassportPlan(
+      recordDate: recordDate,
+      statusLevel: _backendStatusLevels[selectedLevel],
+      notes: notesController.text.isNotEmpty ? notesController.text : null,
+      doctorName: doctorNameController.text.isNotEmpty
+          ? doctorNameController.text
+          : null,
+      medications: medications,
+    );
+
+    if (!mounted) return;
+    setState(() => isSaving = false);
+
+    if (result.success) {
+      Navigator.of(context).pushReplacementNamed('/');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message ?? '無法儲存行動計畫')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (showPreview) {
@@ -178,154 +247,209 @@ class _NewPlanViewState extends State<NewPlanView> {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 8,
               children: [
-              Row(
-                spacing: 8,
-                children: [
-                  SvgPicture.asset(
-                    'assets/icons/document.svg',
-                    width: 24,
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
-                  ),
-                  const Text(
-                    '填寫新的行動計畫',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.mirage, height: 1.5, letterSpacing: 0),
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 8,
-                children: [
-                  const Text(
-                    '病患姓名',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.mirage, height: 1.71, letterSpacing: 0),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: AppColors.sweetGrey,
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: AppColors.whiteMarble, width: 1),
+                Row(
+                  spacing: 8,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icons/document.svg',
+                      width: 24,
+                      height: 24,
+                      colorFilter: const ColorFilter.mode(
+                          AppColors.primaryGreen, BlendMode.srcIn),
                     ),
-                    child: Text(
-                      name,
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
+                    const Text(
+                      '填寫新的行動計畫',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.mirage,
+                          height: 1.5,
+                          letterSpacing: 0),
                     ),
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 8,
-                children: [
-                  const Text(
-                    '填寫日期',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.mirage, height: 1.71, letterSpacing: 0),
-                  ),
-                  TextField(
-                    controller: dateController,
-                    decoration: InputDecoration(
-                      hintText: 'YYYY/MM/DD',
-                      hintStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                      border: OutlineInputBorder(
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 8,
+                  children: [
+                    const Text(
+                      '病患姓名',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.mirage,
+                          height: 1.71,
+                          letterSpacing: 0),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: AppColors.sweetGrey,
                         borderRadius: BorderRadius.circular(4),
-                        borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                        border:
+                            Border.all(color: AppColors.whiteMarble, width: 1),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                      child: Text(
+                        name,
+                        style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                            height: 1.71,
+                            letterSpacing: 0),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: CustomButton(
-                  text: '查看常月份歷史紀錄',
-                  onPressed: () {},
-                  borderRadius: 4,
-                  iconAlignment: MainAxisAlignment.start,
-                  gradient: const LinearGradient(
-                    colors: [AppColors.royalAquamarine, AppColors.mermaid],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                  icon: SvgPicture.asset(
-                    'assets/icons/calendar.svg',
-                    width: 24,
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 8,
+                  children: [
+                    const Text(
+                      '填寫日期',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.mirage,
+                          height: 1.71,
+                          letterSpacing: 0),
+                    ),
+                    TextField(
+                      controller: dateController,
+                      decoration: InputDecoration(
+                        hintText: 'YYYY/MM/DD',
+                        hintStyle: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.hydrocarbon,
+                            height: 1.71,
+                            letterSpacing: 0),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4),
+                          borderSide: const BorderSide(
+                              color: AppColors.whiteMarble, width: 1),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4),
+                          borderSide: const BorderSide(
+                              color: AppColors.whiteMarble, width: 1),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(4),
+                          borderSide: const BorderSide(
+                              color: AppColors.whiteMarble, width: 1),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: CustomButton(
+                    text: '查看常月份歷史紀錄',
+                    onPressed: () {},
+                    borderRadius: 4,
+                    iconAlignment: MainAxisAlignment.start,
+                    gradient: const LinearGradient(
+                      colors: [AppColors.royalAquamarine, AppColors.mermaid],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                    icon: SvgPicture.asset(
+                      'assets/icons/calendar.svg',
+                      width: 24,
+                      height: 24,
+                      colorFilter:
+                          const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                    ),
                   ),
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 8,
-                children: [
-                  const Text(
-                    '處理等級',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.mirage, height: 1.71, letterSpacing: 0),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.whiteMarble),
-                      borderRadius: BorderRadius.circular(4),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 8,
+                  children: [
+                    const Text(
+                      '處理等級',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.mirage,
+                          height: 1.71,
+                          letterSpacing: 0),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          onTap: _toggleLevelDropdown,
-                          behavior: HitTestBehavior.opaque,
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  selectedLevel != null ? levelDescriptions[selectedLevel] ?? '請選擇評估等級' : '請選擇評估等級',
-                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
-                                ),
-                                Transform.rotate(
-                                  angle: isLevelExpanded ? 3.14159 : 0,
-                                  child: SvgPicture.asset(
-                                    'assets/icons/arrow-down.svg',
-                                    width: 16,
-                                    height: 16,
-                                    colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: AppColors.whiteMarble),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap: _toggleLevelDropdown,
+                            behavior: HitTestBehavior.opaque,
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 12),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    selectedLevel != null
+                                        ? levelDescriptions[selectedLevel] ??
+                                            '請選擇評估等級'
+                                        : '請選擇評估等級',
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black,
+                                        height: 1.71,
+                                        letterSpacing: 0),
                                   ),
-                                ),
-                              ],
+                                  Transform.rotate(
+                                    angle: isLevelExpanded ? 3.14159 : 0,
+                                    child: SvgPicture.asset(
+                                      'assets/icons/arrow-down.svg',
+                                      width: 16,
+                                      height: 16,
+                                      colorFilter: const ColorFilter.mode(
+                                          Colors.black, BlendMode.srcIn),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        if (isLevelExpanded) ...[
-                          Divider(height: 2, color: AppColors.sweetGrey, indent: 12, endIndent: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: _buildLevelOptions(),
-                          ),
+                          if (isLevelExpanded) ...[
+                            Divider(
+                                height: 2,
+                                color: AppColors.sweetGrey,
+                                indent: 12,
+                                endIndent: 12),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: _buildLevelOptions(),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
                 _buildResultSection(),
               ],
             ),
           ),
-          if (selectedLevel == 'full' || selectedLevel == 'partial' || selectedLevel == 'poor') ...[
+          if (selectedLevel == 'full' ||
+              selectedLevel == 'partial' ||
+              selectedLevel == 'poor') ...[
             _buildMedicationSection(
               title: '開立氣喘控制藥物',
               buttonText: '新增氣喘控制藥物',
@@ -351,7 +475,7 @@ class _NewPlanViewState extends State<NewPlanView> {
               width: double.infinity,
               child: CustomButton(
                 text: '預覽行動計畫',
-                onPressed: () => setState(() => showPreview = true),
+                onPressed: () => _setShowPreview(true),
                 backgroundColor: AppColors.primaryGreen,
                 padding: const EdgeInsets.all(12),
                 borderRadius: 4,
@@ -377,9 +501,9 @@ class _NewPlanViewState extends State<NewPlanView> {
 
   Widget _buildPreviewReport() {
     final levelTitle = levelDescriptions[selectedLevel] ?? '';
-    final levelPoints = resultPoints[selectedLevel] ?? [];
     final levelBgColor = resultColors[selectedLevel] ?? AppColors.honeydew;
-    final levelIconColor = resultIconColors[selectedLevel] ?? AppColors.primaryGreen;
+    final levelIconColor =
+        resultIconColors[selectedLevel] ?? AppColors.primaryGreen;
 
     String levelIconPath;
     if (selectedLevel == 'partial') {
@@ -397,25 +521,26 @@ class _NewPlanViewState extends State<NewPlanView> {
         spacing: 12,
         children: [
           CardContainer(
+            padding: EdgeInsets.only(left: 11, top: 16, right: 16, bottom: 24),
+            borderRadius: 0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 8,
               children: [
-                Row(
-                  spacing: 8,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/icons/document.svg',
-                      width: 24,
-                      height: 24,
-                      colorFilter: const ColorFilter.mode(AppColors.primaryGreen, BlendMode.srcIn),
-                    ),
-                    const Text(
-                      '行動計畫指派報告',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
-                    ),
-                  ],
+                const SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    '行動計畫指派報告',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
+                        height: 1.0,
+                        letterSpacing: 0),
+                  ),
                 ),
+                const Divider(height: 4, thickness: 4, color: Colors.black),
                 Container(
                   padding: const EdgeInsets.all(8),
                   child: Column(
@@ -424,14 +549,20 @@ class _NewPlanViewState extends State<NewPlanView> {
                     children: [
                       const Text(
                         '基本資料',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                            height: 1.5,
+                            letterSpacing: 0),
                       ),
                       _buildPreviewRow('病患姓名', widget.info.name),
                       _buildPreviewRow('填寫日期', dateController.text),
                     ],
                   ),
                 ),
-                const Divider(height: 2, color: AppColors.sweetGrey),
+                const Divider(
+                    height: 4, thickness: 4, color: AppColors.sweetGrey),
                 Container(
                   padding: const EdgeInsets.all(8),
                   child: Column(
@@ -439,50 +570,39 @@ class _NewPlanViewState extends State<NewPlanView> {
                     spacing: 8,
                     children: [
                       const Text(
-                        '處理等級',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
+                        '氣喘控制狀況',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                            height: 1.5,
+                            letterSpacing: 0),
                       ),
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                        decoration: BoxDecoration(color: levelBgColor, borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 12),
+                        decoration: BoxDecoration(
+                            color: levelBgColor,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Row(
                           spacing: 8,
                           children: [
-                            Row(
-                              spacing: 8,
-                              children: [
-                                SvgPicture.asset(
-                                  levelIconPath,
-                                  width: 24,
-                                  height: 24,
-                                  colorFilter: ColorFilter.mode(levelIconColor, BlendMode.srcIn),
-                                ),
-                                Text(
-                                  levelTitle,
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: levelIconColor, height: 1.5, letterSpacing: 0),
-                                ),
-                              ],
+                            SvgPicture.asset(
+                              levelIconPath,
+                              width: 24,
+                              height: 24,
+                              colorFilter: ColorFilter.mode(
+                                  levelIconColor, BlendMode.srcIn),
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              spacing: 4,
-                              children: levelPoints.map((point) => Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    '• ',
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      point,
-                                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
-                                    ),
-                                  ),
-                                ],
-                              )).toList(),
+                            Text(
+                              levelTitle,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: levelIconColor,
+                                  height: 1.5,
+                                  letterSpacing: 0),
                             ),
                           ],
                         ),
@@ -490,7 +610,8 @@ class _NewPlanViewState extends State<NewPlanView> {
                     ],
                   ),
                 ),
-                const Divider(height: 2, color: AppColors.sweetGrey),
+                const Divider(
+                    height: 4, thickness: 4, color: AppColors.sweetGrey),
                 if (selectedLevel == 'acute')
                   Container(
                     padding: const EdgeInsets.all(8),
@@ -509,14 +630,21 @@ class _NewPlanViewState extends State<NewPlanView> {
                       children: [
                         const Text(
                           '控制藥物',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black,
+                              height: 1.5,
+                              letterSpacing: 0),
                         ),
-                        for (int i = 0; i < controlMedicationEntries.length; i++)
-                          _buildPreviewMedicationEntry(controlMedicationEntries[i], i),
+                        for (int i = 0;
+                            i < controlMedicationEntries.length;
+                            i++)
+                          _buildPreviewMedicationEntry(
+                              controlMedicationEntries[i], i),
                       ],
                     ),
                   ),
-                  const Divider(height: 2, color: AppColors.sweetGrey),
                   Container(
                     padding: const EdgeInsets.all(8),
                     child: Column(
@@ -525,15 +653,22 @@ class _NewPlanViewState extends State<NewPlanView> {
                       children: [
                         const Text(
                           '緩解藥物',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black,
+                              height: 1.5,
+                              letterSpacing: 0),
                         ),
                         for (int i = 0; i < reliefMedicationEntries.length; i++)
-                          _buildPreviewMedicationEntry(reliefMedicationEntries[i], i),
+                          _buildPreviewMedicationEntry(
+                              reliefMedicationEntries[i], i),
                       ],
                     ),
                   ),
                 ],
-                const Divider(height: 2, color: AppColors.sweetGrey),
+                const Divider(
+                    height: 4, thickness: 4, color: AppColors.sweetGrey),
                 Container(
                   padding: const EdgeInsets.all(8),
                   child: Column(
@@ -542,33 +677,54 @@ class _NewPlanViewState extends State<NewPlanView> {
                     children: [
                       const Text(
                         '備註事項',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                            height: 1.5,
+                            letterSpacing: 0),
                       ),
                       Text(
-                        notesController.text.isNotEmpty ? notesController.text : '無',
-                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
+                        notesController.text.isNotEmpty
+                            ? notesController.text
+                            : '無',
+                        style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                            height: 1.71,
+                            letterSpacing: 0),
                       ),
                     ],
                   ),
                 ),
-                const Divider(height: 2, color: AppColors.sweetGrey),
+                const Divider(height: 4, thickness: 4, color: Colors.black),
                 Container(
                   padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     spacing: 8,
                     children: [
                       const Text(
-                        '醫師確認',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0),
+                        '醫師確認：',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                            height: 1.71,
+                            letterSpacing: 0),
                       ),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(color: AppColors.powder, borderRadius: BorderRadius.circular(4)),
-                        child: Text(
-                          doctorNameController.text.isNotEmpty ? doctorNameController.text : '未確認',
-                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500, color: AppColors.hydrocarbon, height: 1, letterSpacing: 0),
+                      Text(
+                        doctorNameController.text.isNotEmpty
+                            ? doctorNameController.text
+                            : '未確認',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                          height: 1,
+                          letterSpacing: 0,
+                          decoration: TextDecoration.underline,
                         ),
                       ),
                     ],
@@ -577,34 +733,49 @@ class _NewPlanViewState extends State<NewPlanView> {
               ],
             ),
           ),
-          SizedBox(
+          Container(
             width: double.infinity,
-            child: CustomButton(
-              text: '返回首頁',
-              onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
-              backgroundColor: AppColors.primaryGreen,
-              padding: const EdgeInsets.all(12),
-              borderRadius: 4,
-              height: 37,
+            color: Colors.white,
+            padding:
+                const EdgeInsets.only(left: 12, right: 12, top: 12, bottom: 40),
+            child: Column(
+              spacing: 12,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: CustomButton(
+                    text: '確認送出',
+                    onPressed: _submitPlan,
+                    isLoading: isSaving,
+                    backgroundColor: AppColors.primaryGreen,
+                    padding: const EdgeInsets.all(12),
+                    borderRadius: 4,
+                    height: 37,
+                  ),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: CustomButton(
+                    text: '返回修改',
+                    onPressed: isSaving ? () {} : () => _setShowPreview(false),
+                    backgroundColor: AppColors.primaryRed,
+                    padding: const EdgeInsets.all(12),
+                    borderRadius: 4,
+                    height: 37,
+                  ),
+                ),
+                const Text(
+                  '此報告僅供參考，實際治療請遵循醫師指示',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                      color: AppColors.hydrocarbon,
+                      height: 1.71,
+                      letterSpacing: 0),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: CustomButton(
-              text: '下載報告',
-              onPressed: () {},
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-              border: const BorderSide(color: AppColors.whiteMarble, width: 1),
-              padding: const EdgeInsets.all(12),
-              borderRadius: 4,
-              height: 37,
-            ),
-          ),
-          const Text(
-            '此報告僅供參考，實際治療請遵循醫師指示',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
-            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -615,8 +786,20 @@ class _NewPlanViewState extends State<NewPlanView> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0)),
-        Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0)),
+        Text(label,
+            style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+                height: 1.71,
+                letterSpacing: 0)),
+        Text(value,
+            style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+                height: 1.71,
+                letterSpacing: 0)),
       ],
     );
   }
@@ -628,7 +811,12 @@ class _NewPlanViewState extends State<NewPlanView> {
       children: [
         Text(
           '藥物 ${index + 1}',
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.625, letterSpacing: 0),
+          style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              height: 1.625,
+              letterSpacing: 0),
         ),
         _buildPreviewRow('藥物名稱', entry.medicationName ?? '未指派'),
         if (entry.medicationName != null) ...[
@@ -640,8 +828,20 @@ class _NewPlanViewState extends State<NewPlanView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 8,
             children: [
-              const Text('備註', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0)),
-              Text(entry.notesController.text, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0)),
+              const Text('備註',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                      height: 1.71,
+                      letterSpacing: 0)),
+              Text(entry.notesController.text,
+                  style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                      height: 1.71,
+                      letterSpacing: 0)),
             ],
           ),
       ],
@@ -690,33 +890,44 @@ class _NewPlanViewState extends State<NewPlanView> {
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: iconColor,
-                  height: 1.5,
-                  letterSpacing: 0
-                ),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: iconColor,
+                    height: 1.5,
+                    letterSpacing: 0),
               ),
             ],
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 4,
-            children: points.map((point) => Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  '• ',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
-                ),
-                Expanded(
-                  child: Text(
-                    point,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
-                  ),
-                ),
-              ],
-            )).toList(),
+            children: points
+                .map((point) => Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          '• ',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.normal,
+                              color: AppColors.hydrocarbon,
+                              height: 1.71,
+                              letterSpacing: 0),
+                        ),
+                        Expanded(
+                          child: Text(
+                            point,
+                            style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.normal,
+                                color: AppColors.hydrocarbon,
+                                height: 1.71,
+                                letterSpacing: 0),
+                          ),
+                        ),
+                      ],
+                    ))
+                .toList(),
           ),
         ],
       ),
@@ -742,7 +953,8 @@ class _NewPlanViewState extends State<NewPlanView> {
           for (int i = 0; i < entries.length; i++) ...[
             _buildMedicationEntry(entries, options, i),
             if (i > 0) _buildDeleteMedicationButton(() => onDelete(i)),
-            if (i < entries.length - 1) const Divider(height: 2, color: AppColors.sweetGrey),
+            if (i < entries.length - 1)
+              const Divider(height: 2, color: AppColors.sweetGrey),
           ],
           _buildAddMedicationButton(buttonText, onAdd),
         ],
@@ -777,7 +989,12 @@ class _NewPlanViewState extends State<NewPlanView> {
         ),
         Text(
           title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.mirage, height: 1.5, letterSpacing: 0),
+          style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: AppColors.mirage,
+              height: 1.5,
+              letterSpacing: 0),
         ),
       ],
     );
@@ -797,7 +1014,8 @@ class _NewPlanViewState extends State<NewPlanView> {
     );
   }
 
-  Widget _buildMedicationEntry(List<_MedicationEntry> entries, List<String> options, int index) {
+  Widget _buildMedicationEntry(
+      List<_MedicationEntry> entries, List<String> options, int index) {
     final medication = entries[index];
 
     return Column(
@@ -806,14 +1024,24 @@ class _NewPlanViewState extends State<NewPlanView> {
       children: [
         Text(
           '藥物 ${index + 1}',
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.mirage, height: 1.625, letterSpacing: 0),
+          style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: AppColors.mirage,
+              height: 1.625,
+              letterSpacing: 0),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
               '藥物名稱',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.mirage, height: 1.71, letterSpacing: 0),
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.mirage,
+                  height: 1.71,
+                  letterSpacing: 0),
             ),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -823,7 +1051,12 @@ class _NewPlanViewState extends State<NewPlanView> {
               ),
               child: const Text(
                 '藥物參考',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white, height: 1.71, letterSpacing: 0),
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                    height: 1.71,
+                    letterSpacing: 0),
               ),
             ),
           ],
@@ -832,7 +1065,8 @@ class _NewPlanViewState extends State<NewPlanView> {
           value: medication.medicationName,
           hint: '請選擇開立藥物',
           options: options,
-          onChanged: (value) => setState(() => medication.medicationName = value),
+          onChanged: (value) =>
+              setState(() => medication.medicationName = value),
         ),
         Row(
           spacing: 8,
@@ -844,13 +1078,19 @@ class _NewPlanViewState extends State<NewPlanView> {
                 children: [
                   const Text(
                     '白天',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.mirage, height: 1.71, letterSpacing: 0),
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.mirage,
+                        height: 1.71,
+                        letterSpacing: 0),
                   ),
                   _buildSelectableDropdown(
                     value: medication.daytimeDose,
                     hint: '次數',
                     options: _doseOptions,
-                    onChanged: (value) => setState(() => medication.daytimeDose = value),
+                    onChanged: (value) =>
+                        setState(() => medication.daytimeDose = value),
                   ),
                 ],
               ),
@@ -862,13 +1102,19 @@ class _NewPlanViewState extends State<NewPlanView> {
                 children: [
                   const Text(
                     '夜晚',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.mirage, height: 1.71, letterSpacing: 0),
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.mirage,
+                        height: 1.71,
+                        letterSpacing: 0),
                   ),
                   _buildSelectableDropdown(
                     value: medication.nighttimeDose,
                     hint: '次數',
                     options: _doseOptions,
-                    onChanged: (value) => setState(() => medication.nighttimeDose = value),
+                    onChanged: (value) =>
+                        setState(() => medication.nighttimeDose = value),
                   ),
                 ],
               ),
@@ -881,28 +1127,42 @@ class _NewPlanViewState extends State<NewPlanView> {
           children: [
             const Text(
               '備註',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.mirage, height: 1.71, letterSpacing: 0),
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.mirage,
+                  height: 1.71,
+                  letterSpacing: 0),
             ),
             TextField(
               controller: medication.notesController,
               maxLines: 3,
               decoration: InputDecoration(
                 hintText: '輸入其他事項...',
-                hintStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
+                hintStyle: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.hydrocarbon,
+                    height: 1.71,
+                    letterSpacing: 0),
                 filled: true,
                 fillColor: AppColors.powder,
-                contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(4),
-                  borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                  borderSide:
+                      const BorderSide(color: AppColors.whiteMarble, width: 1),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(4),
-                  borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                  borderSide:
+                      const BorderSide(color: AppColors.whiteMarble, width: 1),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(4),
-                  borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                  borderSide:
+                      const BorderSide(color: AppColors.whiteMarble, width: 1),
                 ),
               ),
             ),
@@ -928,7 +1188,12 @@ class _NewPlanViewState extends State<NewPlanView> {
       borderColor: AppColors.whiteMarble,
       borderWidth: 1,
       borderRadius: 4,
-      textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
+      textStyle: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: Colors.black,
+          height: 1.71,
+          letterSpacing: 0),
     );
   }
 
@@ -948,7 +1213,12 @@ class _NewPlanViewState extends State<NewPlanView> {
               ),
               const Text(
                 '緊急措施',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.mirage, height: 1.5, letterSpacing: 0),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.mirage,
+                    height: 1.5,
+                    letterSpacing: 0),
               ),
             ],
           ),
@@ -970,28 +1240,41 @@ class _NewPlanViewState extends State<NewPlanView> {
         children: [
           const Text(
             '備註事項',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.mirage, height: 1.5, letterSpacing: 0),
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppColors.mirage,
+                height: 1.5,
+                letterSpacing: 0),
           ),
           TextField(
             controller: notesController,
             maxLines: 2,
             decoration: InputDecoration(
               hintText: '其他注意事項或特殊說明...',
-              hintStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
+              hintStyle: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.hydrocarbon,
+                  height: 1.71,
+                  letterSpacing: 0),
               filled: true,
               fillColor: AppColors.powder,
               contentPadding: const EdgeInsets.all(12),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
-                borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                borderSide:
+                    const BorderSide(color: AppColors.whiteMarble, width: 1),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
-                borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                borderSide:
+                    const BorderSide(color: AppColors.whiteMarble, width: 1),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
-                borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                borderSide:
+                    const BorderSide(color: AppColors.whiteMarble, width: 1),
               ),
             ),
           ),
@@ -1016,7 +1299,12 @@ class _NewPlanViewState extends State<NewPlanView> {
               ),
               const Text(
                 '醫師確認',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.mirage, height: 1.5, letterSpacing: 0),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.mirage,
+                    height: 1.5,
+                    letterSpacing: 0),
               ),
             ],
           ),
@@ -1024,21 +1312,29 @@ class _NewPlanViewState extends State<NewPlanView> {
             controller: doctorNameController,
             decoration: InputDecoration(
               hintText: '請點選此處輸入開立醫師名字',
-              hintStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.hydrocarbon, height: 1.71, letterSpacing: 0),
+              hintStyle: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.hydrocarbon,
+                  height: 1.71,
+                  letterSpacing: 0),
               filled: true,
               fillColor: AppColors.powder,
               contentPadding: const EdgeInsets.all(12),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
-                borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                borderSide:
+                    const BorderSide(color: AppColors.whiteMarble, width: 1),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
-                borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                borderSide:
+                    const BorderSide(color: AppColors.whiteMarble, width: 1),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
-                borderSide: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                borderSide:
+                    const BorderSide(color: AppColors.whiteMarble, width: 1),
               ),
             ),
           ),
@@ -1074,18 +1370,28 @@ class _NewPlanViewState extends State<NewPlanView> {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
+                    style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                        height: 1.71,
+                        letterSpacing: 0),
                   ),
                   if (isSelected)
-                    const Icon(Icons.check, color: AppColors.primaryGreen, size: 20),
+                    const Icon(Icons.check,
+                        color: AppColors.primaryGreen, size: 20),
                 ],
               ),
             ),
           ),
-          if (!isLast) const Divider(height: 2, color: AppColors.sweetGrey, indent: 12, endIndent: 12),
+          if (!isLast)
+            const Divider(
+                height: 2,
+                color: AppColors.sweetGrey,
+                indent: 12,
+                endIndent: 12),
         ],
       );
     });
   }
 }
-

@@ -250,6 +250,33 @@ class ApiService {
     return ApiClient.failure(statusCode, data, '無法取得健康護照資料', authenticated: true);
   }
 
+  static Future<ApiResult<SavePlanResult>> savePassportPlan({
+    required String recordDate,
+    required int? statusLevel,
+    required String? notes,
+    required String? doctorName,
+    required List<Map<String, dynamic>> medications,
+  }) async {
+    final (statusCode, data) = await ApiClient.send(
+      'POST',
+      '/passport/save',
+      body: {
+        'record_date': recordDate,
+        'status_level': statusLevel,
+        'notes': notes,
+        'doctor_name': doctorName,
+        'medications': medications,
+      },
+      authenticated: true,
+    );
+
+    if (statusCode == 200) {
+      return ApiResult.success(SavePlanResult.fromJson(data));
+    }
+
+    return ApiClient.failure(statusCode, data, '無法儲存行動計畫', authenticated: true);
+  }
+
   static Future<ApiResult<MedicationOptions>> getMedicationOptions() async {
     final (statusCode, data) = await ApiClient.send('GET', '/passport/list', authenticated: true);
 
