@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/custom_button.dart';
 import '../../../components/card_container.dart';
+import '../../../services/api_service.dart';
 
 class PeakFlowFormView extends StatefulWidget {
   final String measurementDate;
@@ -14,6 +15,7 @@ class PeakFlowFormView extends StatefulWidget {
   final String age;
   final String height;
   final String weight;
+  final String gender;
   final Function(int) onSwitchView;
   final Function()? onViewDaytimeResults;
   final Function()? onViewEveningResults;
@@ -29,6 +31,7 @@ class PeakFlowFormView extends StatefulWidget {
     required this.age,
     required this.height,
     required this.weight,
+    required this.gender,
     required this.onSwitchView,
     this.onViewDaytimeResults,
     this.onViewEveningResults,
@@ -43,6 +46,12 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
   void dispose() {
     super.dispose();
   }
+
+  int? get _predictedPeakFlow => ApiService.predictedPeakFlow(
+        age: widget.age,
+        height: widget.height,
+        gender: widget.gender,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -223,7 +232,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
             ),
           ),
           Text(
-            '320 L/min',
+            _predictedPeakFlow != null ? '$_predictedPeakFlow L/min' : '-',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,

@@ -302,9 +302,40 @@ class ApiService {
   }
 
   // 1: good control, 2: moderate control, 3: poor control
-  static int peakFlowStatusForValue(double value) {
-    if (value >= 280) return 1;
-    if (value >= 240) return 2;
+  // 尖峰呼氣流速預估值 (predicted personal-best PEFR), per the standard formulas:
+  //   adult male   (height in m):  [((height x 5.48) + 1.58) - (age x 0.041)] x 60
+  //   adult female (height in m):  [((height x 3.72) + 2.24) - (age x 0.03)] x 60
+  //   child        (height in cm): (height - 100) x 5 + 100
+  // Adult/child split at 18 years old. Returns null if age/height aren't
+  // valid numbers (e.g. profile not filled in yet).
+  static int? predictedPeakFlow({
+    required String age,
+    required String height,
+    required String gender,
+  }) {
+    final ageValue = double.tryParse(age);
+    final heightCm = double.tryParse(height);
+    if (ageValue == null || heightCm == null) return null;
+
+    if (ageValue < 18) {
+      return ((heightCm - 100) * 5 + 100).round();
+    }
+
+    final heightM = heightCm / 100;
+    final value = gender == '女性'
+        ? ((heightM * 3.72) + 2.24 - (ageValue * 0.03)) * 60
+        : ((heightM * 5.48) + 1.58 - (ageValue * 0.041)) * 60;
+    return value.round();
+  }
+
+  // Classifies a measurement against the user's predicted best value, per
+  // 比對量測結果: >80% green (1), 60-80% yellow (2), <60% red (3). Returns
+  // null if the best value isn't known, since no comparison can be made.
+  static int? peakFlowStatusForValue(double value, double? bestValue) {
+    if (bestValue == null || bestValue <= 0) return null;
+    final percentage = value / bestValue * 100;
+    if (percentage > 80) return 1;
+    if (percentage >= 60) return 2;
     return 3;
   }
 

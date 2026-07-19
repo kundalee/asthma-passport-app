@@ -11,6 +11,7 @@ class PeakFlowResultsView extends StatefulWidget {
   final bool isDaytime;
   final String measurementValue;
   final int? status;
+  final double? bestValue;
   final Function(int) onSwitchView;
   final VoidCallback onSaved;
 
@@ -21,6 +22,7 @@ class PeakFlowResultsView extends StatefulWidget {
     required this.isDaytime,
     required this.measurementValue,
     this.status,
+    this.bestValue,
     required this.onSwitchView,
     required this.onSaved,
   });
@@ -53,7 +55,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
   // saved yet, so 重新測量 can still freely redo the reading.
   void _previewMeasurement() {
     final value = double.tryParse(_inputController.text) ?? 0;
-    setState(() => _statusResult = ApiService.peakFlowStatusForValue(value));
+    setState(() => _statusResult = ApiService.peakFlowStatusForValue(value, widget.bestValue));
   }
 
   // Actually persists the reading once the user confirms the preview.

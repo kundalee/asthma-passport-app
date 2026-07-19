@@ -39,14 +39,20 @@ class _PeakFlowPageState extends State<PeakFlowPage> {
   String? get daytimeValue => _formatValue(peakFlowStatus?.morning.value);
   String? get eveningValue => _formatValue(peakFlowStatus?.night.value);
 
+  int? get _predictedPeakFlow => ApiService.predictedPeakFlow(
+        age: userProfile?.age ?? '',
+        height: userProfile?.height ?? '',
+        gender: userProfile?.gender ?? '',
+      );
+
   int? get daytimeStatus {
     final value = peakFlowStatus?.morning.value;
-    return value == null ? null : ApiService.peakFlowStatusForValue(value);
+    return value == null ? null : ApiService.peakFlowStatusForValue(value, _predictedPeakFlow?.toDouble());
   }
 
   int? get eveningStatus {
     final value = peakFlowStatus?.night.value;
-    return value == null ? null : ApiService.peakFlowStatusForValue(value);
+    return value == null ? null : ApiService.peakFlowStatusForValue(value, _predictedPeakFlow?.toDouble());
   }
 
   String? _formatValue(double? value) {
@@ -123,6 +129,7 @@ class _PeakFlowPageState extends State<PeakFlowPage> {
         age: userProfile?.age ?? '-',
         height: userProfile?.height ?? '未填寫',
         weight: userProfile?.weight ?? '未填寫',
+        gender: userProfile?.gender ?? '未填寫',
         onSwitchView: _switchView,
         onViewDaytimeResults: _viewDaytimeResults,
         onViewEveningResults: _viewEveningResults,
@@ -134,6 +141,7 @@ class _PeakFlowPageState extends State<PeakFlowPage> {
         isDaytime: isDaytime,
         measurementValue: currentResultValue ?? '',
         status: currentResultStatus,
+        bestValue: _predictedPeakFlow?.toDouble(),
         onSwitchView: _switchView,
         onSaved: _loadPeakFlowStatus,
       );
