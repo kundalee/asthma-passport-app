@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../models/act_models.dart';
 import '../models/diary_models.dart';
 import '../models/emergency_contact_models.dart';
+import '../models/history_models.dart';
 import '../models/master_models.dart';
 import '../models/passport_models.dart';
 import '../models/patient_info_models.dart';
@@ -423,6 +424,75 @@ class ApiService {
     return ApiClient.failure(statusCode, data, '無法儲存氣喘控制測驗結果', authenticated: true);
   }
 
+  static Future<ApiResult<List<HistoryDay>>> getDiaryHistory({
+    required int year,
+    required int month,
+  }) async {
+    final (statusCode, data) = await ApiClient.getRaw('/diary/history?year=$year&month=$month', authenticated: true);
+
+    if (statusCode == 200 && data is List) {
+      return ApiResult.success(data.map((e) => HistoryDay.fromJson(e as Map<String, dynamic>)).toList());
+    }
+
+    return ApiClient.failure(statusCode, data is Map<String, dynamic> ? data : {}, '無法取得氣喘日記歷史紀錄', authenticated: true);
+  }
+
+  static Future<ApiResult<List<PeakFlowStatus>>> getPeakFlowHistory({
+    required int year,
+    required int month,
+  }) async {
+    final (statusCode, data) = await ApiClient.getRaw('/pefr/history?year=$year&month=$month', authenticated: true);
+
+    if (statusCode == 200 && data is List) {
+      return ApiResult.success(data.map((e) => PeakFlowStatus.fromJson(e as Map<String, dynamic>)).toList());
+    }
+
+    return ApiClient.failure(statusCode, data is Map<String, dynamic> ? data : {}, '無法取得尖峰吐氣流量歷史紀錄', authenticated: true);
+  }
+
+  static Future<ApiResult<List<HistoryDay>>> getActHistory({
+    required int year,
+    required int month,
+  }) async {
+    final (statusCode, data) = await ApiClient.getRaw('/act/history?year=$year&month=$month', authenticated: true);
+
+    if (statusCode == 200 && data is List) {
+      return ApiResult.success(data.map((e) => HistoryDay.fromJson(e as Map<String, dynamic>)).toList());
+    }
+
+    return ApiClient.failure(statusCode, data is Map<String, dynamic> ? data : {}, '無法取得氣喘控制測驗歷史紀錄', authenticated: true);
+  }
+
+  static Future<ApiResult<List<AvailableMonth>>> getDiaryAvailableMonths() async {
+    final (statusCode, data) = await ApiClient.getRaw('/diary/available-months', authenticated: true);
+
+    if (statusCode == 200 && data is List) {
+      return ApiResult.success(data.map((e) => AvailableMonth.fromJson(e as Map<String, dynamic>)).toList());
+    }
+
+    return ApiClient.failure(statusCode, data is Map<String, dynamic> ? data : {}, '無法取得氣喘日記可用月份', authenticated: true);
+  }
+
+  static Future<ApiResult<List<AvailableMonth>>> getPeakFlowAvailableMonths() async {
+    final (statusCode, data) = await ApiClient.getRaw('/pefr/available-months', authenticated: true);
+
+    if (statusCode == 200 && data is List) {
+      return ApiResult.success(data.map((e) => AvailableMonth.fromJson(e as Map<String, dynamic>)).toList());
+    }
+
+    return ApiClient.failure(statusCode, data is Map<String, dynamic> ? data : {}, '無法取得尖峰吐氣流量可用月份', authenticated: true);
+  }
+
+  static Future<ApiResult<List<AvailableMonth>>> getActAvailableMonths() async {
+    final (statusCode, data) = await ApiClient.getRaw('/act/available-months', authenticated: true);
+
+    if (statusCode == 200 && data is List) {
+      return ApiResult.success(data.map((e) => AvailableMonth.fromJson(e as Map<String, dynamic>)).toList());
+    }
+
+    return ApiClient.failure(statusCode, data is Map<String, dynamic> ? data : {}, '無法取得氣喘控制測驗可用月份', authenticated: true);
+  }
+
   static Future<ApiResult<MasterQuiz>> getMasterQuestions() async {
     final (statusCode, data) = await ApiClient.send('GET', '/quiz/load', authenticated: true);
 
@@ -446,53 +516,5 @@ class ApiService {
     }
 
     return ApiClient.failure(statusCode, data, '無法儲存測驗結果', authenticated: true);
-  }
-
-  static Future<List<String>> getHistoryMonths() async {
-    // TODO: Replace with actual API call
-    // GET /api/history/months
-    return [
-      '2026/05',
-      '2026/04',
-      '2026/03',
-      '2026/02',
-      '2026/01',
-      '2025/12',
-      '2025/11',
-    ];
-  }
-
-  static Future<Map<String, dynamic>> getHistorySummary(String month) async {
-    return {
-      'recordedDays': 20,
-      'averageScore': 2,
-      'pefrAverage': 253,
-      'actScore': 23,
-    };
-  }
-
-  static Future<List<Map<String, dynamic>>> getHistoryChartData(String month) async {
-    return [
-      {'day': 1, 'score': 3},
-      {'day': 2, 'score': 1},
-      {'day': 3, 'score': 2},
-      {'day': 4, 'score': 7},
-      {'day': 5, 'score': 4},
-      {'day': 6, 'score': 0},
-      {'day': 7, 'score': 1},
-      {'day': 8, 'score': 1},
-      {'day': 9, 'score': 2},
-      {'day': 10, 'score': 0},
-      {'day': 11, 'score': 4},
-      {'day': 12, 'score': 1},
-      {'day': 13, 'score': 0},
-      {'day': 14, 'score': 2},
-      {'day': 15, 'score': 1},
-      {'day': 16, 'score': 0},
-      {'day': 17, 'score': 3},
-      {'day': 18, 'score': 3},
-      {'day': 19, 'score': 0},
-      {'day': 20, 'score': 1},
-    ];
   }
 }

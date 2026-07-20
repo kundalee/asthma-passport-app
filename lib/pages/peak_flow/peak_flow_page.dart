@@ -45,15 +45,9 @@ class _PeakFlowPageState extends State<PeakFlowPage> {
         gender: userProfile?.gender ?? '',
       );
 
-  int? get daytimeStatus {
-    final value = peakFlowStatus?.morning.value;
-    return value == null ? null : ApiService.peakFlowStatusForValue(value, _predictedPeakFlow?.toDouble());
-  }
+  int? get daytimeStatus => peakFlowStatus?.morning.statusSummary;
 
-  int? get eveningStatus {
-    final value = peakFlowStatus?.night.value;
-    return value == null ? null : ApiService.peakFlowStatusForValue(value, _predictedPeakFlow?.toDouble());
-  }
+  int? get eveningStatus => peakFlowStatus?.night.statusSummary;
 
   String? _formatValue(double? value) {
     return value?.toStringAsFixed(0);

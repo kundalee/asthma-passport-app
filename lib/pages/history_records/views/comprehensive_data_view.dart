@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../components/card_container.dart';
@@ -96,10 +98,10 @@ class ComprehensiveDataView extends StatelessWidget {
   }
 
   Widget _buildStatusGrid() {
-    final recordedDays = summaryData['recordedDays'] ?? 20;
-    final averageScore = summaryData['averageScore'] ?? 2;
-    final pefrAverage = summaryData['pefrAverage'] ?? 253;
-    final actScore = summaryData['actScore'] ?? 23;
+    final recordedDays = summaryData['recordedDays'] ?? 0;
+    final averageScore = summaryData['averageScore'] ?? 0;
+    final pefrAverage = summaryData['pefrAverage'] ?? 0;
+    final actScore = summaryData['actScore'] ?? 0;
 
     return GridView.count(
       crossAxisCount: 2,
@@ -208,7 +210,7 @@ class ComprehensiveDataView extends StatelessWidget {
       0,
       (max, item) => (item['score'] ?? 0).toDouble() > max ? (item['score'] ?? 0).toDouble() : max,
     );
-    final maxValue = ((dataMaxValue / 4).ceil() * 4).toDouble();
+    final maxValue = max(4, (dataMaxValue / 4).ceil() * 4).toDouble();
 
     final yLabels = <String>[];
     for (double i = maxValue; i >= 0; i -= 4) {
@@ -313,9 +315,9 @@ class ComprehensiveDataView extends StatelessWidget {
   }
 
   Widget _buildPefrDistributionSection() {
-    final greenDays = 19;
-    final yellowDays = 1;
-    final redDays = 0;
+    final greenDays = summaryData['greenDays'] ?? 0;
+    final yellowDays = summaryData['yellowDays'] ?? 0;
+    final redDays = summaryData['redDays'] ?? 0;
     final totalDays = greenDays + yellowDays + redDays;
 
     return CardContainer(
@@ -405,13 +407,14 @@ class ComprehensiveDataView extends StatelessWidget {
   }
 
   Widget _buildMonthlyTestSection() {
+    final isComplete = summaryData['actCompleted'] ?? false;
     return StatusContainer(
-      title: '每月測驗：12月',
+      title: '每月測驗：${summaryData['month'] ?? DateTime.now().month}月',
       items: [
-        StatusItem(label: '自我評量', status: '${summaryData['actScore'] ?? 23} 分'),
-        StatusItem(label: '量測時間', status: summaryData['measurementDate'] ?? '2025/12/03'),
+        StatusItem(label: '自我評量', status: isComplete ? '${summaryData['actScore'] ?? 0} 分' : '未完成'),
+        StatusItem(label: '量測時間', status: summaryData['measurementDate'] ?? '無紀錄'),
       ],
-      isComplete: true,
+      isComplete: isComplete,
       onPressed: () {},
     );
   }

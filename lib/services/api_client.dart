@@ -64,6 +64,35 @@ class ApiClient {
     }
   }
 
+  // GET variant for endpoints whose success body is a JSON array rather than
+  // an object (e.g. history list endpoints), which send()'s Map cast can't
+  // handle. Callers check `data is List` themselves since error bodies are
+  // still objects.
+  static Future<(int statusCode, dynamic data)> getRaw(
+    String path, {
+    bool authenticated = false,
+  }) async {
+    debugPrint('API GET $path');
+    try {
+      final headers = {'Content-Type': 'application/json'};
+      if (authenticated) {
+        final token = await AuthService.getToken();
+        headers['Authorization'] = 'Bearer $token';
+      }
+
+      final uri = Uri.parse('${ApiConfig.baseUrl}$path');
+      final response = await http.get(uri, headers: headers);
+
+      final bodyText = utf8.decode(response.bodyBytes);
+      final data = bodyText.isEmpty ? null : jsonDecode(bodyText);
+      debugPrint('API GET $path -> ${response.statusCode} $data');
+      return (response.statusCode, data);
+    } catch (e) {
+      debugPrint('API GET $path failed: $e');
+      return (0, {'message': '無法連接伺服器，請稍後再試'});
+    }
+  }
+
   // Multipart variant of send(), for endpoints that accept a file alongside
   // form fields (e.g. avatar upload). Mirrors send()'s error shape so
   // callers handle both the same way.

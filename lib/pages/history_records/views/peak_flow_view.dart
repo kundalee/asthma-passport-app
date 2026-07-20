@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../components/custom_button.dart';
 import '../../../components/calendar_grid.dart';
 import '../../../components/status_container.dart';
-import '../../../theme/app_colors.dart';
+import '../../../models/peak_flow_models.dart';
+import '../../../services/api_service.dart';
 
 class PeakFlowView extends StatefulWidget {
   final String selectedMonth;
@@ -14,52 +14,14 @@ class PeakFlowView extends StatefulWidget {
 
   @override
   State<PeakFlowView> createState() => _PeakFlowViewState();
-
-  static Widget buildBottomNavigation() {
-    return Container(
-      width: double.infinity,
-      height: 140,
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
-      ),
-      child: Column(
-        spacing: 12,
-        children: [
-          CustomButton(
-            text: '檢視前一個月資料',
-            onPressed: () {},
-            backgroundColor: AppColors.primaryGreen,
-            foregroundColor: Colors.white,
-            borderRadius: 4,
-            height: 37,
-          ),
-          const Text(
-            '此報告僅供參考，實際治療請遵循醫師指示',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Color(0xFF4A5565), height: 1.71, letterSpacing: 0),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _PeakFlowViewState extends State<PeakFlowView> {
   late DateTime selectedDate;
   late DateTime currentMonth;
-  Map<int, int> dayStatus = {
-    1: 1,
-    2: 1,
-    3: 1,
-    4: 0,
-    5: 0,
-    6: 0,
-    7: 1,
-    8: 0,
-    9: 1,
-  };
+  List<PeakFlowStatus> historyDays = [];
+  Map<int, int> dayStatus = {};
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -83,6 +45,7 @@ class _PeakFlowViewState extends State<PeakFlowView> {
         setState(() {
           currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
         });
+        _loadHistory();
         return;
       }
 
@@ -94,21 +57,53 @@ class _PeakFlowViewState extends State<PeakFlowView> {
           setState(() {
             currentMonth = DateTime(year, month);
           });
+          _loadHistory();
           return;
         }
       }
       setState(() {
         currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
       });
+      _loadHistory();
     } catch (e) {
       setState(() {
         currentMonth = DateTime(DateTime.now().year, DateTime.now().month);
       });
+      _loadHistory();
     }
+  }
+
+  Future<void> _loadHistory() async {
+    setState(() => isLoading = true);
+    final result = await ApiService.getPeakFlowHistory(year: currentMonth.year, month: currentMonth.month);
+    if (!mounted) return;
+    final days = result.success ? (result.data ?? []) : <PeakFlowStatus>[];
+    setState(() {
+      historyDays = days;
+      dayStatus = {
+        for (final day in days)
+          if (day.morning.isCompleted || day.night.isCompleted)
+            DateTime.parse(day.date).day: (day.morning.isCompleted && day.night.isCompleted ? 1 : 0),
+      };
+      isLoading = false;
+    });
+  }
+
+  PeakFlowStatus? get _selectedDayEntry {
+    for (final day in historyDays) {
+      final date = DateTime.parse(day.date);
+      if (date.year == selectedDate.year && date.month == selectedDate.month && date.day == selectedDate.day) {
+        return day;
+      }
+    }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 12,
@@ -124,19 +119,23 @@ class _PeakFlowViewState extends State<PeakFlowView> {
       currentMonth: currentMonth,
       selectedDate: selectedDate,
       dayStatus: dayStatus,
-      onDateSelected: (_) {},
+      onDateSelected: (date) => setState(() => selectedDate = date),
     );
   }
 
   Widget _buildDailyMeasurementSection() {
+    final entry = _selectedDayEntry;
+    final morning = entry?.morning;
+    final night = entry?.night;
+    final isCompleted = (morning?.isCompleted ?? false) && (night?.isCompleted ?? false);
     return StatusContainer(
       title: '每日量測：${selectedDate.year}/${selectedDate.month}/${selectedDate.day}',
-      items: const [
-        StatusItem(label: '白天量測', status: '未完成'),
-        StatusItem(label: '夜晚量測', status: '未完成'),
+      items: [
+        StatusItem(label: '白天量測', status: morning?.isCompleted == true ? '完成' : '未完成'),
+        StatusItem(label: '夜晚量測', status: night?.isCompleted == true ? '完成' : '未完成'),
       ],
       onPressed: () {},
-      isComplete: false,
+      isComplete: isCompleted,
     );
   }
 }
