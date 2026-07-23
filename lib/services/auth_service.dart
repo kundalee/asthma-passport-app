@@ -91,7 +91,7 @@ class AuthService {
     return ApiClient.failure(statusCode, data, '無法取得個人資料', authenticated: true);
   }
 
-  static Future<ApiResult<UserProfile>> updateAvatar(XFile image) async {
+  static Future<ApiResult<String?>> updateAvatar(XFile image) async {
     final bytes = await image.readAsBytes();
     return _editProfile(
       fileFieldName: 'avatar_file',
@@ -101,7 +101,7 @@ class AuthService {
     );
   }
 
-  static Future<ApiResult<UserProfile>> updateProfile({
+  static Future<ApiResult<String?>> updateProfile({
     String? name,
     String? gender,
     DateTime? birthday,
@@ -125,8 +125,9 @@ class AuthService {
 
   // Shared multipart call backing both updateAvatar and updateProfile: the
   // backend's /user/edit only accepts multipart/form-data, even when no file
-  // is attached, so text-only edits still go through sendMultipart.
-  static Future<ApiResult<UserProfile>> _editProfile({
+  // is attached, so text-only edits still go through sendMultipart. The
+  // response no longer echoes the full profile, just the avatar_url.
+  static Future<ApiResult<String?>> _editProfile({
     Map<String, String>? fields,
     String? fileFieldName,
     List<int>? fileBytes,
@@ -144,7 +145,7 @@ class AuthService {
     );
 
     if (statusCode == 200) {
-      return ApiResult.success(UserProfile.fromJson(data['data']));
+      return ApiResult.success(data['avatar_url'] as String?);
     }
 
     return ApiClient.failure(statusCode, data, fallbackMessage, authenticated: true);

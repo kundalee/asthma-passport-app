@@ -36,7 +36,7 @@ class ApiClient {
   }) async {
     debugPrint('API $method $path body=${_redact(body)}');
     try {
-      final headers = {'Content-Type': 'application/json'};
+      final headers = {'Content-Type': 'application/json', 'Accept': 'application/json'};
       if (authenticated) {
         final token = await AuthService.getToken();
         headers['Authorization'] = 'Bearer $token';
@@ -74,7 +74,7 @@ class ApiClient {
   }) async {
     debugPrint('API GET $path');
     try {
-      final headers = {'Content-Type': 'application/json'};
+      final headers = {'Content-Type': 'application/json', 'Accept': 'application/json'};
       if (authenticated) {
         final token = await AuthService.getToken();
         headers['Authorization'] = 'Bearer $token';
@@ -107,7 +107,7 @@ class ApiClient {
   }) async {
     debugPrint('API $method $path multipart fields=$fields');
     try {
-      final headers = <String, String>{};
+      final headers = <String, String>{'Accept': 'application/json'};
       if (authenticated) {
         final token = await AuthService.getToken();
         headers['Authorization'] = 'Bearer $token';
@@ -117,15 +117,23 @@ class ApiClient {
       final request = http.MultipartRequest(method, uri)..headers.addAll(headers);
       if (fields != null) request.fields.addAll(fields);
       if (fileFieldName != null && fileBytes != null) {
+        debugPrint('API $method $path multipart file=$fileFieldName bytes=${fileBytes.length} name=$fileName');
         request.files.add(http.MultipartFile.fromBytes(fileFieldName, fileBytes, filename: fileName));
       }
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
       final bodyText = utf8.decode(response.bodyBytes);
-      final data = bodyText.isEmpty ? <String, dynamic>{} : jsonDecode(bodyText) as Map<String, dynamic>;
-      debugPrint('API $method $path -> ${response.statusCode} $data');
-      return (response.statusCode, data);
+
+      try {
+        final data = bodyText.isEmpty ? <String, dynamic>{} : jsonDecode(bodyText) as Map<String, dynamic>;
+        debugPrint('API $method $path -> ${response.statusCode} $data');
+        return (response.statusCode, data);
+      } on FormatException {
+        final snippet = bodyText.length > 300 ? bodyText.substring(0, 300) : bodyText;
+        debugPrint('API $method $path -> ${response.statusCode} non-JSON body: $snippet');
+        return (response.statusCode, {'message': '伺服器回應格式錯誤'});
+      }
     } catch (e) {
       debugPrint('API $method $path failed: $e');
       return (0, {'message': '無法連接伺服器，請稍後再試'});

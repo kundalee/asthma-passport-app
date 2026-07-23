@@ -162,8 +162,12 @@ class _ProfilePageState extends State<ProfilePage> {
     if (!mounted) return;
 
     if (result.success && result.data != null) {
+      // The backend serves the same URL per user across re-uploads, so a
+      // cache-busting param is needed to bypass any CDN/proxy caching of
+      // that URL, not just Flutter's own image cache.
+      final newAvatarUrl = '${result.data!}?t=${DateTime.now().millisecondsSinceEpoch}';
       setState(() {
-        avatarUrl = result.data!.avatarUrl;
+        avatarUrl = newAvatarUrl;
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -193,7 +197,12 @@ class _ProfilePageState extends State<ProfilePage> {
             CupertinoActionSheetAction(
               onPressed: () async {
                 Navigator.pop(context);
-                final XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
+                final XFile? image = await imagePicker.pickImage(
+                  source: ImageSource.gallery,
+                  maxWidth: 1024,
+                  maxHeight: 1024,
+                  imageQuality: 85,
+                );
                 if (image != null) {
                   await _handleAvatarSelected(image);
                 }
@@ -212,7 +221,12 @@ class _ProfilePageState extends State<ProfilePage> {
             CupertinoActionSheetAction(
               onPressed: () async {
                 Navigator.pop(context);
-                final XFile? image = await imagePicker.pickImage(source: ImageSource.camera);
+                final XFile? image = await imagePicker.pickImage(
+                  source: ImageSource.camera,
+                  maxWidth: 1024,
+                  maxHeight: 1024,
+                  imageQuality: 85,
+                );
                 if (image != null) {
                   await _handleAvatarSelected(image);
                 }
