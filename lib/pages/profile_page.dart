@@ -53,7 +53,12 @@ class _ProfilePageState extends State<ProfilePage> {
         weight = profile.weight;
         bmi = profile.bmi;
         bloodType = profile.bloodType;
-        avatarUrl = profile.avatarUrl;
+        // Cache-bust: the backend serves the same URL per user across
+        // re-uploads, so without this any CDN/proxy/local cache for that
+        // URL can serve stale bytes on every subsequent profile load.
+        avatarUrl = profile.avatarUrl.isEmpty
+            ? profile.avatarUrl
+            : '${profile.avatarUrl}?t=${DateTime.now().millisecondsSinceEpoch}';
       });
     }
   }
