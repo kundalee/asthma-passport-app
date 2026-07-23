@@ -12,8 +12,11 @@ import '../models/weather_models.dart';
 import 'api_client.dart';
 
 class ApiService {
-  static Future<ApiResult<WeatherInfo>> getWeather(String stationName) async {
-    final (statusCode, data) = await ApiClient.send('GET', '/weather/info?station_name=$stationName');
+  static Future<ApiResult<WeatherInfo>> getWeather({
+    required double lat,
+    required double lon,
+  }) async {
+    final (statusCode, data) = await ApiClient.send('GET', '/weather/info?lat=$lat&lon=$lon');
 
     if (statusCode == 200) {
       return ApiResult.success(WeatherInfo.fromJson(data['data']));

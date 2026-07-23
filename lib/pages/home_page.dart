@@ -91,9 +91,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       longitude = location.$2;
     });
 
-    // TODO: Once station_name is resolved from (latitude, longitude), pass
-    // it here instead of the fixed '萬華'.
-    final result = await ApiService.getWeather('萬華');
+    final result = await ApiService.getWeather(lat: location.$1, lon: location.$2);
     final weather = result.data;
     if (result.success && weather != null) {
       if (!mounted) return;
