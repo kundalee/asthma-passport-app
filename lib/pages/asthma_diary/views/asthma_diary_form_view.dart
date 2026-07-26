@@ -12,7 +12,7 @@ class AsthmaDiaryFormView extends StatefulWidget {
   final bool isAssessmentCompleted;
   final List<DiaryQuestion> questions;
   final int? totalScore;
-  final int? statusSummary;
+  final String? statusSummary;
   final Function(int) onSwitchView;
   final VoidCallback onSaved;
 
@@ -37,7 +37,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
   bool isEditMode = false;
   bool isSubmitted = false;
   int? totalScore;
-  int? statusSummary;
+  String? statusSummary;
 
   @override
   void initState() {
@@ -66,10 +66,6 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
         SnackBar(content: Text(result.message ?? '儲存失敗')),
       );
     }
-  }
-
-  String _messageForStatus(int? statusSummary) {
-    return statusSummary == 1 ? '症狀控制良好，請繼續維持' : '控制不佳，建議用藥或回診';
   }
 
   int _scoreForSelected(List<DiaryOption> options, int? selectedId) {
@@ -139,9 +135,9 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
                       height: 37,
                     ),
                   ),
-                if (isSubmitted) _buildResultsSummary(score: totalScore ?? 0, message: _messageForStatus(statusSummary)),
+                if (isSubmitted) _buildResultsSummary(score: totalScore ?? 0, message: statusSummary ?? ''),
                 if (widget.isAssessmentCompleted && !isEditMode && !isSubmitted)
-                  _buildResultsSummary(score: widget.totalScore ?? 0, message: _messageForStatus(widget.statusSummary)),
+                  _buildResultsSummary(score: widget.totalScore ?? 0, message: widget.statusSummary ?? ''),
               ],
             ),
           ),
