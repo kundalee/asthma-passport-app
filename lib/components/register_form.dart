@@ -81,21 +81,11 @@ class _RegisterFormState extends State<RegisterForm> {
     return RegExp(r'^[\w.-]+@[\w.-]+\.\w+$').hasMatch(email);
   }
 
-  void _showTermsAndRegister() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => TermsBottomSheet(
-        title: 'APP使用條款及隱私權保護聲明',
-        onConfirm: () {
-          Navigator.pop(context);
-          _handleRegister();
-        },
-      ),
-    );
+  bool _isValidPassword(String password) {
+    return RegExp(r'^(?=.*[A-Z])[A-Za-z0-9]{6,20}$').hasMatch(password);
   }
 
-  void _handleRegister() async {
+  bool _validate() {
     final name = nameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text;
@@ -116,6 +106,8 @@ class _RegisterFormState extends State<RegisterForm> {
     }
     if (password.isEmpty) {
       newPasswordError = '此欄位為必填';
+    } else if (!_isValidPassword(password)) {
+      newPasswordError = '您輸入的密碼格式有誤，請重新輸入';
     }
     if (confirmPassword.isEmpty) {
       newConfirmPasswordError = '此欄位為必填';
@@ -123,15 +115,37 @@ class _RegisterFormState extends State<RegisterForm> {
       newConfirmPasswordError = '您輸入的密碼不符，請重新輸入';
     }
 
-    if (newNameError != null || newEmailError != null || newPasswordError != null || newConfirmPasswordError != null) {
-      setState(() {
-        nameError = newNameError;
-        emailError = newEmailError;
-        passwordError = newPasswordError;
-        confirmPasswordError = newConfirmPasswordError;
-      });
-      return;
-    }
+    setState(() {
+      nameError = newNameError;
+      emailError = newEmailError;
+      passwordError = newPasswordError;
+      confirmPasswordError = newConfirmPasswordError;
+    });
+
+    return newNameError == null && newEmailError == null && newPasswordError == null && newConfirmPasswordError == null;
+  }
+
+  void _showTermsAndRegister() {
+    if (!_validate()) return;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => TermsBottomSheet(
+        title: 'APP使用條款及隱私權保護聲明',
+        onConfirm: () {
+          Navigator.pop(context);
+          _handleRegister();
+        },
+      ),
+    );
+  }
+
+  void _handleRegister() async {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+    final confirmPassword = confirmPasswordController.text;
 
     setState(() => isLoading = true);
 
