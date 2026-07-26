@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import '../models/act_models.dart';
 import '../models/diary_models.dart';
 import '../models/emergency_contact_models.dart';
@@ -217,31 +215,17 @@ class ApiService {
 
   static Future<List<Map<String, dynamic>>> getTodayTests() async {
     final dateStr = _todayDateStr();
+    final (statusCode, data) = await ApiClient.send('GET', '/user/status?target_date=$dateStr', authenticated: true);
 
-    // Each status fetch is isolated so a failure parsing one (e.g. a
-    // backend contract change) shows that single item as not-done instead
-    // of blanking out the whole "今日檢測" section.
-    final isDiaryDone = await _isTestDone(() async => (await getDiaryStatus(dateStr)).data?.isCompleted ?? false, '氣喘日記');
-    final isPeakFlowDone = await _isTestDone(() async {
-      final status = (await getPeakFlowStatus(dateStr)).data;
-      return (status?.morning.isCompleted ?? false) && (status?.night.isCompleted ?? false);
-    }, '尖峰吐氣流量');
-    final isActDone = await _isTestDone(() async => (await getActStatus(dateStr)).data?.isCompleted ?? false, '氣喘控制測驗');
+    final isDiaryDone = statusCode == 200 && data['diary_completed'] == true;
+    final isPeakFlowDone = statusCode == 200 && data['pefr_completed'] == true;
+    final isActDone = statusCode == 200 && data['act_completed'] == true;
 
     return [
       {'id': 1, 'name': '氣喘日記', 'status': isDiaryDone ? 1 : 0},
       {'id': 2, 'name': '尖峰吐氣流量', 'status': isPeakFlowDone ? 1 : 0},
       {'id': 3, 'name': '氣喘控制測驗', 'status': isActDone ? 1 : 0},
     ];
-  }
-
-  static Future<bool> _isTestDone(Future<bool> Function() fetch, String label) async {
-    try {
-      return await fetch();
-    } catch (e) {
-      debugPrint('getTodayTests: $label status failed to load: $e');
-      return false;
-    }
   }
 
   static Future<ApiResult<PassportStatus>> getPassport(String dateStr) async {
