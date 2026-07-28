@@ -82,7 +82,7 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   bool _isValidPassword(String password) {
-    return RegExp(r'^(?=.*[A-Z])[A-Za-z0-9]{6,20}$').hasMatch(password);
+    return RegExp(r'^(?=.*[A-Z])[A-Za-z0-9]{8,20}$').hasMatch(password);
   }
 
   bool _validate() {
