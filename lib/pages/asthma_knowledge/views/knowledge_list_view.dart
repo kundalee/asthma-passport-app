@@ -7,7 +7,11 @@ import '../../../components/card_container.dart';
 typedef _KnowledgeItem = ({String title, String? mandarinUrl, String? taiwaneseUrl});
 
 const List<_KnowledgeItem> _knowledgeItems = [
-  (title: '兒童及成人吸藥輔助面罩使用', mandarinUrl: null, taiwaneseUrl: null),
+  (
+    title: '兒童及成人吸藥輔助面罩使用',
+    mandarinUrl: 'https://youtu.be/636xEC4QuGc?si=dV854nuMz5E9-RW2',
+    taiwaneseUrl: 'https://youtu.be/2zPxkfABPa4?si=qBlLL7zRZj2A86Kq',
+  ),
   (
     title: '輔舒酮-控制藥物',
     mandarinUrl: 'https://youtu.be/i84Vn0ra2NI?si=d72QH3uJjsZE3MEF',
