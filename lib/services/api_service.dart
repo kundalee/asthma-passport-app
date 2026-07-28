@@ -399,11 +399,11 @@ class ApiService {
     return ApiClient.failure(statusCode, data, '無法取得氣喘控制測驗資料', authenticated: true);
   }
 
-  static Future<ApiResult<SaveActResult>> saveAct(String recordDate, List<Map<String, dynamic>> answers) async {
+  static Future<ApiResult<SaveActResult>> saveAct(String recordDate, String targetGroup, List<Map<String, dynamic>> answers) async {
     final (statusCode, data) = await ApiClient.send(
       'POST',
       '/act/save',
-      body: {'record_date': recordDate, 'answers': answers},
+      body: {'record_date': recordDate, 'target_group': targetGroup, 'answers': answers},
       authenticated: true,
     );
 

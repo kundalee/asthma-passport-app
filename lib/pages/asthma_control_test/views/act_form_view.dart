@@ -31,7 +31,8 @@ class ActFormView extends StatefulWidget {
 
 class _ActFormViewState extends State<ActFormView> {
   int? totalScore;
-  int? controlLevel;
+  int? statusColor;
+  String? statusSummary;
 
   List<Map<String, dynamic>> get questionsData {
     return widget.questions
@@ -149,9 +150,9 @@ class _ActFormViewState extends State<ActFormView> {
             constraints: const BoxConstraints(minHeight: 54),
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
             decoration: BoxDecoration(
-              color: _getControlLevelBgColor(controlLevel),
+              color: _getControlLevelBgColor(statusColor),
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: _getControlLevelBorderColor(controlLevel), width: 2),
+              border: Border.all(color: _getControlLevelBorderColor(statusColor), width: 2),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -159,18 +160,18 @@ class _ActFormViewState extends State<ActFormView> {
               spacing: 12,
               children: [
                 SvgPicture.asset(
-                  _getControlLevelIcon(controlLevel),
+                  _getControlLevelIcon(statusColor),
                   width: 24,
                   height: 24,
-                  colorFilter: ColorFilter.mode(_getStatusTextColor(controlLevel), BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(_getStatusTextColor(statusColor), BlendMode.srcIn),
                 ),
                 Flexible(
                   child: Text(
-                    _getControlLevelAdvice(controlLevel),
+                    statusSummary ?? '',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: _getStatusTextColor(controlLevel),
+                      color: _getStatusTextColor(statusColor),
                       height: 1.71,
                       letterSpacing: 0,
                     ),
@@ -193,17 +194,19 @@ class _ActFormViewState extends State<ActFormView> {
       payload.add({'question_id': question.id, 'selected_value': selectedOption.score});
     }
 
-    final result = await ApiService.saveAct(widget.recordDate, payload);
+    final result = await ApiService.saveAct(widget.recordDate, widget.isAdultTest ? 'adult' : 'child', payload);
     if (!mounted) return;
 
     if (result.success && result.data != null) {
       final calculated = {
         'totalScore': result.data!.totalScore,
-        'controlLevel': result.data!.statusSummary,
+        'statusColor': result.data!.statusColor,
+        'statusSummary': result.data!.statusSummary,
       };
       setState(() {
-        totalScore = calculated['totalScore'];
-        controlLevel = calculated['controlLevel'];
+        totalScore = calculated['totalScore'] as int?;
+        statusColor = calculated['statusColor'] as int?;
+        statusSummary = calculated['statusSummary'] as String?;
       });
       widget.onAssessmentCalculated(calculated);
     } else {
@@ -214,123 +217,54 @@ class _ActFormViewState extends State<ActFormView> {
   }
 
   Color _getControlLevelBgColor(int? level) {
-    if (widget.isAdultTest) {
-      switch (level) {
-        case 1:
-          return AppColors.honeydew;
-        case 2:
-          return AppColors.secondaryYellow;
-        case 3:
-          return AppColors.babysBottom;
-        default:
-          return Colors.grey.shade100;
-      }
-    } else {
-      switch (level) {
-        case 1:
-          return AppColors.honeydew;
-        case 2:
-          return AppColors.secondaryYellow;
-        default:
-          return Colors.grey.shade100;
-      }
+    switch (level) {
+      case 0:
+        return AppColors.honeydew;
+      case 1:
+        return AppColors.secondaryYellow;
+      case 2:
+        return AppColors.babysBottom;
+      default:
+        return Colors.grey.shade100;
     }
   }
 
   Color _getControlLevelBorderColor(int? level) {
-    if (widget.isAdultTest) {
-      switch (level) {
-        case 1:
-          return AppColors.lightPastelMint;
-        case 2:
-          return AppColors.darkYellow;
-        case 3:
-          return AppColors.spicyPastelPink;
-        default:
-          return Colors.grey;
-      }
-    } else {
-      switch (level) {
-        case 1:
-          return AppColors.lightPastelMint;
-        case 2:
-          return AppColors.darkYellow;
-        default:
-          return Colors.grey;
-      }
+    switch (level) {
+      case 0:
+        return AppColors.lightPastelMint;
+      case 1:
+        return AppColors.darkYellow;
+      case 2:
+        return AppColors.spicyPastelPink;
+      default:
+        return Colors.grey;
     }
   }
 
   Color _getStatusTextColor(int? level) {
-    if (widget.isAdultTest) {
-      switch (level) {
-        case 1:
-          return AppColors.primaryGreen;
-        case 2:
-          return AppColors.windsorTan;
-        case 3:
-          return AppColors.digitalRed;
-        default:
-          return Colors.black;
-      }
-    } else {
-      switch (level) {
-        case 1:
-          return AppColors.primaryGreen;
-        case 2:
-          return AppColors.windsorTan;
-        default:
-          return Colors.black;
-      }
+    switch (level) {
+      case 0:
+        return AppColors.primaryGreen;
+      case 1:
+        return AppColors.windsorTan;
+      case 2:
+        return AppColors.digitalRed;
+      default:
+        return Colors.black;
     }
   }
 
   String _getControlLevelIcon(int? level) {
-    if (widget.isAdultTest) {
-      switch (level) {
-        case 1:
-          return 'assets/icons/check.svg';
-        case 2:
-          return 'assets/icons/alert-info.svg';
-        case 3:
-          return 'assets/icons/undone.svg';
-        default:
-          return 'assets/icons/check.svg';
-      }
-    } else {
-      switch (level) {
-        case 1:
-          return 'assets/icons/check.svg';
-        case 2:
-          return 'assets/icons/alert-info.svg';
-        default:
-          return 'assets/icons/check.svg';
-      }
+    switch (level) {
+      case 0:
+        return 'assets/icons/check.svg';
+      case 1:
+        return 'assets/icons/alert-info.svg';
+      case 2:
+        return 'assets/icons/undone.svg';
+      default:
+        return 'assets/icons/check.svg';
     }
   }
-
-  String _getControlLevelAdvice(int? level) {
-    if (widget.isAdultTest) {
-      switch (level) {
-        case 1:
-          return '在過去4週中，氣喘得到全面控制';
-        case 2:
-          return '在過去4週中，氣喘控制良好，但尚未全面獲得控制';
-        case 3:
-          return '在過去4週中，氣喘未受到控制';
-        default:
-          return '';
-      }
-    } else {
-      switch (level) {
-        case 1:
-          return '您的小孩氣喘控制良好';
-        case 2:
-          return '您的小孩氣喘並未獲得良好的控制。建議與醫師一起討論結果，詢問是否需要改變氣喘治療計劃';
-        default:
-          return '';
-      }
-    }
-  }
-
 }

@@ -19,7 +19,7 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
   bool isAssessmentCompleted = false;
   String? measurementTime;
   int? totalScore;
-  int? controlLevel;
+  int? statusColor;
   bool isAdultTest = true;
   int currentView = 0; // 0: summary, 1: selection, 2: form
   String? targetGroup;
@@ -59,7 +59,7 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
   void _handleAssessmentCalculated(Map<String, dynamic> result) {
     setState(() {
       totalScore = result['totalScore'];
-      controlLevel = result['controlLevel'];
+      statusColor = result['statusColor'];
     });
   }
 
