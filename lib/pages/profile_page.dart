@@ -49,8 +49,8 @@ class _ProfilePageState extends State<ProfilePage> {
         gender = profile.gender;
         birthday = _formatBirthday(profile.birthday);
         age = profile.age == '-' ? profile.age : '${profile.age}歲';
-        height = profile.height;
-        weight = profile.weight;
+        height = _formatMeasurement(profile.height, 'cm');
+        weight = _formatMeasurement(profile.weight, 'kg');
         bmi = profile.bmi;
         bloodType = profile.bloodType;
         // Cache-bust: the backend serves the same URL per user across
@@ -70,6 +70,16 @@ class _ProfilePageState extends State<ProfilePage> {
     final parsed = DateTime.tryParse(value);
     if (parsed == null) return value;
     return '${parsed.year.toString().padLeft(4, '0')}/${parsed.month.toString().padLeft(2, '0')}/${parsed.day.toString().padLeft(2, '0')}';
+  }
+
+  // GET /user/profile returns height/weight as plain numbers (e.g. "135.0");
+  // drop a trailing ".0" and append the unit. Falls back to the raw value
+  // for placeholders like "未填寫".
+  String _formatMeasurement(String value, String unit) {
+    final parsed = double.tryParse(value);
+    if (parsed == null) return value;
+    final formatted = parsed == parsed.roundToDouble() ? parsed.toStringAsFixed(0) : parsed.toString();
+    return '$formatted $unit';
   }
 
   @override
