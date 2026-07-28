@@ -228,19 +228,39 @@ class ApiService {
     ];
   }
 
-  static Future<ApiResult<PassportStatus>> getPassport(String dateStr) async {
-    final (statusCode, data) = await ApiClient.send('GET', '/passport/load?target_date=$dateStr', authenticated: true);
+  static Future<ApiResult<PassportInfo>> getPassportInfo() async {
+    final (statusCode, data) = await ApiClient.send('GET', '/passport/info', authenticated: true);
 
     if (statusCode == 200) {
-      return ApiResult.success(PassportStatus.fromJson(data));
+      return ApiResult.success(PassportInfo.fromJson(data['data']));
     }
 
-    return ApiClient.failure(statusCode, data, '無法取得健康護照資料', authenticated: true);
+    return ApiClient.failure(statusCode, data, '無法取得護照資訊', authenticated: true);
+  }
+
+  static Future<ApiResult<PassportHistorySummary>> getPassportHistory() async {
+    final (statusCode, data) = await ApiClient.send('GET', '/passport/history', authenticated: true);
+
+    if (statusCode == 200) {
+      return ApiResult.success(PassportHistorySummary.fromJson(data));
+    }
+
+    return ApiClient.failure(statusCode, data, '無法取得健康護照紀錄', authenticated: true);
+  }
+
+  static Future<ApiResult<String>> getPassportDownloadUrl(String dateStr) async {
+    final (statusCode, data) = await ApiClient.send('GET', '/passport/download?target_date=$dateStr', authenticated: true);
+
+    if (statusCode == 200) {
+      return ApiResult.success(data['url'] as String);
+    }
+
+    return ApiClient.failure(statusCode, data, '無法取得報告下載連結', authenticated: true);
   }
 
   static Future<ApiResult<SavePlanResult>> savePassportPlan({
     required String recordDate,
-    required int? statusLevel,
+    required String? statusLevel,
     required String? notes,
     required String? doctorName,
     required List<Map<String, dynamic>> medications,

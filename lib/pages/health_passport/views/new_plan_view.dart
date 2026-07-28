@@ -99,14 +99,6 @@ class _NewPlanViewState extends State<NewPlanView> {
   bool showPreview = false;
   bool isSaving = false;
 
-  // Matches the backend's status_level codes (1-4, see passportStatusTitles).
-  static const Map<String, int> _backendStatusLevels = {
-    'full': 1,
-    'partial': 2,
-    'poor': 3,
-    'acute': 4,
-  };
-
   @override
   void initState() {
     super.initState();
@@ -185,8 +177,8 @@ class _NewPlanViewState extends State<NewPlanView> {
         .map((entry) => {
               'med_type': medType,
               'name': entry.medicationName,
-              'dose': entry.daytimeDose ?? '',
-              'freq': entry.nighttimeDose ?? '',
+              'morn': entry.daytimeDose ?? '',
+              'even': entry.nighttimeDose ?? '',
               'note': entry.notesController.text.isNotEmpty
                   ? entry.notesController.text
                   : null,
@@ -207,7 +199,7 @@ class _NewPlanViewState extends State<NewPlanView> {
 
     final result = await ApiService.savePassportPlan(
       recordDate: recordDate,
-      statusLevel: _backendStatusLevels[selectedLevel],
+      statusLevel: levelDescriptions[selectedLevel],
       notes: notesController.text.isNotEmpty ? notesController.text : null,
       doctorName: doctorNameController.text.isNotEmpty
           ? doctorNameController.text

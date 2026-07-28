@@ -17,7 +17,8 @@ class HealthPassportPage extends StatefulWidget {
 
 class _HealthPassportPageState extends State<HealthPassportPage> {
   final DateTime _today = DateTime.now();
-  PassportStatus? passportStatus;
+  PassportInfo? passportInfo;
+  PassportHistorySummary? passportHistory;
   int currentView = 0; // 0: passport, 1: report, 2: new_plan
   bool isPlanPreview = false;
 
@@ -32,10 +33,19 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
   }
 
   Future<void> _loadPassport() async {
-    final result = await ApiService.getPassport(_dateStr);
-    if (result.success && result.data != null) {
+    final infoFuture = ApiService.getPassportInfo();
+    final historyFuture = ApiService.getPassportHistory();
+    final infoResult = await infoFuture;
+    final historyResult = await historyFuture;
+
+    if (infoResult.success && infoResult.data != null) {
       setState(() {
-        passportStatus = result.data;
+        passportInfo = infoResult.data;
+      });
+    }
+    if (historyResult.success && historyResult.data != null) {
+      setState(() {
+        passportHistory = historyResult.data;
       });
     }
   }
@@ -47,20 +57,20 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
       contentPadding: currentView == 2 && isPlanPreview
           ? EdgeInsets.only(top: 12)
           : const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-      content: passportStatus == null
+      content: passportInfo == null || passportHistory == null
           ? const Center(child: CircularProgressIndicator())
-          : _buildContent(passportStatus!),
+          : _buildContent(passportInfo!, passportHistory!),
     );
   }
 
-  Widget _buildContent(PassportStatus status) {
+  Widget _buildContent(PassportInfo info, PassportHistorySummary history) {
     if (currentView == 0) {
-      return HealthPassportView(info: status.info, onLogout: () => _logout(context), onMenuTap: _switchView);
+      return HealthPassportView(info: info, onLogout: () => _logout(context), onMenuTap: _switchView);
     } else if (currentView == 1) {
-      return HealthReportView(info: status.info, plan: status.plan, onSwitchView: _switchView);
+      return HealthReportView(info: info, history: history, dateStr: _dateStr, onSwitchView: _switchView);
     } else {
       return NewPlanView(
-        info: status.info,
+        info: info,
         onSwitchView: _switchView,
         onPreviewChanged: (value) => setState(() => isPlanPreview = value),
       );

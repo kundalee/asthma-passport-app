@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
 import 'package:printing/printing.dart';
 import '../../../models/passport_models.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/custom_button.dart';
 import '../../../components/card_container.dart';
-import '../utils/report_pdf_builder.dart';
+import '../../../services/api_service.dart';
 
 class HealthReportView extends StatefulWidget {
   final PassportInfo info;
-  final PassportPlan plan;
+  final PassportHistorySummary history;
+  final String dateStr;
   final Function(int) onSwitchView;
 
   const HealthReportView({
     super.key,
     required this.info,
-    required this.plan,
+    required this.history,
+    required this.dateStr,
     required this.onSwitchView,
   });
 
@@ -29,12 +32,18 @@ class _HealthReportViewState extends State<HealthReportView> {
   Future<void> _downloadReport() async {
     setState(() => isDownloading = true);
     try {
-      final doc = await buildActionPlanReportPdf(
-        info: widget.info,
-        plan: widget.plan,
-      );
-      final bytes = await doc.save();
-      await Printing.sharePdf(bytes: bytes, filename: 'action_plan_report.pdf');
+      final result = await ApiService.getPassportDownloadUrl(widget.dateStr);
+      if (!mounted) return;
+
+      if (!result.success || result.data == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message ?? '無法取得報告下載連結')),
+        );
+        return;
+      }
+
+      final response = await http.get(Uri.parse(result.data!));
+      await Printing.sharePdf(bytes: response.bodyBytes, filename: 'action_plan_report.pdf');
     } finally {
       if (mounted) setState(() => isDownloading = false);
     }
@@ -44,8 +53,8 @@ class _HealthReportViewState extends State<HealthReportView> {
   Widget build(BuildContext context) {
     final name = widget.info.name;
     final age = widget.info.age;
-    final statusTitle = passportStatusTitles[widget.plan.statusLevel] ?? '尚未填寫';
-    final recordDate = widget.plan.recordDate?.replaceAll('-', '/');
+    final statusTitle = widget.history.statusLevel;
+    final recordDate = widget.history.recordDate;
 
     return CardContainer(
         child: Column(

@@ -24,84 +24,15 @@ class PassportInfo {
   }
 }
 
-class PassportMedication {
-  final String name;
-  final String dose;
-  final String freq;
-  final String note;
-
-  const PassportMedication({
-    required this.name,
-    required this.dose,
-    required this.freq,
-    required this.note,
-  });
-
-  factory PassportMedication.fromJson(Map<String, dynamic> json) {
-    return PassportMedication(
-      name: json['name'] ?? '',
-      dose: json['dose'] ?? '',
-      freq: json['freq'] ?? '',
-      note: json['note'] ?? '',
-    );
-  }
-}
-
-// status_level is a code (1: 氣喘完全控制, 2: 氣喘部分控制, 3: 氣喘控制不佳,
-// 4: 氣喘急性發作) — the backend no longer sends display copy, so the client
-// maps the code to text, matching the diary/ACT status_summary pattern.
-const Map<int, String> passportStatusTitles = {
-  1: '氣喘完全控制',
-  2: '氣喘部分控制',
-  3: '氣喘控制不佳',
-  4: '氣喘急性發作',
-};
-
-class PassportPlan {
-  final int? id;
-  final String? recordDate;
-  final int? statusLevel;
-  final List<PassportMedication> controlMeds;
-  final List<PassportMedication> reliefMeds;
-  final String notes;
-  final String doctorName;
-
-  const PassportPlan({
-    required this.id,
-    required this.recordDate,
-    required this.statusLevel,
-    required this.controlMeds,
-    required this.reliefMeds,
-    required this.notes,
-    required this.doctorName,
-  });
-
-  factory PassportPlan.fromJson(Map<String, dynamic> json) {
-    return PassportPlan(
-      id: json['id'] as int?,
-      recordDate: json['record_date'] as String?,
-      statusLevel: (json['status_level'] as num?)?.toInt(),
-      controlMeds: (json['control_meds'] as List<dynamic>? ?? [])
-          .map((m) => PassportMedication.fromJson(m as Map<String, dynamic>))
-          .toList(),
-      reliefMeds: (json['relief_meds'] as List<dynamic>? ?? [])
-          .map((m) => PassportMedication.fromJson(m as Map<String, dynamic>))
-          .toList(),
-      notes: json['notes'] ?? '',
-      doctorName: json['doctor_name'] ?? '',
-    );
-  }
-}
-
 class SavePlanResult {
-  final int id;
+  final int? id;
   final String message;
 
   const SavePlanResult({required this.id, required this.message});
 
   factory SavePlanResult.fromJson(Map<String, dynamic> json) {
     return SavePlanResult(
-      id: json['id'] as int,
+      id: (json['passport_id'] as num?)?.toInt(),
       message: json['message'] ?? '',
     );
   }
@@ -124,22 +55,21 @@ class MedicationOptions {
   }
 }
 
-class PassportStatus {
-  final bool isCompleted;
-  final PassportInfo info;
-  final PassportPlan plan;
+// /passport/history: the most recent record's status, as display-ready
+// text from the backend.
+class PassportHistorySummary {
+  final String statusLevel;
+  final String? recordDate;
 
-  const PassportStatus({
-    required this.isCompleted,
-    required this.info,
-    required this.plan,
+  const PassportHistorySummary({
+    required this.statusLevel,
+    required this.recordDate,
   });
 
-  factory PassportStatus.fromJson(Map<String, dynamic> json) {
-    return PassportStatus(
-      isCompleted: json['is_completed'] ?? false,
-      info: PassportInfo.fromJson(json['passport_info'] ?? {}),
-      plan: PassportPlan.fromJson(json['passport_data'] ?? {}),
+  factory PassportHistorySummary.fromJson(Map<String, dynamic> json) {
+    return PassportHistorySummary(
+      statusLevel: json['status_level'] ?? '尚未填寫',
+      recordDate: json['record_date'] as String?,
     );
   }
 }
