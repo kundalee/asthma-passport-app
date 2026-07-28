@@ -3,14 +3,14 @@ class PeakFlowReading {
   final int? id;
   final bool isCompleted;
   // Zone classification against the patient's predicted personal-best, per
-  // ApiService.peakFlowStatusForValue: 1 = green, 2 = yellow, 3 = red.
-  final int? statusSummary;
+  // ApiService.peakFlowStatusForValue: 0 = green, 1 = yellow, 2 = red.
+  final int? statusColor;
 
   const PeakFlowReading({
     required this.value,
     required this.id,
     required this.isCompleted,
-    required this.statusSummary,
+    required this.statusColor,
   });
 
   factory PeakFlowReading.fromJson(Map<String, dynamic> json) {
@@ -18,7 +18,7 @@ class PeakFlowReading {
       value: (json['value'] as num?)?.toDouble(),
       id: json['id'] as int?,
       isCompleted: json['is_completed'] ?? false,
-      statusSummary: (json['status_summary'] as num?)?.toInt(),
+      statusColor: (json['status_color'] as num?)?.toInt(),
     );
   }
 }

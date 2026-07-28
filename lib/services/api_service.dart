@@ -353,20 +353,22 @@ class ApiService {
   }
 
   // Classifies a measurement against the user's predicted best value, per
-  // 比對量測結果: >80% green (1), 60-80% yellow (2), <60% red (3). Returns
-  // null if the best value isn't known, since no comparison can be made.
+  // 比對量測結果: >80% green (0), 60-80% yellow (1), <60% red (2). Matches
+  // the backend's status_color scale. Returns null if the best value isn't
+  // known, since no comparison can be made.
   static int? peakFlowStatusForValue(double value, double? bestValue) {
     if (bestValue == null || bestValue <= 0) return null;
     final percentage = value / bestValue * 100;
-    if (percentage > 80) return 1;
-    if (percentage >= 60) return 2;
-    return 3;
+    if (percentage > 80) return 0;
+    if (percentage >= 60) return 1;
+    return 2;
   }
 
   static Future<ApiResult<PeakFlowSaveResult>> savePeakFlowMeasurement({
     required String dateStr,
     required bool isDaytime,
     required double value,
+    required int? statusColor,
   }) async {
     final (statusCode, data) = await ApiClient.send(
       'POST',
@@ -374,7 +376,8 @@ class ApiService {
       body: {
         'record_date': dateStr,
         'pefr_value': value.round(),
-        'time_day': isDaytime ? 'm' : 'n',
+        'time_day': isDaytime ? 0 : 1,
+        'status_color': statusColor,
       },
       authenticated: true,
     );

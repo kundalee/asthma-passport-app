@@ -65,6 +65,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
       dateStr: widget.dateStr,
       isDaytime: widget.isDaytime,
       value: value,
+      statusColor: _statusResult,
     );
 
     if (!mounted) return;
@@ -347,7 +348,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
               letterSpacing: 0,
             ),
           ),
-          _buildStatusBox(_statusResult ?? 1),
+          _buildStatusBox(_statusResult!),
         ],
       ),
     );
@@ -361,21 +362,21 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
     late String statusText;
 
     switch (status) {
-      case 1:
+      case 0:
         backgroundColor = AppColors.honeydew;
         borderColor = AppColors.lightPastelMint;
         textColor = AppColors.primaryGreen;
         iconPath = 'assets/icons/check.svg';
         statusText = '控制良好，請繼續保持';
         break;
-      case 2:
+      case 1:
         backgroundColor = AppColors.secondaryYellow;
         borderColor = AppColors.darkYellow;
         textColor = AppColors.windsorTan;
         iconPath = 'assets/icons/alert-info.svg';
         statusText = '目前氣道不穩定，如合併有氣喘症狀請使用氣喘緊急用藥，並持續觀察氣喘狀況';
         break;
-      case 3:
+      case 2:
         backgroundColor = AppColors.babysBottom;
         borderColor = AppColors.spicyPastelPink;
         textColor = AppColors.digitalRed;

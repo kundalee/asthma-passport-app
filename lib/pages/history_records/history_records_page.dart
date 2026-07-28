@@ -134,12 +134,12 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
         if (day.morning.value != null) pefrValues.add(day.morning.value!);
         if (day.night.value != null) pefrValues.add(day.night.value!);
 
-        final statuses = [day.morning.statusSummary, day.night.statusSummary].whereType<int>();
+        final statuses = [day.morning.statusColor, day.night.statusColor].whereType<int>();
         if (statuses.isEmpty) continue;
         switch (statuses.reduce((a, b) => a > b ? a : b)) {
-          case 1:
+          case 0:
             greenDays++;
-          case 2:
+          case 1:
             yellowDays++;
           default:
             redDays++;

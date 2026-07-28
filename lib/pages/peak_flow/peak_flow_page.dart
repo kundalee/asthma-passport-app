@@ -45,9 +45,9 @@ class _PeakFlowPageState extends State<PeakFlowPage> {
         gender: userProfile?.gender ?? '',
       );
 
-  int? get daytimeStatus => peakFlowStatus?.morning.statusSummary;
+  int? get daytimeStatus => peakFlowStatus?.morning.statusColor;
 
-  int? get eveningStatus => peakFlowStatus?.night.statusSummary;
+  int? get eveningStatus => peakFlowStatus?.night.statusColor;
 
   String? _formatValue(double? value) {
     return value?.toStringAsFixed(0);
