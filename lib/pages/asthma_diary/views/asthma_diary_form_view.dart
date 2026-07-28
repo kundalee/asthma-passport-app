@@ -39,6 +39,10 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
   int? totalScore;
   String? statusSummary;
 
+  // Once a test is submitted (this session) or already completed and not
+  // being re-edited, the recorded answers are locked from further changes.
+  bool get _isReadOnly => isSubmitted || (widget.isAssessmentCompleted && !isEditMode);
+
   @override
   void initState() {
     super.initState();
@@ -108,14 +112,14 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
                                 title: question.text,
                                 options: question.options,
                                 selectedValue: selectedAnswers[index],
-                                onChanged: (value) => setState(() => selectedAnswers[index] = value),
+                                onChanged: _isReadOnly ? null : (value) => setState(() => selectedAnswers[index] = value),
                               )
                             : _buildScaleQuestion(
                                 number: question.order,
                                 title: question.text,
                                 options: question.options,
                                 selectedValue: selectedAnswers[index],
-                                onChanged: (value) => setState(() => selectedAnswers[index] = value),
+                                onChanged: _isReadOnly ? null : (value) => setState(() => selectedAnswers[index] = value),
                               ),
                         if (index < questions.length - 1)
                           Divider(color: AppColors.sweetGrey, height: 2),
@@ -203,7 +207,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
     required String title,
     required List<DiaryOption> options,
     required int? selectedValue,
-    required Function(int) onChanged,
+    required Function(int)? onChanged,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -254,7 +258,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
               return Padding(
                 padding: EdgeInsets.only(bottom: index < options.length - 1 ? 8 : 0),
                 child: GestureDetector(
-                  onTap: () => onChanged(option.id),
+                  onTap: onChanged == null ? null : () => onChanged(option.id),
                   child: Container(
                     height: 37,
                     padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -301,7 +305,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
     required String title,
     required List<DiaryOption> options,
     required int? selectedValue,
-    required Function(int) onChanged,
+    required Function(int)? onChanged,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -362,7 +366,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
                       decoration: BoxDecoration(color: _getScaleBarColor(index)),
                     ),
                     GestureDetector(
-                      onTap: () => onChanged(options[index].id),
+                      onTap: onChanged == null ? null : () => onChanged(options[index].id),
                       child: SvgPicture.asset(
                         selectedValue == options[index].id ? 'assets/icons/select-on.svg' : 'assets/icons/select-off.svg',
                         width: 24,
