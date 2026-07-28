@@ -79,27 +79,45 @@ class CalendarGrid extends StatelessWidget {
           onTap: () => onDateSelected(date),
           child: Center(
             child: SizedBox(
-              width: 28,
-              height: 28,
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: status == 0
-                      ? Colors.red
-                      : status == 1
-                          ? AppColors.primaryGreen
-                          : Colors.white,
-                  border: isToday ? Border.all(color: Colors.black, width: 2) : isSelected ? Border.all(color: AppColors.primaryGreen, width: 2) : null,
-                ),
-                child: Center(
-                  child: Text(
-                    '$day',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: status != null ? Colors.white : Colors.black,
-                      height: 1,
-                      letterSpacing: 0,
+              width: 32,
+              height: 32,
+              child: Center(
+                child: Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: isSelected
+                        ? Border.all(
+                            color: (isToday || date.isAfter(DateTime.now())) ? Colors.black : (status == 0 ? Colors.red : AppColors.primaryGreen),
+                            width: 2,
+                          )
+                        : null,
+                  ),
+                  child: Center(
+                    child: Container(
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: status == 0
+                            ? Colors.red
+                            : status == 1
+                                ? AppColors.primaryGreen
+                                : Colors.white,
+                      ),
+                      child: Center(
+                        child: Text(
+                          '$day',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: status != null ? Colors.white : Colors.black,
+                            height: 1,
+                            letterSpacing: 0,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),

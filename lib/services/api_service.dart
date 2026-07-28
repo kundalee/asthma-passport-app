@@ -438,69 +438,78 @@ class ApiService {
     required int year,
     required int month,
   }) async {
-    final (statusCode, data) = await ApiClient.getRaw('/diary/history?year=$year&month=$month', authenticated: true);
+    final targetDate = '$year-${month.toString().padLeft(2, '0')}';
+    final (statusCode, data) = await ApiClient.send('GET', '/diary/history?target_date=$targetDate', authenticated: true);
 
-    if (statusCode == 200 && data is List) {
-      return ApiResult.success(data.map((e) => HistoryDay.fromJson(e as Map<String, dynamic>)).toList());
+    if (statusCode == 200) {
+      final days = (data['data'] as List<dynamic>? ?? []).map((e) => HistoryDay.fromJson(e as Map<String, dynamic>)).toList();
+      return ApiResult.success(days);
     }
 
-    return ApiClient.failure(statusCode, data is Map<String, dynamic> ? data : {}, '無法取得氣喘日記歷史紀錄', authenticated: true);
+    return ApiClient.failure(statusCode, data, '無法取得氣喘日記歷史紀錄', authenticated: true);
   }
 
-  static Future<ApiResult<List<PeakFlowStatus>>> getPeakFlowHistory({
+  static Future<ApiResult<List<PeakFlowHistoryDay>>> getPeakFlowHistory({
     required int year,
     required int month,
   }) async {
-    final (statusCode, data) = await ApiClient.getRaw('/pefr/history?year=$year&month=$month', authenticated: true);
+    final targetDate = '$year-${month.toString().padLeft(2, '0')}';
+    final (statusCode, data) = await ApiClient.send('GET', '/pefr/history?target_date=$targetDate', authenticated: true);
 
-    if (statusCode == 200 && data is List) {
-      return ApiResult.success(data.map((e) => PeakFlowStatus.fromJson(e as Map<String, dynamic>)).toList());
+    if (statusCode == 200) {
+      final days = (data['data'] as List<dynamic>? ?? []).map((e) => PeakFlowHistoryDay.fromJson(e as Map<String, dynamic>)).toList();
+      return ApiResult.success(days);
     }
 
-    return ApiClient.failure(statusCode, data is Map<String, dynamic> ? data : {}, '無法取得尖峰吐氣流量歷史紀錄', authenticated: true);
+    return ApiClient.failure(statusCode, data, '無法取得尖峰吐氣流量歷史紀錄', authenticated: true);
   }
 
-  static Future<ApiResult<List<HistoryDay>>> getActHistory({
-    required int year,
-    required int month,
-  }) async {
-    final (statusCode, data) = await ApiClient.getRaw('/act/history?year=$year&month=$month', authenticated: true);
+  // targetDate is "YYYY-MM"; the response covers a rolling window of several
+  // months (not just the target month), one entry per month.
+  static Future<ApiResult<List<ActMonthSummary>>> getActHistory(String targetDate) async {
+    final (statusCode, data) = await ApiClient.send('GET', '/act/history?target_date=$targetDate', authenticated: true);
 
-    if (statusCode == 200 && data is List) {
-      return ApiResult.success(data.map((e) => HistoryDay.fromJson(e as Map<String, dynamic>)).toList());
+    if (statusCode == 200) {
+      final months = (data['data'] as List<dynamic>? ?? []).map((e) => ActMonthSummary.fromJson(e as Map<String, dynamic>)).toList();
+      return ApiResult.success(months);
     }
 
-    return ApiClient.failure(statusCode, data is Map<String, dynamic> ? data : {}, '無法取得氣喘控制測驗歷史紀錄', authenticated: true);
+    return ApiClient.failure(statusCode, data, '無法取得氣喘控制測驗歷史紀錄', authenticated: true);
   }
 
-  static Future<ApiResult<List<AvailableMonth>>> getDiaryAvailableMonths() async {
-    final (statusCode, data) = await ApiClient.getRaw('/diary/available-months', authenticated: true);
+  // targetMonth is "YYYY/MM" (matches the history page's selectedMonth).
+  static Future<ApiResult<DashboardSummary>> getDashboardSummary(String targetMonth) async {
+    final (statusCode, data) = await ApiClient.send('GET', '/summary/dashboard?target_date=$targetMonth', authenticated: true);
 
-    if (statusCode == 200 && data is List) {
-      return ApiResult.success(data.map((e) => AvailableMonth.fromJson(e as Map<String, dynamic>)).toList());
+    if (statusCode == 200) {
+      return ApiResult.success(DashboardSummary.fromJson(data));
     }
 
-    return ApiClient.failure(statusCode, data is Map<String, dynamic> ? data : {}, '無法取得氣喘日記可用月份', authenticated: true);
+    return ApiClient.failure(statusCode, data, '無法取得綜合資料', authenticated: true);
   }
 
-  static Future<ApiResult<List<AvailableMonth>>> getPeakFlowAvailableMonths() async {
-    final (statusCode, data) = await ApiClient.getRaw('/pefr/available-months', authenticated: true);
+  // targetMonth is "YYYY/MM" (matches the history page's selectedMonth).
+  static Future<ApiResult<String>> getSummaryDownloadUrl(String targetMonth) async {
+    final (statusCode, data) = await ApiClient.send('GET', '/summary/download?target_date=$targetMonth', authenticated: true);
 
-    if (statusCode == 200 && data is List) {
-      return ApiResult.success(data.map((e) => AvailableMonth.fromJson(e as Map<String, dynamic>)).toList());
+    if (statusCode == 200) {
+      return ApiResult.success(data['url'] as String);
     }
 
-    return ApiClient.failure(statusCode, data is Map<String, dynamic> ? data : {}, '無法取得尖峰吐氣流量可用月份', authenticated: true);
+    return ApiClient.failure(statusCode, data, '無法取得報告下載連結', authenticated: true);
   }
 
-  static Future<ApiResult<List<AvailableMonth>>> getActAvailableMonths() async {
-    final (statusCode, data) = await ApiClient.getRaw('/act/available-months', authenticated: true);
+  // type: 0 = all modules, 1 = diary only, 2 = PEFR only, 3 = ACT only.
+  // Returns "YYYY-MM" strings.
+  static Future<ApiResult<List<String>>> getAvailableMonths(int type) async {
+    final (statusCode, data) = await ApiClient.send('GET', '/summary/list?type=$type', authenticated: true);
 
-    if (statusCode == 200 && data is List) {
-      return ApiResult.success(data.map((e) => AvailableMonth.fromJson(e as Map<String, dynamic>)).toList());
+    if (statusCode == 200) {
+      final months = (data['data'] as List<dynamic>? ?? []).map((m) => m as String).toList();
+      return ApiResult.success(months);
     }
 
-    return ApiClient.failure(statusCode, data is Map<String, dynamic> ? data : {}, '無法取得氣喘控制測驗可用月份', authenticated: true);
+    return ApiClient.failure(statusCode, data, '無法取得可用月份', authenticated: true);
   }
 
   static Future<ApiResult<MasterQuiz>> getMasterQuestions() async {

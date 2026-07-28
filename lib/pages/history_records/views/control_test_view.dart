@@ -16,7 +16,7 @@ class ControlTestView extends StatefulWidget {
 }
 
 class _ControlTestViewState extends State<ControlTestView> {
-  Map<String, HistoryDay?> monthResults = {};
+  Map<String, ActMonthSummary> monthResults = {};
   bool isLoading = true;
 
   @override
@@ -25,42 +25,21 @@ class _ControlTestViewState extends State<ControlTestView> {
     _loadHistory();
   }
 
-  @override
-  void didUpdateWidget(ControlTestView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.availableMonths != widget.availableMonths) {
-      _loadHistory();
-    }
-  }
-
+  // /act/history returns a rolling window of several months regardless of
+  // the requested target_date, so one call covers every month this view
+  // needs - no more per-month fetching.
   Future<void> _loadHistory() async {
     setState(() => isLoading = true);
-    final entries = await Future.wait(widget.availableMonths.map(_loadMonth));
+    final now = DateTime.now();
+    final targetDate = '${now.year}-${now.month.toString().padLeft(2, '0')}';
+    final result = await ApiService.getActHistory(targetDate);
     if (!mounted) return;
+
+    final months = result.success ? (result.data ?? []) : <ActMonthSummary>[];
     setState(() {
-      monthResults = Map.fromEntries(entries);
+      monthResults = {for (final m in months) m.month.replaceAll('-', '/'): m};
       isLoading = false;
     });
-  }
-
-  Future<MapEntry<String, HistoryDay?>> _loadMonth(String month) async {
-    final parts = month.split('/');
-    final year = parts.length == 2 ? int.tryParse(parts[0]) : null;
-    final monthNum = parts.length == 2 ? int.tryParse(parts[1]) : null;
-    if (year == null || monthNum == null) {
-      return MapEntry(month, null);
-    }
-
-    final result = await ApiService.getActHistory(year: year, month: monthNum);
-    final days = result.success ? (result.data ?? []) : <HistoryDay>[];
-
-    HistoryDay? completed;
-    for (final day in days) {
-      if (day.isCompleted && (completed == null || day.date.isAfter(completed.date))) {
-        completed = day;
-      }
-    }
-    return MapEntry(month, completed);
   }
 
   @override
@@ -78,13 +57,14 @@ class _ControlTestViewState extends State<ControlTestView> {
         final monthParts = month.split('/');
         final monthDisplay = monthParts.length == 2 ? '${monthParts[1]}月' : month;
         final entry = monthResults[month];
-        final isCompleted = entry != null;
+        final isCompleted = entry?.isCompleted ?? false;
+        final recordDate = entry?.recordDate;
 
         return StatusContainer(
           title: '每月測驗：$monthDisplay',
           items: [
-            StatusItem(label: '自我評量', status: isCompleted ? '${entry.totalScore} 分' : '未完成'),
-            StatusItem(label: '量測時間', status: isCompleted ? '${entry.date.year}/${entry.date.month}/${entry.date.day}' : '無紀錄'),
+            StatusItem(label: '自我評量', status: isCompleted ? '${entry?.totalScore ?? 0} 分' : '未完成'),
+            StatusItem(label: '量測時間', status: recordDate != null ? '${recordDate.year}/${recordDate.month}/${recordDate.day}' : '無紀錄'),
           ],
           onPressed: () {},
           isComplete: isCompleted,

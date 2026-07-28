@@ -20,7 +20,10 @@ class ComprehensiveDataView extends StatelessWidget {
     required this.isLoading,
   });
 
-  static Widget buildBottomNavigation() {
+  static Widget buildBottomNavigation({
+    required VoidCallback onDownload,
+    required bool isDownloading,
+  }) {
     return Container(
       width: double.infinity,
       height: 140,
@@ -34,7 +37,8 @@ class ComprehensiveDataView extends StatelessWidget {
         children: [
           CustomButton(
             text: '下載報告',
-            onPressed: () {},
+            onPressed: onDownload,
+            isLoading: isDownloading,
             backgroundColor: AppColors.primaryGreen,
             foregroundColor: Colors.white,
             borderRadius: 4,
@@ -411,7 +415,7 @@ class ComprehensiveDataView extends StatelessWidget {
     return StatusContainer(
       title: '每月測驗：${summaryData['month'] ?? DateTime.now().month}月',
       items: [
-        StatusItem(label: '自我評量', status: isComplete ? '${summaryData['actScore'] ?? 0} 分' : '未完成'),
+        StatusItem(label: '自我評量', status: isComplete ? '${summaryData['actLatestScore'] ?? 0} 分' : '未完成'),
         StatusItem(label: '量測時間', status: summaryData['measurementDate'] ?? '無紀錄'),
       ],
       isComplete: isComplete,

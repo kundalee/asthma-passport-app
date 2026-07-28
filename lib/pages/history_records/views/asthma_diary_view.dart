@@ -81,7 +81,8 @@ class _AsthmaDiaryViewState extends State<AsthmaDiaryView> {
     setState(() {
       historyDays = days;
       dayStatus = {
-        for (final day in days) day.date.day: (day.isCompleted ? 1 : 0),
+        for (final day in days)
+          if (!day.date.isAfter(DateTime.now())) day.date.day: (day.isCompleted ? 1 : 0),
       };
       isLoading = false;
     });

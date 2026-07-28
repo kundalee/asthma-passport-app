@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../components/calendar_grid.dart';
 import '../../../components/status_container.dart';
-import '../../../models/peak_flow_models.dart';
+import '../../../models/history_models.dart';
 import '../../../services/api_service.dart';
 
 class PeakFlowView extends StatefulWidget {
@@ -19,7 +19,7 @@ class PeakFlowView extends StatefulWidget {
 class _PeakFlowViewState extends State<PeakFlowView> {
   late DateTime selectedDate;
   late DateTime currentMonth;
-  List<PeakFlowStatus> historyDays = [];
+  List<PeakFlowHistoryDay> historyDays = [];
   Map<int, int> dayStatus = {};
   bool isLoading = true;
 
@@ -77,22 +77,20 @@ class _PeakFlowViewState extends State<PeakFlowView> {
     setState(() => isLoading = true);
     final result = await ApiService.getPeakFlowHistory(year: currentMonth.year, month: currentMonth.month);
     if (!mounted) return;
-    final days = result.success ? (result.data ?? []) : <PeakFlowStatus>[];
+    final days = result.success ? (result.data ?? []) : <PeakFlowHistoryDay>[];
     setState(() {
       historyDays = days;
       dayStatus = {
         for (final day in days)
-          if (day.morning.isCompleted || day.night.isCompleted)
-            DateTime.parse(day.date).day: (day.morning.isCompleted && day.night.isCompleted ? 1 : 0),
+          if (!day.date.isAfter(DateTime.now())) day.date.day: (day.morningCompleted && day.eveningCompleted ? 1 : 0),
       };
       isLoading = false;
     });
   }
 
-  PeakFlowStatus? get _selectedDayEntry {
+  PeakFlowHistoryDay? get _selectedDayEntry {
     for (final day in historyDays) {
-      final date = DateTime.parse(day.date);
-      if (date.year == selectedDate.year && date.month == selectedDate.month && date.day == selectedDate.day) {
+      if (day.date.year == selectedDate.year && day.date.month == selectedDate.month && day.date.day == selectedDate.day) {
         return day;
       }
     }
@@ -125,17 +123,16 @@ class _PeakFlowViewState extends State<PeakFlowView> {
 
   Widget _buildDailyMeasurementSection() {
     final entry = _selectedDayEntry;
-    final morning = entry?.morning;
-    final night = entry?.night;
-    final isCompleted = (morning?.isCompleted ?? false) && (night?.isCompleted ?? false);
+    final morningCompleted = entry?.morningCompleted ?? false;
+    final eveningCompleted = entry?.eveningCompleted ?? false;
     return StatusContainer(
       title: '每日量測：${selectedDate.year}/${selectedDate.month}/${selectedDate.day}',
       items: [
-        StatusItem(label: '白天量測', status: morning?.isCompleted == true ? '完成' : '未完成'),
-        StatusItem(label: '夜晚量測', status: night?.isCompleted == true ? '完成' : '未完成'),
+        StatusItem(label: '白天量測', status: morningCompleted ? '完成' : '未完成'),
+        StatusItem(label: '夜晚量測', status: eveningCompleted ? '完成' : '未完成'),
       ],
       onPressed: () {},
-      isComplete: isCompleted,
+      isComplete: morningCompleted && eveningCompleted,
     );
   }
 }

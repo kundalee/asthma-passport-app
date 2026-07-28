@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
+import 'package:printing/printing.dart';
 import '../../components/app_page_container.dart';
 import '../../components/card_container.dart';
 import '../../components/custom_dropdown.dart';
 import '../../components/custom_tab_bar.dart';
-import '../../models/history_models.dart';
-import '../../models/peak_flow_models.dart';
 import '../../services/api_service.dart';
 import '../../theme/app_colors.dart';
 import 'views/comprehensive_data_view.dart';
@@ -23,12 +23,14 @@ class HistoryRecordsPage extends StatefulWidget {
 class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
   int selectedTabIndex = 0;
   String selectedMonth = '';
+  List<String> comprehensiveMonths = [];
   List<String> diaryMonths = [];
   List<String> peakFlowMonths = [];
   List<String> actMonths = [];
   Map<String, dynamic> summaryData = {};
   List<Map<String, dynamic>> chartData = [];
   bool isLoading = true;
+  bool isDownloadingReport = false;
 
   final List<String> tabs = [
     '綜合資料',
@@ -45,14 +47,6 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
     _loadAvailableMonths();
   }
 
-  // The 綜合資料 tab isn't tied to one data type, so its dropdown offers
-  // every month that has data in any category.
-  List<String> get _comprehensiveMonths {
-    final months = {...diaryMonths, ...peakFlowMonths, ...actMonths}.toList();
-    months.sort((a, b) => b.compareTo(a));
-    return months;
-  }
-
   List<String> _monthsForTab(int index) {
     switch (index) {
       case 1:
@@ -62,27 +56,31 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
       case 3:
         return actMonths;
       default:
-        return _comprehensiveMonths;
+        return comprehensiveMonths;
     }
   }
 
   Future<void> _loadAvailableMonths() async {
     try {
       final results = await Future.wait([
-        ApiService.getDiaryAvailableMonths(),
-        ApiService.getPeakFlowAvailableMonths(),
-        ApiService.getActAvailableMonths(),
+        ApiService.getAvailableMonths(0), // all modules
+        ApiService.getAvailableMonths(1), // diary
+        ApiService.getAvailableMonths(2), // pefr
+        ApiService.getAvailableMonths(3), // act
       ]);
 
-      final diary = results[0].success ? (results[0].data ?? []).map((m) => m.label).toList() : <String>[];
-      final peakFlow = results[1].success ? (results[1].data ?? []).map((m) => m.label).toList() : <String>[];
-      final act = results[2].success ? (results[2].data ?? []).map((m) => m.label).toList() : <String>[];
+      final comprehensive = results[0].success ? (results[0].data ?? []).map((m) => m.replaceAll('-', '/')).toList() : <String>[];
+      final diary = results[1].success ? (results[1].data ?? []).map((m) => m.replaceAll('-', '/')).toList() : <String>[];
+      final peakFlow = results[2].success ? (results[2].data ?? []).map((m) => m.replaceAll('-', '/')).toList() : <String>[];
+      final act = results[3].success ? (results[3].data ?? []).map((m) => m.replaceAll('-', '/')).toList() : <String>[];
+      comprehensive.sort((a, b) => b.compareTo(a));
       diary.sort((a, b) => b.compareTo(a));
       peakFlow.sort((a, b) => b.compareTo(a));
       act.sort((a, b) => b.compareTo(a));
 
       var justSelectedMonth = false;
       setState(() {
+        comprehensiveMonths = comprehensive;
         diaryMonths = diary;
         peakFlowMonths = peakFlow;
         actMonths = act;
@@ -111,73 +109,37 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
 
     setState(() => isLoading = true);
     try {
-      final diaryFuture = ApiService.getDiaryHistory(year: year, month: month);
-      final peakFlowFuture = ApiService.getPeakFlowHistory(year: year, month: month);
-      final actFuture = ApiService.getActHistory(year: year, month: month);
+      final result = await ApiService.getDashboardSummary(selectedMonth);
+      if (!mounted) return;
 
-      final diaryResult = await diaryFuture;
-      final peakFlowResult = await peakFlowFuture;
-      final actResult = await actFuture;
-
-      final completedDiaryDays = (diaryResult.success ? (diaryResult.data ?? []) : <HistoryDay>[]).where((d) => d.isCompleted).toList();
-      final peakFlowDays = peakFlowResult.success ? (peakFlowResult.data ?? <PeakFlowStatus>[]) : <PeakFlowStatus>[];
-      final actDays = actResult.success ? (actResult.data ?? <HistoryDay>[]) : <HistoryDay>[];
-
-      final recordedDays = completedDiaryDays.length;
-      final averageScore = completedDiaryDays.isEmpty
-          ? 0
-          : (completedDiaryDays.map((d) => d.totalScore).reduce((a, b) => a + b) / completedDiaryDays.length).round();
-
-      final pefrValues = <double>[];
-      int greenDays = 0, yellowDays = 0, redDays = 0;
-      for (final day in peakFlowDays) {
-        if (day.morning.value != null) pefrValues.add(day.morning.value!);
-        if (day.night.value != null) pefrValues.add(day.night.value!);
-
-        final statuses = [day.morning.statusColor, day.night.statusColor].whereType<int>();
-        if (statuses.isEmpty) continue;
-        switch (statuses.reduce((a, b) => a > b ? a : b)) {
-          case 0:
-            greenDays++;
-          case 1:
-            yellowDays++;
-          default:
-            redDays++;
-        }
+      if (!result.success || result.data == null) {
+        setState(() => isLoading = false);
+        return;
       }
-      final pefrAverage = pefrValues.isEmpty ? 0 : (pefrValues.reduce((a, b) => a + b) / pefrValues.length).round();
-
-      HistoryDay? latestAct;
-      for (final day in actDays) {
-        if (day.isCompleted && (latestAct == null || day.date.isAfter(latestAct.date))) {
-          latestAct = day;
-        }
-      }
+      final summary = result.data!;
 
       // Dense one-point-per-day series (0 for days without a completed
       // entry): the chart painter indexes points by day-of-month, so a
       // sparse list misaligns the x-axis and divides by zero when there's
       // only one recorded day.
-      final scoreByDay = {for (final d in completedDiaryDays) d.date.day: d.totalScore};
+      final scoreByDay = {for (final (day, score) in summary.symptomTrend) day: score};
       final daysInMonth = DateTime(year, month + 1, 0).day;
       final chart = [
         for (int day = 1; day <= daysInMonth; day++) {'day': day, 'score': scoreByDay[day] ?? 0},
       ];
 
-      if (!mounted) return;
       setState(() {
         summaryData = {
-          'recordedDays': recordedDays,
-          'averageScore': averageScore,
-          'pefrAverage': pefrAverage,
-          'actScore': latestAct?.totalScore ?? 0,
-          'actCompleted': latestAct != null,
-          'measurementDate': latestAct != null
-              ? '${latestAct.date.year}/${latestAct.date.month.toString().padLeft(2, '0')}/${latestAct.date.day.toString().padLeft(2, '0')}'
-              : '無紀錄',
-          'greenDays': greenDays,
-          'yellowDays': yellowDays,
-          'redDays': redDays,
+          'recordedDays': summary.days,
+          'averageScore': summary.diaryAvg.round(),
+          'pefrAverage': summary.pefrAvg,
+          'actScore': summary.actAvg,
+          'actCompleted': summary.actLatestScore != null,
+          'actLatestScore': summary.actLatestScore ?? 0,
+          'measurementDate': summary.actLatestDate ?? '無紀錄',
+          'greenDays': summary.greenDays,
+          'yellowDays': summary.yellowDays,
+          'redDays': summary.redDays,
           'month': month,
         };
         chartData = chart;
@@ -186,6 +148,26 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
     } catch (e) {
       if (!mounted) return;
       setState(() => isLoading = false);
+    }
+  }
+
+  Future<void> _downloadReport() async {
+    setState(() => isDownloadingReport = true);
+    try {
+      final result = await ApiService.getSummaryDownloadUrl(selectedMonth);
+      if (!mounted) return;
+
+      if (!result.success || result.data == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message ?? '無法取得報告下載連結')),
+        );
+        return;
+      }
+
+      final response = await http.get(Uri.parse(result.data!));
+      await Printing.sharePdf(bytes: response.bodyBytes, filename: 'health_summary_report.pdf');
+    } finally {
+      if (mounted) setState(() => isDownloadingReport = false);
     }
   }
 
@@ -348,7 +330,10 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
   Widget _buildBottomNavigation() {
     switch (selectedTabIndex) {
       case 0:
-        return ComprehensiveDataView.buildBottomNavigation();
+        return ComprehensiveDataView.buildBottomNavigation(
+          onDownload: _downloadReport,
+          isDownloading: isDownloadingReport,
+        );
       default:
         return const SizedBox.shrink();
     }
