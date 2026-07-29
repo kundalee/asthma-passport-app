@@ -27,28 +27,17 @@ class AuthService {
     return ApiClient.failure(statusCode, data, '登入失敗');
   }
 
-  static Future<ApiResult<LoginResult>> loginWithGoogle(String idToken) async {
+  // Google and LINE both authenticate through the same unified endpoint,
+  // which takes either provider's token and figures out which one it is.
+  static Future<ApiResult<LoginResult>> loginWithGoogle(String idToken) => _authenticate(idToken);
+
+  static Future<ApiResult<LoginResult>> loginWithLine(String idToken) => _authenticate(idToken);
+
+  static Future<ApiResult<LoginResult>> _authenticate(String token) async {
     final (statusCode, data) = await ApiClient.send(
       'POST',
-      '/user/login/google',
-      body: {'id_token': idToken},
-    );
-
-    if (statusCode == 200) {
-      final result = LoginResult.fromJson(data);
-      await saveToken(result.token);
-      await saveUserName(result.userName);
-      return ApiResult.success(result);
-    }
-
-    return ApiClient.failure(statusCode, data, '登入失敗');
-  }
-
-  static Future<ApiResult<LoginResult>> loginWithLine(String idToken) async {
-    final (statusCode, data) = await ApiClient.send(
-      'POST',
-      '/user/login/line',
-      body: {'id_token': idToken},
+      '/user/auth',
+      body: {'token': token},
     );
 
     if (statusCode == 200) {
