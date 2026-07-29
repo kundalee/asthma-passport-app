@@ -46,7 +46,7 @@ class ApiService {
       authenticated: true,
     );
 
-    if (statusCode == 201) {
+    if (statusCode == 200) {
       return ApiResult.success(ContactEntry.fromJson(data['data']));
     }
 
@@ -111,7 +111,7 @@ class ApiService {
       authenticated: true,
     );
 
-    if (statusCode == 201) {
+    if (statusCode == 200) {
       return ApiResult.success(AllergenEntry.fromJson(data['data']));
     }
 
@@ -170,7 +170,7 @@ class ApiService {
       authenticated: true,
     );
 
-    if (statusCode == 201) {
+    if (statusCode == 200) {
       return ApiResult.success(MedicationEntry.fromJson(data['data']));
     }
 
