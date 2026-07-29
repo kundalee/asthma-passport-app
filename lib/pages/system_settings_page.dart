@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_colors.dart';
 import '../components/app_page_container.dart';
 import '../components/card_container.dart';
@@ -114,6 +115,14 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
   void _handleSettingTap(int index) {
     if (index == 0) {
       Geolocator.openAppSettings();
+      return;
+    }
+    if (index == 3) {
+      launchUrl(Uri.parse('https://apisvc.cch.org.tw/website/asthma'), mode: LaunchMode.externalApplication);
+      return;
+    }
+    if (index == 4) {
+      Navigator.of(context).pushNamed('/about');
       return;
     }
 

@@ -13,6 +13,7 @@ import 'pages/asthma_knowledge/asthma_knowledge_page.dart';
 import 'pages/history_records/history_records_page.dart';
 import 'pages/asthma_master/asthma_master_page.dart';
 import 'pages/system_settings_page.dart';
+import 'pages/about_page.dart';
 import 'pages/emergency_contact/emergency_contact_page.dart';
 import 'services/navigation_service.dart';
 import 'theme/app_colors.dart';
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
         '/asthma-master': (context) => const AsthmaMasterPage(),
         '/system-settings': (context) => const SystemSettingsPage(),
         '/emergency-contact': (context) => const EmergencyContactPage(),
+        '/about': (context) => const AboutPage(),
       },
     );
   }

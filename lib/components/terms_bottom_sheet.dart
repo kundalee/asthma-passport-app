@@ -6,14 +6,18 @@ import 'custom_button.dart';
 class TermsBottomSheet extends StatefulWidget {
   final String title;
   final String checkboxText;
-  final VoidCallback onConfirm;
+  final VoidCallback? onConfirm;
+  // When true, just displays the terms text with no agree-checkbox or
+  // confirm button (e.g. viewing from settings, not accepting at login).
+  final bool readOnly;
 
   const TermsBottomSheet({
     super.key,
     required this.title,
     this.checkboxText = '本人已詳閱前述注意事項，並同意以上事項',
-    required this.onConfirm,
-  });
+    this.onConfirm,
+    this.readOnly = false,
+  }) : assert(readOnly || onConfirm != null, 'onConfirm is required unless readOnly is true');
 
   @override
   State<TermsBottomSheet> createState() => _TermsBottomSheetState();
@@ -81,51 +85,53 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                       height: 1.625,
                     ),
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 12,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() => _isAgreed = !_isAgreed);
-                        },
-                        child: Container(
-                          width: 24,
-                          height: 24,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: _isAgreed ? AppColors.primaryGreen : Colors.black,
-                              width: 2,
+                  if (!widget.readOnly) ...[
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 12,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() => _isAgreed = !_isAgreed);
+                          },
+                          child: Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: _isAgreed ? AppColors.primaryGreen : Colors.black,
+                                width: 2,
+                              ),
+                            ),
+                            child: _isAgreed
+                              ? SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: SvgPicture.asset('assets/icons/check-fill.svg'),
+                                )
+                              : null,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            widget.checkboxText,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                          child: _isAgreed
-                            ? SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: SvgPicture.asset('assets/icons/check-fill.svg'),
-                              )
-                            : null,
                         ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          widget.checkboxText,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  CustomButton(
-                    text: '確認',
-                    onPressed: _isAgreed ? widget.onConfirm : () {},
-                    backgroundColor: _isAgreed ? AppColors.primaryGreen : AppColors.richWhite,
-                    height: 48,
-                  ),
+                      ],
+                    ),
+                    CustomButton(
+                      text: '確認',
+                      onPressed: _isAgreed ? widget.onConfirm! : () {},
+                      backgroundColor: _isAgreed ? AppColors.primaryGreen : AppColors.richWhite,
+                      height: 48,
+                    ),
+                  ],
                   const SizedBox(height: 32),
                 ],
               ),
