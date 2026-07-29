@@ -14,7 +14,9 @@ import 'views/peak_flow_view.dart';
 import 'views/control_test_view.dart';
 
 class HistoryRecordsPage extends StatefulWidget {
-  const HistoryRecordsPage({super.key});
+  final int initialTabIndex;
+
+  const HistoryRecordsPage({super.key, this.initialTabIndex = 0});
 
   @override
   State<HistoryRecordsPage> createState() => _HistoryRecordsPageState();
@@ -42,6 +44,7 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
   @override
   void initState() {
     super.initState();
+    selectedTabIndex = widget.initialTabIndex;
     // _loadAvailableMonths() triggers the first _loadComprehensiveData() call
     // once it resolves selectedMonth, since a month is required to fetch it.
     _loadAvailableMonths();
