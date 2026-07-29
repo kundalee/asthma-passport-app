@@ -72,7 +72,10 @@ class CalendarGrid extends StatelessWidget {
           DateTime.now().month == currentMonth.month &&
           DateTime.now().year == currentMonth.year;
 
-      final status = dayStatus[day];
+      final rawStatus = dayStatus[day];
+      // Today isn't "over" yet, so an incomplete (0) status shouldn't read
+      // as a missed day the way a past incomplete day would.
+      final status = (rawStatus == 0 && isToday) ? null : rawStatus;
 
       dayWidgets.add(
         GestureDetector(

@@ -20,6 +20,7 @@ class StatusContainer extends StatelessWidget {
   final String? title;
   final bool isComplete;
   final bool withCard;
+  final bool showButton;
 
   const StatusContainer({
     super.key,
@@ -28,6 +29,7 @@ class StatusContainer extends StatelessWidget {
     this.title,
     this.isComplete = false,
     this.withCard = true,
+    this.showButton = true,
   });
 
   @override
@@ -72,14 +74,15 @@ class StatusContainer extends StatelessWidget {
               ],
             ),
           ),
-          CustomButton(
-            text: isComplete ? '查看測驗結果' : '開始紀錄',
-            onPressed: onPressed,
-            backgroundColor: isComplete ? AppColors.sportyBlue : AppColors.primaryGreen,
-            foregroundColor: Colors.white,
-            borderRadius: 4,
-            height: 37,
-          ),
+          if (showButton)
+            CustomButton(
+              text: isComplete ? '查看測驗結果' : '開始紀錄',
+              onPressed: onPressed,
+              backgroundColor: isComplete ? AppColors.sportyBlue : AppColors.primaryGreen,
+              foregroundColor: Colors.white,
+              borderRadius: 4,
+              height: 37,
+            ),
         ],
     );
     if (withCard) {

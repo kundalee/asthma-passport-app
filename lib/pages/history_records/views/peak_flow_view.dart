@@ -97,6 +97,11 @@ class _PeakFlowViewState extends State<PeakFlowView> {
     return null;
   }
 
+  bool get _isSelectedToday {
+    final now = DateTime.now();
+    return selectedDate.year == now.year && selectedDate.month == now.month && selectedDate.day == now.day;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -131,8 +136,16 @@ class _PeakFlowViewState extends State<PeakFlowView> {
         StatusItem(label: '白天量測', status: morningCompleted ? '完成' : '未完成'),
         StatusItem(label: '夜晚量測', status: eveningCompleted ? '完成' : '未完成'),
       ],
-      onPressed: () {},
+      onPressed: () {
+        // Clear back to home first, matching how the home page itself
+        // enters this route - otherwise this history view stays buried in
+        // the stack under the fresh home page the peak-flow flow ends on.
+        // That also means this widget is disposed immediately, so there's
+        // no point awaiting the result to refresh afterward.
+        Navigator.of(context).pushNamedAndRemoveUntil('/peak-flow', (route) => route.isFirst);
+      },
       isComplete: morningCompleted && eveningCompleted,
+      showButton: _isSelectedToday,
     );
   }
 }

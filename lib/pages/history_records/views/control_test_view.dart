@@ -59,6 +59,8 @@ class _ControlTestViewState extends State<ControlTestView> {
         final entry = monthResults[month];
         final isCompleted = entry?.isCompleted ?? false;
         final recordDate = entry?.recordDate;
+        final now = DateTime.now();
+        final isCurrentMonth = month == '${now.year}/${now.month.toString().padLeft(2, '0')}';
 
         return StatusContainer(
           title: '每月測驗：$monthDisplay',
@@ -66,8 +68,16 @@ class _ControlTestViewState extends State<ControlTestView> {
             StatusItem(label: '自我評量', status: isCompleted ? '${entry?.totalScore ?? 0} 分' : '未完成'),
             StatusItem(label: '量測時間', status: recordDate != null ? '${recordDate.year}/${recordDate.month}/${recordDate.day}' : '無紀錄'),
           ],
-          onPressed: () {},
+          onPressed: () {
+            // Clear back to home first, matching how the home page itself
+            // enters this route - otherwise this history view stays buried
+            // in the stack under the fresh home page the test flow ends on.
+            // That also means this widget is disposed immediately, so
+            // there's no point awaiting the result to refresh afterward.
+            Navigator.of(context).pushNamedAndRemoveUntil('/asthma-control-test', (route) => route.isFirst);
+          },
           isComplete: isCompleted,
+          showButton: isCurrentMonth,
         );
       },
     );

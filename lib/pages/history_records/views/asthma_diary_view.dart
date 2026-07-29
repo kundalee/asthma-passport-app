@@ -97,6 +97,11 @@ class _AsthmaDiaryViewState extends State<AsthmaDiaryView> {
     return null;
   }
 
+  bool get _isSelectedToday {
+    final now = DateTime.now();
+    return selectedDate.year == now.year && selectedDate.month == now.month && selectedDate.day == now.day;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -130,8 +135,16 @@ class _AsthmaDiaryViewState extends State<AsthmaDiaryView> {
         StatusItem(label: '自我評量', status: isCompleted ? '完成' : '未完成'),
         StatusItem(label: '量測時間', status: isCompleted ? '${entry!.date.year}/${entry.date.month}/${entry.date.day}' : '無紀錄'),
       ],
-      onPressed: () {},
+      onPressed: () {
+        // Clear back to home first, matching how the home page itself
+        // enters this route - otherwise this history view stays buried in
+        // the stack under the fresh home page the diary flow ends on. That
+        // also means this widget is disposed immediately, so there's no
+        // point awaiting the result to refresh afterward.
+        Navigator.of(context).pushNamedAndRemoveUntil('/asthma-diary', (route) => route.isFirst);
+      },
       isComplete: isCompleted,
+      showButton: _isSelectedToday,
     );
   }
 }

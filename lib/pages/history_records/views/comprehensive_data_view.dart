@@ -420,6 +420,7 @@ class ComprehensiveDataView extends StatelessWidget {
       ],
       isComplete: isComplete,
       onPressed: () {},
+      showButton: false,
     );
   }
 }
