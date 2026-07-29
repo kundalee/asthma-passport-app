@@ -343,7 +343,7 @@ class _NewPlanViewState extends State<NewPlanView> {
                   width: double.infinity,
                   child: CustomButton(
                     text: '查看常月份歷史紀錄',
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context).pushNamed('/history-records'),
                     borderRadius: 4,
                     iconAlignment: MainAxisAlignment.start,
                     gradient: const LinearGradient(
