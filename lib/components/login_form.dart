@@ -9,6 +9,7 @@ import 'custom_button.dart';
 import 'terms_bottom_sheet.dart';
 import '../services/auth_service.dart';
 import '../pages/home_page.dart';
+import '../config/google_auth_config.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -79,12 +80,25 @@ class _LoginFormState extends State<LoginForm> {
     setState(() => isGoogleLoading = true);
 
     try {
-      final account = await GoogleSignIn(scopes: ['email']).signIn();
-      if (account == null) return; // user cancelled
+      // serverClientId is required on Android to receive a non-null idToken
+      // (the Android Sign-In SDK only mints one when a web-application-type
+      // client is specified as the audience). Doesn't affect iOS, whose
+      // idToken audience is always its own iOS client ID regardless.
+      final account = await GoogleSignIn(
+        scopes: ['email'],
+        serverClientId: GoogleAuthConfig.serverClientId,
+      ).signIn();
+      if (account == null) {
+        // Also returned (instead of throwing) when Google Play Services is
+        // missing/outdated/unreachable and can't resolve silently.
+        debugPrint('Google sign-in returned null account (user cancelled, or Play Services unavailable)');
+        return;
+      }
 
       final auth = await account.authentication;
       final idToken = auth.idToken;
       if (idToken == null) {
+        debugPrint('Google sign-in succeeded but idToken is null (email=${account.email})');
         _showError('登入失敗，請稍後再試');
         return;
       }
@@ -102,6 +116,9 @@ class _LoginFormState extends State<LoginForm> {
       } else {
         _showError(result.message ?? '登入失敗，請稍後再試');
       }
+    } on PlatformException catch (e) {
+      debugPrint('Google sign-in failed: code=${e.code}, message=${e.message}, details=${e.details}');
+      _showError('登入失敗，請稍後再試');
     } finally {
       if (mounted) {
         setState(() => isGoogleLoading = false);
