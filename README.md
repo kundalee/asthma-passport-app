@@ -15,8 +15,8 @@ The app has two build flavors, `prod` and `staging`, each with its own applicati
 
 | Flavor    | App name                     | Android application ID                 | iOS bundle ID                          |
 |-----------|-------------------------------|-----------------------------------------|------------------------------------------|
-| `prod`    | Asthma Passport               | `com.example.asthma_passport_app`        | `com.example.asthmaPassportApp`          |
-| `staging` | Asthma Passport (Staging)      | `com.example.asthma_passport_app.staging`| `com.example.asthmaPassportApp.staging`  |
+| `prod`    | 氣喘健康護照                   | `com.example.asthma_passport_app`        | `com.example.asthmaPassportApp`          |
+| `staging` | 氣喘健康護照 (Staging)          | `com.example.asthma_passport_app.staging`| `com.example.asthmaPassportApp.staging`  |
 
 The flavor also drives the API base URL configured in [`lib/config/api_config.dart`](lib/config/api_config.dart) — no separate flag needed.
 

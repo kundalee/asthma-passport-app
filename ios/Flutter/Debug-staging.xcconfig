@@ -1,3 +1,3 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug-staging.xcconfig"
 #include "Generated.xcconfig"
-APP_DISPLAY_NAME = Asthma Passport (Staging)
+APP_DISPLAY_NAME = 氣喘健康護照 (Staging)
