@@ -44,6 +44,7 @@ class CustomDropdown extends StatefulWidget {
 
 class _CustomDropdownState extends State<CustomDropdown> {
   OverlayEntry? _currentOverlay;
+  final LayerLink _layerLink = LayerLink();
 
   @override
   void dispose() {
@@ -61,71 +62,85 @@ class _CustomDropdownState extends State<CustomDropdown> {
     }
 
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
-    final Offset offset = renderBox.localToGlobal(Offset.zero);
     final Size size = renderBox.size;
+    final int visibleItemCount = math.min(widget.items.length, 5);
 
     late final OverlayEntry overlayEntry;
     overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        left: offset.dx,
-        top: offset.dy + size.height,
-        width: size.width,
-        child: Material(
-          elevation: 0,
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border(
-                left: BorderSide(color: widget.borderColor, width: widget.borderWidth),
-                right: BorderSide(color: widget.borderColor, width: widget.borderWidth),
-                bottom: BorderSide(color: widget.borderColor, width: widget.borderWidth),
+      builder: (context) => CompositedTransformFollower(
+        link: _layerLink,
+        showWhenUnlinked: false,
+        offset: Offset(0, size.height),
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            elevation: 0,
+            child: SizedBox(
+              width: size.width,
+              child: Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: BorderSide(
+                        color: widget.borderColor, width: widget.borderWidth),
+                    right: BorderSide(
+                        color: widget.borderColor, width: widget.borderWidth),
+                    bottom: BorderSide(
+                        color: widget.borderColor, width: widget.borderWidth),
+                  ),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(widget.borderRadius),
+                    bottomRight: Radius.circular(widget.borderRadius),
+                  ),
+                  color: widget.backgroundColor,
+                ),
+                child: ConstrainedBox(
+                  constraints:
+                      BoxConstraints(maxHeight: size.height * visibleItemCount),
+                  child: ListView(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    children: [
+                      ...widget.items.asMap().entries.map((entry) {
+                        final item = entry.value;
+                        final isLast = entry.key == widget.items.length - 1;
+                        return GestureDetector(
+                          onTap: () {
+                            widget.onChanged(item);
+                            overlayEntry.remove();
+                            setState(() {
+                              _currentOverlay = null;
+                            });
+                          },
+                          behavior: HitTestBehavior.opaque,
+                          child: Container(
+                            width: double.infinity,
+                            height: size.height,
+                            decoration: BoxDecoration(
+                              color: widget.backgroundColor,
+                              border: !isLast
+                                  ? Border(
+                                      bottom: BorderSide(
+                                        color: widget.borderColor,
+                                        width: widget.borderWidth,
+                                      ),
+                                    )
+                                  : null,
+                            ),
+                            child: Center(
+                              child: Text(
+                                item,
+                                textAlign: TextAlign.center,
+                                style: widget.textStyle,
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                ),
               ),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(widget.borderRadius),
-                bottomRight: Radius.circular(widget.borderRadius),
-              ),
-              color: widget.backgroundColor,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...widget.items.asMap().entries.map((entry) {
-                  final item = entry.value;
-                  final isLast = entry.key == widget.items.length - 1;
-                  return GestureDetector(
-                    onTap: () {
-                      widget.onChanged(item);
-                      overlayEntry.remove();
-                      setState(() {
-                        _currentOverlay = null;
-                      });
-                    },
-                    behavior: HitTestBehavior.opaque,
-                    child: Container(
-                      width: double.infinity,
-                      height: size.height,
-                      decoration: BoxDecoration(
-                        color: widget.backgroundColor,
-                        border: !isLast
-                            ? Border(
-                                bottom: BorderSide(
-                                  color: widget.borderColor,
-                                  width: widget.borderWidth,
-                                ),
-                              )
-                            : null,
-                      ),
-                      child: Center(
-                        child: Text(
-                          item,
-                          textAlign: TextAlign.center,
-                          style: widget.textStyle,
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-              ],
             ),
           ),
         ),
@@ -143,43 +158,48 @@ class _CustomDropdownState extends State<CustomDropdown> {
     final bool isOverlayOpen = _currentOverlay != null;
 
     return Builder(
-      builder: (context) => GestureDetector(
-        onTap: () {
-          _showDropdownOverlay(context);
-        },
-        child: Container(
-          width: double.infinity,
-          height: widget.height,
-          decoration: BoxDecoration(
-            border: Border.all(color: widget.borderColor, width: widget.borderWidth),
-            borderRadius: isOverlayOpen
-                ? BorderRadius.only(
-                    topLeft: Radius.circular(widget.borderRadius),
-                    topRight: Radius.circular(widget.borderRadius),
-                  )
-                : BorderRadius.circular(widget.borderRadius),
-            color: widget.backgroundColor,
-          ),
-          padding: widget.padding,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  widget.value ?? widget.placeholder,
-                  style: widget.textStyle,
+      builder: (context) => CompositedTransformTarget(
+        link: _layerLink,
+        child: GestureDetector(
+          onTap: () {
+            _showDropdownOverlay(context);
+          },
+          child: Container(
+            width: double.infinity,
+            height: widget.height,
+            decoration: BoxDecoration(
+              border: Border.all(
+                  color: widget.borderColor, width: widget.borderWidth),
+              borderRadius: isOverlayOpen
+                  ? BorderRadius.only(
+                      topLeft: Radius.circular(widget.borderRadius),
+                      topRight: Radius.circular(widget.borderRadius),
+                    )
+                  : BorderRadius.circular(widget.borderRadius),
+              color: widget.backgroundColor,
+            ),
+            padding: widget.padding,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.value ?? widget.placeholder,
+                    style: widget.textStyle,
+                  ),
                 ),
-              ),
-              Transform.rotate(
-                angle: isOverlayOpen ? math.pi : 0,
-                child: SvgPicture.asset(
-                  'assets/icons/arrow-down.svg',
-                  width: 24,
-                  height: 24,
-                  colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                Transform.rotate(
+                  angle: isOverlayOpen ? math.pi : 0,
+                  child: SvgPicture.asset(
+                    'assets/icons/arrow-down.svg',
+                    width: 24,
+                    height: 24,
+                    colorFilter:
+                        const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
