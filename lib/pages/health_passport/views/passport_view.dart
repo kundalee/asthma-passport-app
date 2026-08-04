@@ -152,9 +152,17 @@ class HealthPassportView extends StatelessWidget {
                   border: Border.all(color: AppColors.brown, width: 3),
                   borderRadius: BorderRadius.circular(8),
                 ),
+                clipBehavior: Clip.antiAlias,
                 child: Container(
                   color: AppColors.sweetGrey,
-                  child: const Icon(Icons.person, size: 60, color: Colors.grey),
+                  child: info.avatarUrl.startsWith('http')
+                      ? Image.network(
+                          info.avatarUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Icon(Icons.person, size: 60, color: Colors.grey),
+                        )
+                      : const Icon(Icons.person, size: 60, color: Colors.grey),
                 ),
               ),
               Expanded(

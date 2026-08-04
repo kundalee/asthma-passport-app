@@ -4,6 +4,7 @@ class PassportInfo {
   final String sex;
   final String age;
   final String birthday;
+  final String avatarUrl;
 
   const PassportInfo({
     required this.name,
@@ -11,6 +12,7 @@ class PassportInfo {
     required this.sex,
     required this.age,
     required this.birthday,
+    required this.avatarUrl,
   });
 
   factory PassportInfo.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class PassportInfo {
       sex: json['sex'] ?? '未填寫',
       age: json['age']?.toString() ?? '-',
       birthday: json['birthday'] ?? '未填寫',
+      avatarUrl: json['avatar_url'] ?? '',
     );
   }
 }
