@@ -219,13 +219,18 @@ class ApiService {
 
     final isDiaryDone = statusCode == 200 && data['diary_completed'] == true;
     final isPeakFlowDone = statusCode == 200 && data['pefr_completed'] == true;
-    final isActDone = statusCode == 200 && data['act_completed'] == true;
 
-    return [
+    final tests = [
       {'id': 1, 'name': '氣喘日記', 'status': isDiaryDone ? 1 : 0},
       {'id': 2, 'name': '尖峰吐氣流量', 'status': isPeakFlowDone ? 1 : 0},
-      {'id': 3, 'name': '氣喘控制測驗', 'status': isActDone ? 1 : 0},
     ];
+
+    if (statusCode == 200 && data.containsKey('act_completed')) {
+      final isActDone = data['act_completed'] == true;
+      tests.add({'id': 3, 'name': '氣喘控制測驗', 'status': isActDone ? 1 : 0});
+    }
+
+    return tests;
   }
 
   static Future<ApiResult<PassportInfo>> getPassportInfo() async {
