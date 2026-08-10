@@ -132,7 +132,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
                     width: double.infinity,
                     child: CustomButton(
                       text: '完成紀錄',
-                      onPressed: _saveDiary,
+                      onPressed: selectedAnswers.every((answer) => answer != null) ? _saveDiary : null,
                       backgroundColor: AppColors.primaryGreen,
                       padding: const EdgeInsets.all(12),
                       borderRadius: 4,

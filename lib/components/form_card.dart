@@ -201,7 +201,7 @@ class _FormCardState extends State<FormCard> {
                     });
                   }
                 }
-              : () {},
+              : null,
           foregroundColor: Colors.white,
           backgroundColor: AppColors.primaryGreen,
           height: 37,
@@ -215,7 +215,7 @@ class _FormCardState extends State<FormCard> {
                     currentStep--;
                   });
                 }
-              : () {},
+              : null,
           foregroundColor: Colors.black,
           backgroundColor: Colors.white,
           border: BorderSide(color: AppColors.whiteMarble, width: 1),

@@ -749,7 +749,7 @@ class _NewPlanViewState extends State<NewPlanView> {
                   width: double.infinity,
                   child: CustomButton(
                     text: '返回修改',
-                    onPressed: isSaving ? () {} : () => _setShowPreview(false),
+                    onPressed: isSaving ? null : () => _setShowPreview(false),
                     backgroundColor: AppColors.primaryRed,
                     padding: const EdgeInsets.all(12),
                     borderRadius: 4,

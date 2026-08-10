@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Widget? icon;
   final MainAxisAlignment iconAlignment;
   final Color backgroundColor;
@@ -52,26 +52,30 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final radius = BorderRadius.circular(borderRadius);
-    return Material(
-      color: Colors.transparent,
-      borderRadius: radius,
-      child: Ink(
-        decoration: BoxDecoration(
-          color: gradient == null ? backgroundColor : null,
-          gradient: gradient,
-          borderRadius: radius,
-          border: border != null ? Border.fromBorderSide(border!) : null,
-        ),
-        child: InkWell(
-          onTap: isLoading ? null : onPressed,
-          borderRadius: radius,
-          child: Container(
-            constraints: BoxConstraints(
-              minHeight: height ?? 0,
-              minWidth: height != null ? double.infinity : 0,
+    final isDisabled = onPressed == null;
+    return Opacity(
+      opacity: isDisabled ? 0.5 : 1.0,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: radius,
+        child: Ink(
+          decoration: BoxDecoration(
+            color: gradient == null ? backgroundColor : null,
+            gradient: gradient,
+            borderRadius: radius,
+            border: border != null ? Border.fromBorderSide(border!) : null,
+          ),
+          child: InkWell(
+            onTap: isLoading || isDisabled ? null : onPressed,
+            borderRadius: radius,
+            child: Container(
+              constraints: BoxConstraints(
+                minHeight: height ?? 0,
+                minWidth: height != null ? double.infinity : 0,
+              ),
+              padding: height != null ? EdgeInsets.zero : padding,
+              child: Center(child: _buildChild()),
             ),
-            padding: height != null ? EdgeInsets.zero : padding,
-            child: Center(child: _buildChild()),
           ),
         ),
       ),
