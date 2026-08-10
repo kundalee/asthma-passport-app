@@ -7,7 +7,6 @@ import '../services/auth_service.dart';
 import '../services/location_service.dart';
 import '../components/app_page_container.dart';
 import '../components/custom_dialog.dart';
-import 'history_records/history_records_page.dart';
 
 class HomePage extends StatefulWidget {
   final bool showFirstLoginDialog;
@@ -121,20 +120,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _handleTestItemTap(String testName, bool isDone) async {
-    if (isDone) {
-      final historyTabIndex = switch (testName) {
-        '氣喘日記' => 1,
-        '尖峰吐氣流量' => 2,
-        '氣喘控制測驗' => 3,
-        _ => 0,
-      };
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => HistoryRecordsPage(initialTabIndex: historyTabIndex)),
-      );
-      return;
-    }
-
+  Future<void> _handleTestItemTap(String testName) async {
     if (testName == '氣喘日記') {
       await Navigator.of(context).pushNamed('/asthma-diary');
     } else if (testName == '尖峰吐氣流量') {
@@ -429,7 +415,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               todayTests[index]['name'] ?? '',
               todayTests[index]['icon'] ?? testItems[index % 3]['icon'] ?? '',
               todayTests[index]['status'] ?? 0,
-              onTap: () => _handleTestItemTap(todayTests[index]['name'] ?? '', (todayTests[index]['status'] ?? 0) == 1),
+              onTap: () => _handleTestItemTap(todayTests[index]['name'] ?? ''),
             ),
           ),
         ],
