@@ -88,8 +88,9 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
         peakFlowMonths = peakFlow;
         actMonths = act;
         final months = _monthsForTab(selectedTabIndex);
-        if (months.isNotEmpty && selectedMonth.isEmpty) {
-          selectedMonth = months.first;
+        if (selectedMonth.isEmpty) {
+          final now = DateTime.now();
+          selectedMonth = months.isNotEmpty ? months.first : '${now.year}/${now.month.toString().padLeft(2, '0')}';
           justSelectedMonth = true;
         }
       });
