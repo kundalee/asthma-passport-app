@@ -67,6 +67,7 @@ class AppColors {
   static const Color mirage = Color(0xFF101828);
   static const Color hydrocarbon = Color(0xFF4A5565);
   static const Color primaryGray = Color(0xFF94A0A7); // Primary/Gray
+  static const Color secondaryGray2 = Color(0xFFC1CDD3); // Secondary/Gray-2
   static const Color midGray = Color(0xFF65737A);
   static const Color sharkGray = Color(0xFF6B7280);
   static const Color coolGray = Color(0xFF9CA3AF);

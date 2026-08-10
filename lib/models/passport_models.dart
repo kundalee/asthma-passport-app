@@ -61,7 +61,7 @@ class MedicationOptions {
 // /passport/history: the most recent record's status, as display-ready
 // text from the backend.
 class PassportHistorySummary {
-  final String statusLevel;
+  final String? statusLevel;
   final String? recordDate;
 
   const PassportHistorySummary({
@@ -71,7 +71,7 @@ class PassportHistorySummary {
 
   factory PassportHistorySummary.fromJson(Map<String, dynamic> json) {
     return PassportHistorySummary(
-      statusLevel: json['status_level'] ?? '尚未填寫',
+      statusLevel: json['status_level'] as String?,
       recordDate: json['record_date'] as String?,
     );
   }

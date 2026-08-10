@@ -89,41 +89,21 @@ class _HealthReportViewState extends State<HealthReportView> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('姓名', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71)),
-                      Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71)),
+                      const Text('姓名', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black, height: 1.71)),
+                      Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black, height: 1.71)),
                     ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('年齡', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71)),
-                      Text(age == '-' ? age : '$age 歲', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71)),
+                      const Text('年齡', style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black, height: 1.71)),
+                      Text(age == '-' ? age : '$age 歲', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black, height: 1.71)),
                     ],
                   ),
                 ],
               ),
             ),
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: AppColors.honeydew,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-              child: Column(
-                spacing: 8,
-                children: [
-                  const Text(
-                    '前一個月控制狀況',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.hydrocarbon, height: 1.71),
-                  ),
-                  Text(
-                    statusTitle,
-                    style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.primaryGreen, height: 1.0),
-                  ),
-                ],
-              ),
-            ),
+            _buildStatusCard(statusTitle),
             SizedBox(
               width: double.infinity,
               child: CustomButton(
@@ -156,6 +136,37 @@ class _HealthReportViewState extends State<HealthReportView> {
               ),
           ],
         ),
+    );
+  }
+
+  Widget _buildStatusCard(String? statusTitle) {
+    final hasData = statusTitle != null;
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: hasData ? AppColors.honeydew : AppColors.secondaryGray2,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      child: Column(
+        spacing: 8,
+        children: [
+          const Text(
+            '前一個月控制狀況',
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Colors.black, height: 1.71),
+          ),
+          Text(
+            hasData ? statusTitle : '無資料',
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: hasData ? AppColors.primaryGreen : Colors.black,
+              height: 1.0,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
