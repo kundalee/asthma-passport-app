@@ -51,16 +51,19 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
   }
 
   List<String> _monthsForTab(int index) {
-    switch (index) {
-      case 1:
-        return diaryMonths;
-      case 2:
-        return peakFlowMonths;
-      case 3:
-        return actMonths;
-      default:
-        return comprehensiveMonths;
-    }
+    final months = switch (index) {
+      1 => diaryMonths,
+      2 => peakFlowMonths,
+      3 => actMonths,
+      _ => comprehensiveMonths,
+    };
+    // The ACT tab manages its own rolling window and hides this dropdown,
+    // so it doesn't need the current month injected here.
+    if (index == 3) return months;
+
+    final now = DateTime.now();
+    final currentMonth = '${now.year}/${now.month.toString().padLeft(2, '0')}';
+    return months.contains(currentMonth) ? months : [currentMonth, ...months];
   }
 
   Future<void> _loadAvailableMonths() async {
