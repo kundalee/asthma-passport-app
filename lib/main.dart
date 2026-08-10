@@ -42,6 +42,17 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: MediaQuery.of(context).textScaler.clamp(
+              minScaleFactor: 1.0,
+              maxScaleFactor: 1.0,
+            ),
+          ),
+          child: child!,
+        );
+      },
       home: const HomePage(),
       routes: {
         '/login': (context) => const LoginPage(),
