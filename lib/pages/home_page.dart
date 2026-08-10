@@ -543,7 +543,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             ),
             Expanded(
               child: _buildFeatureButton(
-                '智能管家',
+                '智能問答',
                 'assets/icons/ai-robot.svg',
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
