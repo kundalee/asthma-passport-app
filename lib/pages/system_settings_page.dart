@@ -117,6 +117,14 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
       Geolocator.openAppSettings();
       return;
     }
+    if (index == 1) {
+      launchUrl(Uri.parse('https://www.cch.org.tw/home.aspx'), mode: LaunchMode.externalApplication);
+      return;
+    }
+    if (index == 2) {
+      launchUrl(Uri.parse('https://airtw.moenv.gov.tw/'), mode: LaunchMode.externalApplication);
+      return;
+    }
     if (index == 3) {
       launchUrl(Uri.parse('https://apisvc.cch.org.tw/website/asthma'), mode: LaunchMode.externalApplication);
       return;
@@ -125,17 +133,5 @@ class _SystemSettingsPageState extends State<SystemSettingsPage> {
       Navigator.of(context).pushNamed('/about');
       return;
     }
-
-    final messages = [
-      '位置設定功能開發中',
-      '彰化基督教醫院官方網站 功能開發中',
-      '空氣品質監測網 功能開發中',
-      '意見調查 功能開發中',
-      '關於氣喘健康護照 功能開發中',
-    ];
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(messages[index])),
-    );
   }
 }
