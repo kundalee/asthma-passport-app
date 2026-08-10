@@ -289,13 +289,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: _buildWeatherItem('溫度', temperature == null ? '-' : temperature!.toStringAsFixed(1), '°C'),
+                    child: _buildWeatherItem('溫度 (°C)', temperature == null ? '-' : temperature!.toStringAsFixed(1)),
                   ),
                   Expanded(
-                    child: _buildWeatherItem('濕度', humidity == null ? '-' : '$humidity', '%'),
+                    child: _buildWeatherItem('濕度 (%)', humidity == null ? '-' : '$humidity'),
                   ),
                   Expanded(
-                    child: _buildWeatherItem('PM2.5', pm25 == null ? '-' : pm25!.toStringAsFixed(1), 'μg/m3', unitStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.primaryGreen, height: 2.25, letterSpacing: 0)),
+                    child: _buildWeatherItem('PM2.5 (μg/m3)', pm25 == null ? '-' : pm25!.toStringAsFixed(1)),
                   ),
                 ],
               ),
@@ -306,72 +306,22 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     );
   }
 
-  Widget _buildWeatherItem(
-    String label,
-    String value,
-    String unit, {
-    TextStyle? unitStyle,
-  }) {
+  Widget _buildWeatherItem(String label, String value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 4,
       children: [
         Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0)),
-        if (unitStyle != null)
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: value,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primaryGreen,
-                    height: 1.5,
-                    letterSpacing: 0,
-                  ),
-                ),
-                WidgetSpan(
-                  alignment: PlaceholderAlignment.baseline,
-                  baseline: TextBaseline.alphabetic,
-                  child: Transform.translate(
-                    offset: const Offset(0, 4),
-                    child: Text(
-                      unit,
-                      style: unitStyle,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
-        else
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryGreen,
-                  height: 1.5,
-                  letterSpacing: 0,
-                ),
-              ),
-              Text(
-                unit,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryGreen,
-                  height: 1.5,
-                  letterSpacing: 0,
-                ),
-              ),
-            ],
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryGreen,
+            height: 1.5,
+            letterSpacing: 0,
           ),
+        ),
       ],
     );
   }
