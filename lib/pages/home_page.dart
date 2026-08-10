@@ -24,6 +24,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   double? temperature;
   int? humidity;
   double? pm25;
+  String? weatherCondition;
   double? latitude;
   double? longitude;
   List<Map<String, dynamic>> todayTests = [];
@@ -83,6 +84,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         temperature = null;
         humidity = null;
         pm25 = null;
+        weatherCondition = null;
       });
       return;
     }
@@ -101,8 +103,22 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         temperature = weather.temperature;
         humidity = weather.humidity;
         pm25 = weather.pm25;
+        weatherCondition = weather.weather;
       });
     }
+  }
+
+  // Backend weather condition ('晴'/'陰'/'雨') plus time of day picks one of
+  // the Day_/Night_ background images bundled in assets/images.
+  String get _weatherImageAsset {
+    final hour = DateTime.now().hour;
+    final timeOfDay = hour >= 6 && hour < 18 ? 'Day' : 'Night';
+    final condition = switch (weatherCondition) {
+      '雨' => 'rainy',
+      '陰' => 'cloudy',
+      _ => 'good',
+    };
+    return 'assets/images/${timeOfDay}_$condition.png';
   }
 
   Future<void> _loadTodayTests() async {
@@ -232,8 +248,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
-          image: const DecorationImage(
-            image: AssetImage('assets/images/01d.png'),
+          image: DecorationImage(
+            image: AssetImage(_weatherImageAsset),
             fit: BoxFit.cover,
             alignment: Alignment.topCenter,
           ),
