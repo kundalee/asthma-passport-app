@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../models/emergency_contact_models.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/card_container.dart';
@@ -156,6 +157,16 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
     });
   }
 
+  Future<void> _callNumber(String phone) async {
+    final uri = Uri(scheme: 'tel', path: phone);
+    final launched = await launchUrl(uri);
+    if (!launched && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('無法撥打電話')),
+      );
+    }
+  }
+
   @override
   void dispose() {
     for (final c in _nameControllers.values) { c.dispose(); }
@@ -219,7 +230,7 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
               dynamicBorderColor: false,
             ),
             CustomTextField(
-              hintText: '請輸入聯絡事項',
+              hintText: '請輸入聯絡電話',
               controller: _phoneControllers[index],
               backgroundColor: Colors.white,
               borderRadius: 4,
@@ -232,9 +243,19 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
               contacts[index]['name'] ?? '',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5),
             ),
-            Text(
-              contacts[index]['phone'] ?? '',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: AppColors.primaryGreen, height: 1.6),
+            Row(
+              spacing: 8,
+              children: [
+                Text(
+                  contacts[index]['phone'] ?? '',
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: AppColors.primaryGreen, height: 1.6),
+                ),
+                if ((contacts[index]['phone'] ?? '').isNotEmpty)
+                  GestureDetector(
+                    onTap: () => _callNumber(contacts[index]['phone']!),
+                    child: const Icon(Icons.phone, color: AppColors.primaryGreen, size: 20),
+                  ),
+              ],
             ),
           ],
           Row(

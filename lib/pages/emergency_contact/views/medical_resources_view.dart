@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../models/emergency_contact_models.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/card_container.dart';
@@ -164,6 +165,16 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
     });
   }
 
+  Future<void> _callNumber(String phone) async {
+    final uri = Uri(scheme: 'tel', path: phone);
+    final launched = await launchUrl(uri);
+    if (!launched && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('無法撥打電話')),
+      );
+    }
+  }
+
   @override
   void dispose() {
     for (final c in _titleControllers.values) { c.dispose(); }
@@ -217,11 +228,20 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
           ),
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('緊急救護', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black)),
-              Text('119', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red)),
+              const Text('緊急救護', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black)),
+              Row(
+                spacing: 8,
+                children: [
+                  const Text('119', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red)),
+                  GestureDetector(
+                    onTap: () => _callNumber('119'),
+                    child: const Icon(Icons.phone, color: Colors.red, size: 20),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
