@@ -3,6 +3,7 @@ import '../../../components/calendar_grid.dart';
 import '../../../components/status_container.dart';
 import '../../../models/history_models.dart';
 import '../../../services/api_service.dart';
+import '../../peak_flow/peak_flow_page.dart';
 
 class PeakFlowView extends StatefulWidget {
   final String selectedMonth;
@@ -97,11 +98,6 @@ class _PeakFlowViewState extends State<PeakFlowView> {
     return null;
   }
 
-  bool get _isSelectedToday {
-    final now = DateTime.now();
-    return selectedDate.year == now.year && selectedDate.month == now.month && selectedDate.day == now.day;
-  }
-
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -141,11 +137,16 @@ class _PeakFlowViewState extends State<PeakFlowView> {
         // enters this route - otherwise this history view stays buried in
         // the stack under the fresh home page the peak-flow flow ends on.
         // That also means this widget is disposed immediately, so there's
-        // no point awaiting the result to refresh afterward.
-        Navigator.of(context).pushNamedAndRemoveUntil('/peak-flow', (route) => route.isFirst);
+        // no point awaiting the result to refresh afterward. Pass the
+        // selected date through so an incomplete past day opens on that
+        // day, not today.
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => PeakFlowPage(targetDate: selectedDate)),
+          (route) => route.isFirst,
+        );
       },
       isComplete: morningCompleted && eveningCompleted,
-      showButton: _isSelectedToday,
+      showButton: !(morningCompleted && eveningCompleted) && !selectedDate.isAfter(DateTime.now()),
     );
   }
 }

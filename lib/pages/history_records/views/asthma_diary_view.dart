@@ -3,6 +3,7 @@ import '../../../components/calendar_grid.dart';
 import '../../../components/status_container.dart';
 import '../../../models/history_models.dart';
 import '../../../services/api_service.dart';
+import '../../asthma_diary/asthma_diary_page.dart';
 
 class AsthmaDiaryView extends StatefulWidget {
   final String selectedMonth;
@@ -97,11 +98,6 @@ class _AsthmaDiaryViewState extends State<AsthmaDiaryView> {
     return null;
   }
 
-  bool get _isSelectedToday {
-    final now = DateTime.now();
-    return selectedDate.year == now.year && selectedDate.month == now.month && selectedDate.day == now.day;
-  }
-
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -140,11 +136,15 @@ class _AsthmaDiaryViewState extends State<AsthmaDiaryView> {
         // enters this route - otherwise this history view stays buried in
         // the stack under the fresh home page the diary flow ends on. That
         // also means this widget is disposed immediately, so there's no
-        // point awaiting the result to refresh afterward.
-        Navigator.of(context).pushNamedAndRemoveUntil('/asthma-diary', (route) => route.isFirst);
+        // point awaiting the result to refresh afterward. Pass the selected
+        // date through so an incomplete past day opens on that day, not today.
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => AsthmaDiaryPage(targetDate: selectedDate)),
+          (route) => route.isFirst,
+        );
       },
       isComplete: isCompleted,
-      showButton: _isSelectedToday,
+      showButton: !isCompleted && !selectedDate.isAfter(DateTime.now()),
     );
   }
 }

@@ -7,14 +7,18 @@ import 'views/asthma_diary_view.dart';
 import 'views/asthma_diary_form_view.dart';
 
 class AsthmaDiaryPage extends StatefulWidget {
-  const AsthmaDiaryPage({super.key});
+  // Defaults to today when omitted, e.g. when opened from the home page's
+  // checklist rather than a specific past date in history.
+  final DateTime? targetDate;
+
+  const AsthmaDiaryPage({super.key, this.targetDate});
 
   @override
   State<AsthmaDiaryPage> createState() => _AsthmaDiaryPageState();
 }
 
 class _AsthmaDiaryPageState extends State<AsthmaDiaryPage> {
-  final DateTime _today = DateTime.now();
+  late final DateTime _today;
   DiaryStatus? diaryStatus;
   int currentView = 0; // 0: diary summary, 1: assessment form
 
@@ -31,6 +35,7 @@ class _AsthmaDiaryPageState extends State<AsthmaDiaryPage> {
   @override
   void initState() {
     super.initState();
+    _today = widget.targetDate ?? DateTime.now();
     _loadDiaryStatus();
   }
 

@@ -10,14 +10,18 @@ import 'views/peak_flow_form_view.dart';
 import 'views/peak_flow_results_view.dart';
 
 class PeakFlowPage extends StatefulWidget {
-  const PeakFlowPage({super.key});
+  // Defaults to today when omitted, e.g. when opened from the home page's
+  // checklist rather than a specific past date in history.
+  final DateTime? targetDate;
+
+  const PeakFlowPage({super.key, this.targetDate});
 
   @override
   State<PeakFlowPage> createState() => _PeakFlowPageState();
 }
 
 class _PeakFlowPageState extends State<PeakFlowPage> {
-  final DateTime _today = DateTime.now();
+  late final DateTime _today;
   PeakFlowStatus? peakFlowStatus;
   UserProfile? userProfile;
   int currentView = 0; // 0: summary, 1: form, 2: results
@@ -56,6 +60,7 @@ class _PeakFlowPageState extends State<PeakFlowPage> {
   @override
   void initState() {
     super.initState();
+    _today = widget.targetDate ?? DateTime.now();
     _loadPeakFlowStatus();
     _loadUserProfile();
   }
