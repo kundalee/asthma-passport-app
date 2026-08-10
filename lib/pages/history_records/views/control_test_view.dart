@@ -4,12 +4,7 @@ import '../../../models/history_models.dart';
 import '../../../services/api_service.dart';
 
 class ControlTestView extends StatefulWidget {
-  final List<String> availableMonths;
-
-  const ControlTestView({
-    super.key,
-    required this.availableMonths,
-  });
+  const ControlTestView({super.key});
 
   @override
   State<ControlTestView> createState() => _ControlTestViewState();
@@ -17,6 +12,7 @@ class ControlTestView extends StatefulWidget {
 
 class _ControlTestViewState extends State<ControlTestView> {
   Map<String, ActMonthSummary> monthResults = {};
+  List<String> displayMonths = [];
   bool isLoading = true;
 
   @override
@@ -38,6 +34,14 @@ class _ControlTestViewState extends State<ControlTestView> {
     final months = result.success ? (result.data ?? []) : <ActMonthSummary>[];
     setState(() {
       monthResults = {for (final m in months) m.month.replaceAll('-', '/'): m};
+      final currentMonth = '${now.year}/${now.month.toString().padLeft(2, '0')}';
+      // Always show the last 6 months, even ones with no record, rather
+      // than only the months /act/history happened to return data for -
+      // except the current month, which is omitted until it has one.
+      displayMonths = List.generate(6, (i) {
+        final date = DateTime(now.year, now.month - i);
+        return '${date.year}/${date.month.toString().padLeft(2, '0')}';
+      }).where((m) => m != currentMonth || (monthResults[m]?.isCompleted ?? false)).toList();
       isLoading = false;
     });
   }
@@ -50,17 +54,15 @@ class _ControlTestViewState extends State<ControlTestView> {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: widget.availableMonths.length,
+      itemCount: displayMonths.length,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
-        final month = widget.availableMonths[index];
+        final month = displayMonths[index];
         final monthParts = month.split('/');
         final monthDisplay = monthParts.length == 2 ? '${monthParts[1]}月' : month;
         final entry = monthResults[month];
         final isCompleted = entry?.isCompleted ?? false;
         final recordDate = entry?.recordDate;
-        final now = DateTime.now();
-        final isCurrentMonth = month == '${now.year}/${now.month.toString().padLeft(2, '0')}';
 
         return StatusContainer(
           title: '每月測驗：$monthDisplay',
@@ -68,16 +70,9 @@ class _ControlTestViewState extends State<ControlTestView> {
             StatusItem(label: '自我評量', status: isCompleted ? '${entry?.totalScore ?? 0} 分' : '未完成'),
             StatusItem(label: '量測時間', status: recordDate != null ? '${recordDate.year}/${recordDate.month}/${recordDate.day}' : '無紀錄'),
           ],
-          onPressed: () {
-            // Clear back to home first, matching how the home page itself
-            // enters this route - otherwise this history view stays buried
-            // in the stack under the fresh home page the test flow ends on.
-            // That also means this widget is disposed immediately, so
-            // there's no point awaiting the result to refresh afterward.
-            Navigator.of(context).pushNamedAndRemoveUntil('/asthma-control-test', (route) => route.isFirst);
-          },
+          onPressed: () {},
           isComplete: isCompleted,
-          showButton: isCurrentMonth,
+          showButton: false,
         );
       },
     );

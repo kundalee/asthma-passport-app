@@ -219,9 +219,7 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
           selectedMonth: selectedMonth,
         );
       case 3:
-        return ControlTestView(
-          availableMonths: actMonths,
-        );
+        return const ControlTestView();
       default:
         return _buildOtherTabsView();
     }
