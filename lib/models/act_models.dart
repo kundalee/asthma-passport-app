@@ -80,6 +80,7 @@ class ActStatus {
   final String targetGroup;
   final bool isCompleted;
   final int? totalScore;
+  final int? statusColor;
   final String? statusSummary;
   final List<ActQuestion> questions;
 
@@ -87,6 +88,7 @@ class ActStatus {
     required this.targetGroup,
     required this.isCompleted,
     required this.totalScore,
+    required this.statusColor,
     required this.statusSummary,
     required this.questions,
   });
@@ -99,6 +101,7 @@ class ActStatus {
       targetGroup: json['target_group'] ?? '',
       isCompleted: json['is_completed'] ?? false,
       totalScore: (json['total_score'] as num?)?.toInt(),
+      statusColor: (json['status_color'] as num?)?.toInt(),
       statusSummary: json['status_summary']?.toString(),
       questions: questions,
     );

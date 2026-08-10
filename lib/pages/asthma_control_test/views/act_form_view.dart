@@ -12,6 +12,10 @@ class ActFormView extends StatefulWidget {
   final String recordDate;
   final bool isAdultTest;
   final List<ActQuestion> questions;
+  final bool isAssessmentCompleted;
+  final int? totalScore;
+  final int? statusColor;
+  final String? statusSummary;
   final Function(int) onSwitchView;
   final Function(Map<String, dynamic>) onAssessmentCalculated;
 
@@ -21,6 +25,10 @@ class ActFormView extends StatefulWidget {
     required this.recordDate,
     required this.isAdultTest,
     required this.questions,
+    required this.isAssessmentCompleted,
+    required this.totalScore,
+    required this.statusColor,
+    required this.statusSummary,
     required this.onSwitchView,
     required this.onAssessmentCalculated,
   });
@@ -30,9 +38,17 @@ class ActFormView extends StatefulWidget {
 }
 
 class _ActFormViewState extends State<ActFormView> {
-  int? totalScore;
-  int? statusColor;
-  String? statusSummary;
+  late int? totalScore;
+  late int? statusColor;
+  late String? statusSummary;
+
+  @override
+  void initState() {
+    super.initState();
+    totalScore = widget.totalScore;
+    statusColor = widget.statusColor;
+    statusSummary = widget.statusSummary;
+  }
 
   List<Map<String, dynamic>> get questionsData {
     return widget.questions
@@ -45,13 +61,17 @@ class _ActFormViewState extends State<ActFormView> {
 
   @override
   Widget build(BuildContext context) {
-    if (questionsData.isEmpty) {
+    if (widget.questions.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
     return FormCard(
       questionsData: questionsData,
       resultWidget: _buildResultWidget(),
+      // Already recorded today: walk through the same questions with the
+      // saved answers locked in, instead of presenting a blank test to redo.
+      initialAnswers: widget.isAssessmentCompleted ? widget.questions.map((q) => q.selectedOptionId).toList() : null,
+      readOnly: widget.isAssessmentCompleted,
       onSubmit: (answers) async {
         await _submitTest(answers);
       },
@@ -69,7 +89,7 @@ class _ActFormViewState extends State<ActFormView> {
           _buildResultsTitle(),
           _buildScoreAndStatusBox(),
           CustomButton(
-            text: '完成紀錄',
+            text: widget.isAssessmentCompleted ? '返回首頁' : '完成紀錄',
             onPressed: () {
               Navigator.of(context).pushReplacementNamed('/');
             },

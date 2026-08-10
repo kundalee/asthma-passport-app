@@ -8,12 +8,16 @@ class FormCard extends StatefulWidget {
   final List<Map<String, dynamic>> questionsData;
   final Widget resultWidget;
   final Function(List<int?>) onSubmit;
+  final List<int?>? initialAnswers;
+  final bool readOnly;
 
   const FormCard({
     super.key,
     required this.questionsData,
     required this.resultWidget,
     required this.onSubmit,
+    this.initialAnswers,
+    this.readOnly = false,
   });
 
   @override
@@ -28,7 +32,9 @@ class _FormCardState extends State<FormCard> {
   @override
   void initState() {
     super.initState();
-    answers = List<int?>.filled(widget.questionsData.length, null);
+    answers = widget.initialAnswers != null
+        ? List<int?>.from(widget.initialAnswers!)
+        : List<int?>.filled(widget.questionsData.length, null);
   }
 
   bool _isAnswered(int index) {
@@ -132,22 +138,24 @@ class _FormCardState extends State<FormCard> {
             questionOptions[index]['label'] ?? '',
             questionOptions[index]['id'] ?? (index + 1),
             answers[currentStep],
-            (value) {
-              setState(() {
-                answers[currentStep] = value;
-              });
-            },
+            widget.readOnly
+                ? null
+                : (value) {
+                    setState(() {
+                      answers[currentStep] = value;
+                    });
+                  },
           ),
         ),
       ],
     );
   }
 
-  Widget _buildOption(String label, int value, int? selectedValue, Function(int) onChanged) {
+  Widget _buildOption(String label, int value, int? selectedValue, Function(int)? onChanged) {
     final isSelected = selectedValue == value;
 
     return GestureDetector(
-      onTap: () => onChanged(value),
+      onTap: onChanged == null ? null : () => onChanged(value),
       child: Container(
         constraints: const BoxConstraints(minHeight: 37),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -191,7 +199,9 @@ class _FormCardState extends State<FormCard> {
           onPressed: _isAnswered(currentStep)
               ? () {
                   if (isLastQuestion) {
-                    widget.onSubmit(answers);
+                    if (!widget.readOnly) {
+                      widget.onSubmit(answers);
+                    }
                     setState(() {
                       isSubmitted = true;
                     });

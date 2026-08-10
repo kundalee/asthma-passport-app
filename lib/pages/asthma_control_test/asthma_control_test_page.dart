@@ -20,6 +20,7 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
   String? measurementTime;
   int? totalScore;
   int? statusColor;
+  String? statusSummary;
   bool isAdultTest = true;
   int currentView = 0; // 0: summary, 1: selection, 2: form
   String? targetGroup;
@@ -44,8 +45,12 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
         isAssessmentCompleted = result.data!.isCompleted;
         measurementTime = result.data!.isCompleted ? displayMonth : null;
         targetGroup = result.data!.targetGroup;
+        isAdultTest = result.data!.targetGroup != 'child';
         recordDate = dateStr;
         actQuestions = result.data!.questions;
+        totalScore = result.data!.totalScore;
+        statusColor = result.data!.statusColor;
+        statusSummary = result.data!.statusSummary;
       });
     }
   }
@@ -60,6 +65,7 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
     setState(() {
       totalScore = result['totalScore'];
       statusColor = result['statusColor'];
+      statusSummary = result['statusSummary'];
     });
   }
 
@@ -91,6 +97,10 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
         recordDate: recordDate,
         isAdultTest: isAdultTest,
         questions: actQuestions,
+        isAssessmentCompleted: isAssessmentCompleted,
+        totalScore: totalScore,
+        statusColor: statusColor,
+        statusSummary: statusSummary,
         onSwitchView: _switchView,
         onAssessmentCalculated: _handleAssessmentCalculated,
       );
@@ -116,7 +126,9 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
             onTap: () {
               if (currentView == 0) {
                 Navigator.pop(context);
-              } else if (currentView == 3) {
+              } else if (currentView == 2 && isAssessmentCompleted) {
+                // The selection step is skipped for an already-completed
+                // test, so back from the form goes straight to the summary.
                 _switchView(0);
               } else {
                 _switchView(currentView - 1);
