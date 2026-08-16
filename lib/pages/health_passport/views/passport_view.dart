@@ -249,7 +249,7 @@ class HealthPassportView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: AppColors.whiteMarble, width: 1),
+          border: Border.all(color: AppColors.secondaryGrayW, width: 1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(

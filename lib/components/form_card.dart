@@ -162,7 +162,7 @@ class _FormCardState extends State<FormCard> {
         decoration: BoxDecoration(
           color: isSelected ? AppColors.honeydew : Colors.white,
           border: Border.all(
-            color: isSelected ? AppColors.primaryGreen : AppColors.whiteMarble,
+            color: isSelected ? AppColors.primaryGreen : AppColors.secondaryGrayW,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(4),
@@ -228,7 +228,7 @@ class _FormCardState extends State<FormCard> {
               : null,
           foregroundColor: Colors.black,
           backgroundColor: Colors.white,
-          border: BorderSide(color: AppColors.whiteMarble, width: 1),
+          border: BorderSide(color: AppColors.secondaryGrayW, width: 1),
           height: 37,
           borderRadius: 4,
         ),

@@ -68,13 +68,13 @@ class AppColors {
   static const Color hydrocarbon = Color(0xFF4A5565);
   static const Color primaryGray = Color(0xFF94A0A7); // Primary/Gray
   static const Color secondaryGray2 = Color(0xFFC1CDD3); // Secondary/Gray-2
-  static const Color midGray = Color(0xFF65737A);
+  static const Color darkMidGray = Color(0xFF65737A); // Dark/Mid Gray
   static const Color sharkGray = Color(0xFF6B7280);
   static const Color coolGray = Color(0xFF9CA3AF);
   static const Color sweetGrey = Color(0xFFD9D9D9);
-  static const Color whiteMarble = Color(0xFFE5E7EB);
+  static const Color secondaryGrayW = Color(0xFFE5E7EB); // Secondary/Gray-W
   static const Color cultured = Color(0xFFF3F3F5);
-  static const Color powder = Color(0xFFF2F4F8);
+  static const Color secondaryGray = Color(0xFFF2F4F8); // Secondary/Gray
   static const Color richWhite = Color(0xFFF2F2F7);
   static const Color luxuryWhite = Color(0xFFF9FAFB);
 }

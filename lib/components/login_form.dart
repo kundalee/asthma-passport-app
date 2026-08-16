@@ -291,7 +291,7 @@ class _LoginFormState extends State<LoginForm> {
             width: 24,
             height: 24,
           ),
-          border: const BorderSide(color: AppColors.whiteMarble, width: 1),
+          border: const BorderSide(color: AppColors.secondaryGrayW, width: 1),
         ),
       ],
     );

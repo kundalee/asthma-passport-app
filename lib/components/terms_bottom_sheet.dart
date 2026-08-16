@@ -68,7 +68,7 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
               ],
             ),
           ),
-          const Divider(height: 1, color: AppColors.whiteMarble),
+          const Divider(height: 1, color: AppColors.secondaryGrayW),
           // Scrollable content with checkbox
           Flexible(
             child: SingleChildScrollView(

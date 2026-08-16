@@ -14,7 +14,7 @@ class CardContainer extends StatelessWidget {
     required this.child,
     this.padding = const EdgeInsets.all(12),
     this.backgroundColor = Colors.white,
-    this.borderColor = AppColors.whiteMarble,
+    this.borderColor = AppColors.secondaryGrayW,
     this.borderRadius = 14,
     this.showBorder = true,
   });

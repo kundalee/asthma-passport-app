@@ -92,7 +92,7 @@ class _PeakFlowFormViewState extends State<PeakFlowFormView> {
         borderRadius: BorderRadius.circular(14),
         color: Colors.white,
         border: Border.all(
-          color: AppColors.whiteMarble,
+          color: AppColors.secondaryGrayW,
           width: 1,
         ),
       ),

@@ -6,7 +6,6 @@ import '../../components/app_page_container.dart';
 import '../../components/custom_tab_bar.dart';
 import 'views/medical_resources_view.dart';
 import 'views/emergency_contacts_view.dart';
-import 'views/patient_info_view.dart';
 
 class EmergencyContactPage extends StatefulWidget {
   const EmergencyContactPage({super.key});
@@ -17,7 +16,7 @@ class EmergencyContactPage extends StatefulWidget {
 
 class _EmergencyContactPageState extends State<EmergencyContactPage> {
   int selectedTabIndex = 0;
-  final List<String> tabs = ['醫療聯絡資源', '緊急連絡人', '病患基本資料'];
+  final List<String> tabs = ['醫療聯絡資源', '緊急連絡人'];
   ContactList? contactList;
 
   @override
@@ -106,8 +105,6 @@ class _EmergencyContactPageState extends State<EmergencyContactPage> {
           contacts: contactList?.emergency ?? [],
           onSaved: _loadContacts,
         );
-      case 2:
-        return PatientInfoView(onSwitchTab: _switchTab);
       default:
         return const SizedBox.shrink();
     }

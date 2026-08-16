@@ -266,7 +266,7 @@ class _AsthmaDiaryFormViewState extends State<AsthmaDiaryFormView> {
                       color: selectedValue == option.id ? AppColors.honeydew : Colors.white,
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(
-                        color: selectedValue == option.id ? AppColors.primaryGreen : AppColors.whiteMarble,
+                        color: selectedValue == option.id ? AppColors.primaryGreen : AppColors.secondaryGrayW,
                         width: 1,
                       ),
                     ),

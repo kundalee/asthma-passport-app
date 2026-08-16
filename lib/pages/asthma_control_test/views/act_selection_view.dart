@@ -64,7 +64,7 @@ class ActSelectionView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
         decoration: BoxDecoration(
           color: isDisabled ? AppColors.primaryGray : Colors.white,
-          border: Border.all(color: AppColors.whiteMarble, width: 1),
+          border: Border.all(color: AppColors.secondaryGrayW, width: 1),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(

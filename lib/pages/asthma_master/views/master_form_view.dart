@@ -231,7 +231,7 @@ class _MasterFormViewState extends State<MasterFormView> {
         },
         foregroundColor: Colors.black,
         backgroundColor: Colors.white,
-        border: BorderSide(color: AppColors.whiteMarble, width: 1),
+        border: BorderSide(color: AppColors.secondaryGrayW, width: 1),
         height: 37,
         borderRadius: 4,
       ),

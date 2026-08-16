@@ -281,7 +281,7 @@ class _NewPlanViewState extends State<NewPlanView> {
                         color: AppColors.sweetGrey,
                         borderRadius: BorderRadius.circular(4),
                         border:
-                            Border.all(color: AppColors.whiteMarble, width: 1),
+                            Border.all(color: AppColors.secondaryGrayW, width: 1),
                       ),
                       child: Text(
                         name,
@@ -323,17 +323,17 @@ class _NewPlanViewState extends State<NewPlanView> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(4),
                           borderSide: const BorderSide(
-                              color: AppColors.whiteMarble, width: 1),
+                              color: AppColors.secondaryGrayW, width: 1),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(4),
                           borderSide: const BorderSide(
-                              color: AppColors.whiteMarble, width: 1),
+                              color: AppColors.secondaryGrayW, width: 1),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(4),
                           borderSide: const BorderSide(
-                              color: AppColors.whiteMarble, width: 1),
+                              color: AppColors.secondaryGrayW, width: 1),
                         ),
                       ),
                     ),
@@ -376,7 +376,7 @@ class _NewPlanViewState extends State<NewPlanView> {
                     Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.whiteMarble),
+                        border: Border.all(color: AppColors.secondaryGrayW),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Column(
@@ -1138,23 +1138,23 @@ class _NewPlanViewState extends State<NewPlanView> {
                     height: 1.71,
                     letterSpacing: 0),
                 filled: true,
-                fillColor: AppColors.powder,
+                fillColor: AppColors.secondaryGray,
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(4),
                   borderSide:
-                      const BorderSide(color: AppColors.whiteMarble, width: 1),
+                      const BorderSide(color: AppColors.secondaryGrayW, width: 1),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(4),
                   borderSide:
-                      const BorderSide(color: AppColors.whiteMarble, width: 1),
+                      const BorderSide(color: AppColors.secondaryGrayW, width: 1),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(4),
                   borderSide:
-                      const BorderSide(color: AppColors.whiteMarble, width: 1),
+                      const BorderSide(color: AppColors.secondaryGrayW, width: 1),
                 ),
               ),
             ),
@@ -1177,7 +1177,7 @@ class _NewPlanViewState extends State<NewPlanView> {
       placeholder: hint,
       height: 40,
       backgroundColor: Colors.white,
-      borderColor: AppColors.whiteMarble,
+      borderColor: AppColors.secondaryGrayW,
       borderWidth: 1,
       borderRadius: 4,
       textStyle: const TextStyle(
@@ -1251,22 +1251,22 @@ class _NewPlanViewState extends State<NewPlanView> {
                   height: 1.71,
                   letterSpacing: 0),
               filled: true,
-              fillColor: AppColors.powder,
+              fillColor: AppColors.secondaryGray,
               contentPadding: const EdgeInsets.all(12),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide:
-                    const BorderSide(color: AppColors.whiteMarble, width: 1),
+                    const BorderSide(color: AppColors.secondaryGrayW, width: 1),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide:
-                    const BorderSide(color: AppColors.whiteMarble, width: 1),
+                    const BorderSide(color: AppColors.secondaryGrayW, width: 1),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide:
-                    const BorderSide(color: AppColors.whiteMarble, width: 1),
+                    const BorderSide(color: AppColors.secondaryGrayW, width: 1),
               ),
             ),
           ),
@@ -1311,22 +1311,22 @@ class _NewPlanViewState extends State<NewPlanView> {
                   height: 1.71,
                   letterSpacing: 0),
               filled: true,
-              fillColor: AppColors.powder,
+              fillColor: AppColors.secondaryGray,
               contentPadding: const EdgeInsets.all(12),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide:
-                    const BorderSide(color: AppColors.whiteMarble, width: 1),
+                    const BorderSide(color: AppColors.secondaryGrayW, width: 1),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide:
-                    const BorderSide(color: AppColors.whiteMarble, width: 1),
+                    const BorderSide(color: AppColors.secondaryGrayW, width: 1),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide:
-                    const BorderSide(color: AppColors.whiteMarble, width: 1),
+                    const BorderSide(color: AppColors.secondaryGrayW, width: 1),
               ),
             ),
           ),

@@ -323,7 +323,7 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.whiteMarble, width: 1),
+        border: Border.all(color: AppColors.secondaryGrayW, width: 1),
       ),
       child: Text(
         '${tabs[selectedTabIndex]}功能即將推出',

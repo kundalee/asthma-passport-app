@@ -189,7 +189,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
             ),
             decoration: InputDecoration(
               filled: true,
-              fillColor: (widget.status == null || _isEditingFromCompleted) ? Colors.white : AppColors.powder,
+              fillColor: (widget.status == null || _isEditingFromCompleted) ? Colors.white : AppColors.secondaryGray,
               suffixIcon: Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: Align(
@@ -210,28 +210,28 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide: const BorderSide(
-                  color: AppColors.whiteMarble,
+                  color: AppColors.secondaryGrayW,
                   width: 1,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide: const BorderSide(
-                  color: AppColors.whiteMarble,
+                  color: AppColors.secondaryGrayW,
                   width: 1,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide: const BorderSide(
-                  color: AppColors.whiteMarble,
+                  color: AppColors.secondaryGrayW,
                   width: 1,
                 ),
               ),
               disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4),
                 borderSide: const BorderSide(
-                  color: AppColors.whiteMarble,
+                  color: AppColors.secondaryGrayW,
                   width: 1,
                 ),
               ),
@@ -480,7 +480,7 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.black,
                 border: const BorderSide(
-                  color: AppColors.whiteMarble,
+                  color: AppColors.secondaryGrayW,
                   width: 1,
                 ),
                 padding: const EdgeInsets.all(12),

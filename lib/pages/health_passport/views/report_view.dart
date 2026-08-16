@@ -123,7 +123,7 @@ class _HealthReportViewState extends State<HealthReportView> {
                 isLoading: isDownloading,
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.black,
-                border: const BorderSide(color: AppColors.whiteMarble, width: 1),
+                border: const BorderSide(color: AppColors.secondaryGrayW, width: 1),
                 padding: const EdgeInsets.all(12),
                 borderRadius: 4,
                 height: 37,

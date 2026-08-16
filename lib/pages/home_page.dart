@@ -354,7 +354,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.whiteMarble, width: 1),
+        border: Border.all(color: AppColors.secondaryGrayW, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -398,7 +398,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
           color: AppColors.luxuryWhite,
-          border: Border.all(color: AppColors.whiteMarble, width: 1),
+          border: Border.all(color: AppColors.secondaryGrayW, width: 1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
