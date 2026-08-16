@@ -126,10 +126,6 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
             onTap: () {
               if (currentView == 0) {
                 Navigator.pop(context);
-              } else if (currentView == 2 && isAssessmentCompleted) {
-                // The selection step is skipped for an already-completed
-                // test, so back from the form goes straight to the summary.
-                _switchView(0);
               } else {
                 _switchView(currentView - 1);
               }

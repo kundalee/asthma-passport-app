@@ -60,7 +60,7 @@ class ActView extends StatelessWidget {
               StatusItem(label: '測驗時間', status: measurementTime == null || measurementTime!.isEmpty ? '無紀錄' : measurementTime!),
             ],
             isComplete: isAssessmentCompleted,
-            onPressed: () => onSwitchView(isAssessmentCompleted ? 2 : 1),
+            onPressed: () => onSwitchView(1),
             withCard: false,
           ),
         ],
