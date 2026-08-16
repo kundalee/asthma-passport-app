@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_line_sdk/flutter_line_sdk.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'config/line_auth_config.dart';
@@ -33,6 +34,13 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       title: '氣喘健康護照',
       debugShowCheckedModeBanner: false,
+      locale: const Locale('zh', 'TW'),
+      supportedLocales: const [Locale('zh', 'TW')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryGreen),
         textTheme: GoogleFonts.interTextTheme(

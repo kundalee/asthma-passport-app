@@ -683,7 +683,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         final picked = await showDatePicker(
           context: context,
           initialDate: _selectedBirthDate ?? DateTime.now(),
-          firstDate: DateTime(1990),
+          firstDate: DateTime(1900),
           lastDate: DateTime.now(),
         );
         if (picked != null) {
