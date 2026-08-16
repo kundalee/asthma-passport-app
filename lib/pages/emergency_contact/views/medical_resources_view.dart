@@ -238,7 +238,22 @@ class _MedicalResourcesViewState extends State<MedicalResourcesView> {
                   const Text('119', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red)),
                   GestureDetector(
                     onTap: () => _callNumber('119'),
-                    child: const Icon(Icons.phone, color: Colors.red, size: 20),
+                    child: Container(
+                      width: 24,
+                      height: 24,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red,
+                      ),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          'assets/icons/phone.svg',
+                          width: 16,
+                          height: 16,
+                          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

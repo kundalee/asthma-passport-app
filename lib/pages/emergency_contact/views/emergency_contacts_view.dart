@@ -239,21 +239,42 @@ class _EmergencyContactsViewState extends State<EmergencyContactsView> {
               inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9+\-() ]'))],
             ),
           ] else ...[
-            Text(
-              contacts[index]['name'] ?? '',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5),
-            ),
             Row(
-              spacing: 8,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  contacts[index]['phone'] ?? '',
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: AppColors.primaryGreen, height: 1.6),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 8,
+                  children: [
+                    Text(
+                      contacts[index]['name'] ?? '',
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5),
+                    ),
+                    Text(
+                      contacts[index]['phone'] ?? '',
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: AppColors.primaryGreen, height: 1.6),
+                    ),
+                  ],
                 ),
                 if ((contacts[index]['phone'] ?? '').isNotEmpty)
                   GestureDetector(
                     onTap: () => _callNumber(contacts[index]['phone']!),
-                    child: const Icon(Icons.phone, color: AppColors.primaryGreen, size: 20),
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.primaryGreen,
+                      ),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          'assets/icons/phone.svg',
+                          width: 24,
+                          height: 24,
+                          colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                        ),
+                      ),
+                    ),
                   ),
               ],
             ),
