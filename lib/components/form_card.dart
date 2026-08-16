@@ -160,10 +160,10 @@ class _FormCardState extends State<FormCard> {
         constraints: const BoxConstraints(minHeight: 37),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.honeydew : Colors.white,
+          color: isSelected ? (widget.readOnly ? AppColors.secondaryGray : AppColors.secondaryGreen) : Colors.white,
           border: Border.all(
-            color: isSelected ? AppColors.primaryGreen : AppColors.secondaryGrayW,
-            width: 1,
+            color: isSelected ? (widget.readOnly ? AppColors.secondaryGrayW : AppColors.darkGreen) : AppColors.secondaryGrayW,
+            width: isSelected && widget.readOnly ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(4),
         ),

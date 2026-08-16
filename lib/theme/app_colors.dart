@@ -8,6 +8,7 @@ class AppColors {
   static const Color primaryGreen = Color(0xFF006D37); // Primary/Green
   static const Color philippineGreen = Color(0xFF008242);
   static const Color jade = Color(0xFF00AC6A);
+  static const Color darkGreen = Color(0xFF00C751); // Dark/Green
   static const Color malachite = Color(0xFF06C755);
   static const Color royalAquamarine = Color(0xFF37AA91);
   static const Color mermaid = Color(0xFF18C3B3);

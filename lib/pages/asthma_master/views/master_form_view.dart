@@ -25,6 +25,13 @@ class _MasterFormViewState extends State<MasterFormView> {
   List<MasterQuestion> masterQuestions = [];
   List<Map<String, dynamic>> questionsData = [];
   MasterQuizResult? quizResult;
+  List<int?>? _submittedAnswers;
+  bool _showingReview = false;
+  // Bumped every time 查看作答結果 is pressed, so the FormCard key below
+  // always changes and remounts fresh even when already in review mode
+  // (otherwise a second press reuses the FormCard state left on its own
+  // result screen from the previous review pass).
+  int _reviewToken = 0;
 
   @override
   void initState() {
@@ -63,7 +70,10 @@ class _MasterFormViewState extends State<MasterFormView> {
     if (!mounted) return;
 
     if (result.success && result.data != null) {
-      setState(() => quizResult = result.data);
+      setState(() {
+        quizResult = result.data;
+        _submittedAnswers = answers;
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result.message ?? '儲存失敗')),
@@ -83,11 +93,14 @@ class _MasterFormViewState extends State<MasterFormView> {
     }
 
     return FormCard(
+      key: ValueKey('$_showingReview-$_reviewToken'),
       questionsData: questionsData,
       resultWidget: _buildResultWidget(),
       onSubmit: (answers) async {
         await _submitQuiz(answers);
       },
+      initialAnswers: _showingReview ? _submittedAnswers : null,
+      readOnly: _showingReview,
     );
   }
 
@@ -105,6 +118,7 @@ class _MasterFormViewState extends State<MasterFormView> {
             _buildScoreSection(),
             _buildReturnButton(),
             _buildRetestButton(),
+            _buildViewAnswersButton(),
             _buildFooterText(),
           ],
         ),
@@ -225,10 +239,29 @@ class _MasterFormViewState extends State<MasterFormView> {
         onPressed: () {
           setState(() {
             quizResult = null;
+            _submittedAnswers = null;
+            _showingReview = false;
           });
           _loadQuestions();
           widget.onSwitchView(0);
         },
+        foregroundColor: Colors.white,
+        backgroundColor: AppColors.sportyBlue,
+        height: 37,
+        borderRadius: 4,
+      ),
+    );
+  }
+
+  Widget _buildViewAnswersButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: CustomButton(
+        text: '查看作答結果',
+        onPressed: () => setState(() {
+          _showingReview = true;
+          _reviewToken++;
+        }),
         foregroundColor: Colors.black,
         backgroundColor: Colors.white,
         border: BorderSide(color: AppColors.secondaryGrayW, width: 1),
