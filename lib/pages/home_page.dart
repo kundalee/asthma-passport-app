@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   double? temperature;
   int? humidity;
   double? pm25;
-  String? weatherCondition;
+  int? weatherCondition;
   double? latitude;
   double? longitude;
   List<Map<String, dynamic>> todayTests = [];
@@ -108,14 +108,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
-  // Backend weather condition ('晴'/'陰'/'雨') plus time of day picks one of
-  // the Day_/Night_ background images bundled in assets/images.
+  // Backend weather condition code (0 = 晴, 1 = 陰, 2 = 雨) plus time of day
+  // picks one of the Day_/Night_ background images bundled in assets/images.
   String get _weatherImageAsset {
     final hour = DateTime.now().hour;
     final timeOfDay = hour >= 6 && hour < 18 ? 'Day' : 'Night';
     final condition = switch (weatherCondition) {
-      '雨' => 'rainy',
-      '陰' => 'cloudy',
+      2 => 'rainy',
+      1 => 'cloudy',
       _ => 'good',
     };
     return 'assets/images/${timeOfDay}_$condition.png';

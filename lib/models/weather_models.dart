@@ -1,7 +1,9 @@
 class WeatherInfo {
   final String siteName;
   final String county;
-  final String weather;
+  // Weather condition code from the backend: 0 = 晴 (sunny), 1 = 陰 (cloudy),
+  // 2 = 雨 (rainy).
+  final int weather;
   final double temperature;
   final int humidity;
   final int aqi;
@@ -21,7 +23,7 @@ class WeatherInfo {
     return WeatherInfo(
       siteName: json['sitename'] ?? '',
       county: json['county'] ?? '',
-      weather: json['weather'] ?? '',
+      weather: (json['weather'] as num?)?.toInt() ?? 0,
       temperature: (json['temperature'] as num?)?.toDouble() ?? 0,
       humidity: (json['humidity'] as num?)?.toInt() ?? 0,
       aqi: (json['aqi'] as num?)?.toInt() ?? 0,
