@@ -56,8 +56,8 @@ class PeakFlowView extends StatelessWidget {
           ),
           StatusContainer(
             items: [
-              StatusItem(label: '白天量測', status: isDaytimeCompleted ? '完成' : '未完成'),
-              StatusItem(label: '夜晚量測', status: isEveningCompleted ? '完成' : '未完成'),
+              StatusItem(label: '自我評量', status: isDaytimeCompleted && isEveningCompleted ? '完成' : '未完成'),
+              StatusItem(label: '量測時間', status: isDaytimeCompleted && isEveningCompleted ? measurementDate : '無紀錄'),
             ],
             isComplete: isDaytimeCompleted && isEveningCompleted,
             onPressed: () => onSwitchView(1),
