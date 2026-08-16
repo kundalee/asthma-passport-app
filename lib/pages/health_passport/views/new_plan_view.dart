@@ -107,7 +107,7 @@ class _NewPlanViewState extends State<NewPlanView> {
         '${now.year}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}';
     dateController = TextEditingController(text: today);
     notesController = TextEditingController();
-    doctorNameController = TextEditingController();
+    doctorNameController = TextEditingController()..addListener(() => setState(() {}));
     _loadMedicationOptions();
   }
 
@@ -467,7 +467,9 @@ class _NewPlanViewState extends State<NewPlanView> {
               width: double.infinity,
               child: CustomButton(
                 text: '預覽行動計畫',
-                onPressed: () => _setShowPreview(true),
+                onPressed: doctorNameController.text.trim().isEmpty
+                    ? null
+                    : () => _setShowPreview(true),
                 backgroundColor: AppColors.primaryGreen,
                 padding: const EdgeInsets.all(12),
                 borderRadius: 4,
@@ -902,7 +904,7 @@ class _NewPlanViewState extends State<NewPlanView> {
                           style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.normal,
-                              color: AppColors.hydrocarbon,
+                              color: Colors.black,
                               height: 1.71,
                               letterSpacing: 0),
                         ),
@@ -912,7 +914,7 @@ class _NewPlanViewState extends State<NewPlanView> {
                             style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.normal,
-                                color: AppColors.hydrocarbon,
+                                color: Colors.black,
                                 height: 1.71,
                                 letterSpacing: 0),
                           ),
@@ -1134,7 +1136,7 @@ class _NewPlanViewState extends State<NewPlanView> {
                 hintStyle: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.hydrocarbon,
+                    color: Colors.black,
                     height: 1.71,
                     letterSpacing: 0),
                 filled: true,
@@ -1142,19 +1144,19 @@ class _NewPlanViewState extends State<NewPlanView> {
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(10),
                   borderSide:
-                      const BorderSide(color: AppColors.secondaryGrayW, width: 1),
+                      const BorderSide(color: AppColors.secondaryGray2, width: 2),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(10),
                   borderSide:
-                      const BorderSide(color: AppColors.secondaryGrayW, width: 1),
+                      const BorderSide(color: AppColors.secondaryGray2, width: 2),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(10),
                   borderSide:
-                      const BorderSide(color: AppColors.secondaryGrayW, width: 1),
+                      const BorderSide(color: AppColors.secondaryGray2, width: 2),
                 ),
               ),
             ),
@@ -1230,43 +1232,53 @@ class _NewPlanViewState extends State<NewPlanView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 8,
         children: [
-          const Text(
-            '備註事項',
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: AppColors.mirage,
-                height: 1.5,
-                letterSpacing: 0),
+          Row(
+            spacing: 8,
+            children: [
+              SvgPicture.asset(
+                'assets/icons/note.svg',
+                width: 24,
+                height: 24,
+              ),
+              const Text(
+                '備註事項',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.mirage,
+                    height: 1.5,
+                    letterSpacing: 0),
+              ),
+            ],
           ),
           TextField(
             controller: notesController,
             maxLines: 2,
             decoration: InputDecoration(
-              hintText: '其他注意事項或特殊說明...',
+              hintText: '輸入其他事項...',
               hintStyle: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.hydrocarbon,
+                  color: Colors.black,
                   height: 1.71,
                   letterSpacing: 0),
               filled: true,
               fillColor: AppColors.secondaryGray,
               contentPadding: const EdgeInsets.all(12),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(10),
                 borderSide:
-                    const BorderSide(color: AppColors.secondaryGrayW, width: 1),
+                    const BorderSide(color: AppColors.secondaryGray2, width: 2),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(10),
                 borderSide:
-                    const BorderSide(color: AppColors.secondaryGrayW, width: 1),
+                    const BorderSide(color: AppColors.secondaryGray2, width: 2),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(10),
                 borderSide:
-                    const BorderSide(color: AppColors.secondaryGrayW, width: 1),
+                    const BorderSide(color: AppColors.secondaryGray2, width: 2),
               ),
             ),
           ),
@@ -1289,14 +1301,19 @@ class _NewPlanViewState extends State<NewPlanView> {
                 width: 24,
                 height: 24,
               ),
-              const Text(
-                '醫師確認',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.mirage,
-                    height: 1.5,
-                    letterSpacing: 0),
+              Text.rich(
+                TextSpan(
+                  text: '醫師確認',
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.mirage,
+                      height: 1.5,
+                      letterSpacing: 0),
+                  children: const [
+                    TextSpan(text: '*', style: TextStyle(color: AppColors.primaryRed)),
+                  ],
+                ),
               ),
             ],
           ),
@@ -1307,26 +1324,26 @@ class _NewPlanViewState extends State<NewPlanView> {
               hintStyle: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.hydrocarbon,
+                  color: Colors.black,
                   height: 1.71,
                   letterSpacing: 0),
               filled: true,
               fillColor: AppColors.secondaryGray,
               contentPadding: const EdgeInsets.all(12),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(10),
                 borderSide:
-                    const BorderSide(color: AppColors.secondaryGrayW, width: 1),
+                    const BorderSide(color: AppColors.secondaryGray2, width: 2),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(10),
                 borderSide:
-                    const BorderSide(color: AppColors.secondaryGrayW, width: 1),
+                    const BorderSide(color: AppColors.secondaryGray2, width: 2),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(10),
                 borderSide:
-                    const BorderSide(color: AppColors.secondaryGrayW, width: 1),
+                    const BorderSide(color: AppColors.secondaryGray2, width: 2),
               ),
             ),
           ),
