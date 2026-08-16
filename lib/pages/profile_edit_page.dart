@@ -19,8 +19,8 @@ class ProfileEditPage extends StatefulWidget {
 }
 
 class _ProfileEditPageState extends State<ProfileEditPage> {
-  static const _genderOptions = ['男性', '女性'];
-  static const _bloodTypeOptions = ['A型', 'B型', 'AB型', 'O型'];
+  static const _genderOptions = ['男性', '女性', '不公開'];
+  static const _bloodTypeOptions = ['A', 'B', 'AB', 'O'];
   // Placeholder values UserProfile falls back to when a field isn't set;
   // they're for display only and shouldn't populate the edit form.
   static const _placeholderValues = {'未填寫', '-'};
