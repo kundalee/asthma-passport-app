@@ -26,6 +26,7 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
   String? targetGroup;
   String recordDate = '';
   List<ActQuestion> actQuestions = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -39,11 +40,19 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
     final displayMonth = '${now.year}/${now.month.toString().padLeft(2, '0')}';
 
     final result = await ApiService.getActStatus(dateStr);
+    if (!mounted) return;
+
     if (result.success && result.data != null) {
+      // Prefer the API's own record_date (the date the test was actually
+      // completed on) over today's date, so a test taken earlier in the
+      // month still shows its real completion date rather than "now".
+      final apiRecordDate = result.data!.recordDate;
       setState(() {
-        measurementDate = displayMonth;
+        measurementDate = apiRecordDate != null && apiRecordDate.length >= 7
+            ? apiRecordDate.substring(0, 7)
+            : displayMonth;
         isAssessmentCompleted = result.data!.isCompleted;
-        measurementTime = result.data!.isCompleted ? displayMonth : null;
+        measurementTime = result.data!.isCompleted ? (apiRecordDate ?? displayMonth) : null;
         targetGroup = result.data!.targetGroup;
         isAdultTest = result.data!.targetGroup != 'child';
         recordDate = dateStr;
@@ -51,7 +60,10 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
         totalScore = result.data!.totalScore;
         statusColor = result.data!.statusColor;
         statusSummary = result.data!.statusSummary;
+        isLoading = false;
       });
+    } else {
+      setState(() => isLoading = false);
     }
   }
 
@@ -78,7 +90,9 @@ class _AsthmaControlTestPageState extends State<AsthmaControlTestPage> {
   @override
   Widget build(BuildContext context) {
     Widget content;
-    if (currentView == 0) {
+    if (isLoading) {
+      content = const Center(child: CircularProgressIndicator());
+    } else if (currentView == 0) {
       content = ActView(
         measurementDate: measurementDate,
         isAssessmentCompleted: isAssessmentCompleted,

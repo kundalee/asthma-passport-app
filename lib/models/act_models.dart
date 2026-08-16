@@ -79,6 +79,7 @@ class SaveActResult {
 class ActStatus {
   final String targetGroup;
   final bool isCompleted;
+  final String? recordDate;
   final int? totalScore;
   final int? statusColor;
   final String? statusSummary;
@@ -87,6 +88,7 @@ class ActStatus {
   const ActStatus({
     required this.targetGroup,
     required this.isCompleted,
+    required this.recordDate,
     required this.totalScore,
     required this.statusColor,
     required this.statusSummary,
@@ -100,6 +102,7 @@ class ActStatus {
     return ActStatus(
       targetGroup: json['target_group'] ?? '',
       isCompleted: json['is_completed'] ?? false,
+      recordDate: json['record_date']?.toString(),
       totalScore: (json['total_score'] as num?)?.toInt(),
       statusColor: (json['status_color'] as num?)?.toInt(),
       statusSummary: json['status_summary']?.toString(),
