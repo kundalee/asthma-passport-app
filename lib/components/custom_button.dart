@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -53,29 +54,26 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final radius = BorderRadius.circular(borderRadius);
     final isDisabled = onPressed == null;
-    return Opacity(
-      opacity: isDisabled ? 0.5 : 1.0,
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: radius,
-        child: Ink(
-          decoration: BoxDecoration(
-            color: gradient == null ? backgroundColor : null,
-            gradient: gradient,
-            borderRadius: radius,
-            border: border != null ? Border.fromBorderSide(border!) : null,
-          ),
-          child: InkWell(
-            onTap: isLoading || isDisabled ? null : onPressed,
-            borderRadius: radius,
-            child: Container(
-              constraints: BoxConstraints(
-                minHeight: height ?? 0,
-                minWidth: height != null ? double.infinity : 0,
-              ),
-              padding: height != null ? EdgeInsets.zero : padding,
-              child: Center(child: _buildChild()),
+    return Material(
+      color: Colors.transparent,
+      borderRadius: radius,
+      child: Ink(
+        decoration: BoxDecoration(
+          color: isDisabled ? AppColors.primaryGray : (gradient == null ? backgroundColor : null),
+          gradient: isDisabled ? null : gradient,
+          borderRadius: radius,
+          border: border != null ? Border.fromBorderSide(border!) : null,
+        ),
+        child: InkWell(
+          onTap: isLoading || isDisabled ? null : onPressed,
+          borderRadius: radius,
+          child: Container(
+            constraints: BoxConstraints(
+              minHeight: height ?? 0,
+              minWidth: height != null ? double.infinity : 0,
             ),
+            padding: height != null ? EdgeInsets.zero : padding,
+            child: Center(child: _buildChild()),
           ),
         ),
       ),
