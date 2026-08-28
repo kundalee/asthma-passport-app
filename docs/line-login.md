@@ -11,9 +11,12 @@ Steps taken:
 1. Created a Provider (`Asthma Passport`, region **Taiwan** — matches the `itroll.com.tw` backend domain and the app's Traditional Chinese UI) via a LINE Business ID (not a personal LINE account, so ownership isn't tied to one person).
 2. Created a **LINE Login** channel under it, named `Asthma Passport`, app type **Mobile app**.
 3. Under the channel's **LINE Login** tab → app settings, registered **both** the prod and staging identifiers (one per line — the field supports multiple):
-   - iOS bundle ID: `com.example.asthmaPassportApp`, `com.example.asthmaPassportApp.staging`
-   - Android package names: `com.example.asthma_passport_app`, `com.example.asthma_passport_app.staging`
-   - iOS universal link and Android package signatures left blank — both optional for LINE (unlike Google's mandatory SHA-1); package signature to be added before a release build.
+   - iOS bundle ID: `tw.org.cch.AsthmaPassport`, `tw.org.cch.AsthmaPassport.staging`
+   - Android package names: `tw.org.cch.AsthmaPassport`, `tw.org.cch.AsthmaPassport.staging`
+   - Android package signature: registered (`d60a06ca6bab87006b0130ceda50b40edb39bb1d`).
+   - iOS universal link left blank — optional for LINE (unlike Google's mandatory SHA-1).
+
+   The original `com.example.*` placeholder identifiers were registered here too during the rename, then removed once no builds still depended on them.
 4. **Channel ID: `2010677656`** — already in [`lib/config/line_auth_config.dart`](../lib/config/line_auth_config.dart).
 5. Applied for email permission: Basic settings → OpenID Connect → Apply. This app's account model is email-centric (see `UserProfile`, and how both Google login and password signup resolve accounts by email), so this permission is worth having — but login works without it, `email` is simply absent from the token until approved (review is in progress).
 
@@ -42,5 +45,4 @@ Steps taken:
   - Response: same shape as `/user/login` — `{ access_token, user_name, is_first_login }`.
   - Until email permission is approved, `email` may be absent from the token — same `sub`-vs-email lookup consideration already flagged for Google applies here too.
 - **Add more testers** as teammates/QA start testing (Roles tab), and **publish the channel** (move off Developing status) once ready for the general public.
-- **Register the Android package signature** before a release build (optional today, but worth doing alongside the release-build SHA-1 already needed for Google).
-- **Decide on real Android `applicationId` / iOS bundle ID** before release, then update the LINE channel's app settings to match.
+- Real Android `applicationId` / iOS bundle ID (`tw.org.cch.AsthmaPassport`) chosen, and the LINE channel's app settings updated to match (old `com.example.*` placeholders removed, Android package signature registered).

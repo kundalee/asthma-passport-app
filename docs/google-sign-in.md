@@ -23,10 +23,10 @@ Created under **Google Auth Platform → Clients → Create OAuth client ID**. i
 
 | Platform | Name                | Identifier used                              | Notes |
 |----------|----------------------|-----------------------------------------------|-------|
-| iOS      | Asthma Passport iOS  | Bundle ID `com.example.asthmaPassportApp`     | Reversed client ID copied into [`ios/Runner/Info.plist`](../ios/Runner/Info.plist) `CFBundleURLTypes` so the sign-in redirect returns to the app. The plain (non-reversed) client ID is also required as the `GIDClientID` key in the same `Info.plist` — without it, iOS throws `No active configuration. Make sure GIDClientID is set in Info.plist.` at sign-in time. |
-| Android  | Asthma Passport Android | Package `com.example.asthma_passport_app`, SHA-1 of the local `~/.android/debug.keystore` | Package name + SHA-1 is enough for Android to complete sign-in, but **not** enough to get a non-null `idToken` — the Android Sign-In SDK only mints an ID token when a web-application-type client is passed as `serverClientId` (see the Web client above and §5). Without it, sign-in silently succeeds but `idToken` is `null`. |
+| iOS      | Asthma Passport iOS  | Bundle ID `tw.org.cch.AsthmaPassport`     | Reversed client ID copied into [`ios/Runner/Info.plist`](../ios/Runner/Info.plist) `CFBundleURLTypes` so the sign-in redirect returns to the app. The plain (non-reversed) client ID is also required as the `GIDClientID` key in the same `Info.plist` — without it, iOS throws `No active configuration. Make sure GIDClientID is set in Info.plist.` at sign-in time. App Store ID / Team ID left blank — not needed until the app is published on the App Store. |
+| Android  | Asthma Passport Android | Package `tw.org.cch.AsthmaPassport`, SHA-1 of the local `~/.android/debug.keystore` | Package name + SHA-1 is enough for Android to complete sign-in, but **not** enough to get a non-null `idToken` — the Android Sign-In SDK only mints an ID token when a web-application-type client is passed as `serverClientId` (see the Web client above and §5). Without it, sign-in silently succeeds but `idToken` is `null`. |
 
-Both use the placeholder `com.example.*` identifiers currently in the Xcode project / `build.gradle`. If these are renamed to real production identifiers before release, both OAuth clients need to be re-created (or edited, where the console allows it) to match — an OAuth client's bundle ID/package name isn't just cosmetic, sign-in fails if it doesn't match exactly.
+The `com.example.*` placeholder identifiers were updated in place (Cloud Console's iOS/Android client edit form allows changing the bundle ID/package name directly) when the app's real Android `applicationId`/iOS bundle ID (`tw.org.cch.AsthmaPassport`) was decided — same client IDs as before, just repointed at the new identifier, so nothing in `Info.plist`/`GoogleAuthConfig` needed to change.
 
 **Android SHA-1 caveats:**
 - The debug keystore is machine-specific. Every developer testing Google Sign-In locally needs to add *their own* debug SHA-1 to the Android client (the console supports multiple fingerprints per client).
@@ -57,5 +57,4 @@ While the consent screen is in **Testing** status, only Google accounts explicit
   - Response: same shape as `/user/login` — `{ access_token, user_name, is_first_login }`.
 - **Add more test users** as teammates/QA start testing, and each of their local debug-keystore SHA-1s to the Android client.
 - **Register the release-build SHA-1** on the Android client before shipping a signed build.
-- **Decide on real Android `applicationId` / iOS bundle ID** before release, then update both OAuth clients (and `Info.plist`) to match.
 - **Publish the OAuth consent screen** (move off Testing status) once ready for the general public to sign in.

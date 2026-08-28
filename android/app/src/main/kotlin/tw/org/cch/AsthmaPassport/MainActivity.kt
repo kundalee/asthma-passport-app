@@ -1,4 +1,4 @@
-package com.example.asthma_passport_app
+package tw.org.cch.AsthmaPassport
 
 import io.flutter.embedding.android.FlutterActivity
 
