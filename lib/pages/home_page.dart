@@ -41,6 +41,26 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showFirstLoginDialog();
       });
+    } else {
+      _checkProfileComplete();
+    }
+  }
+
+  // Peak flow prediction needs age/height/gender (see ApiService.predictedPeakFlow),
+  // so prompt to complete the profile if any of them is still unset.
+  Future<void> _checkProfileComplete() async {
+    final token = await AuthService.getToken();
+    if (token == null || !mounted) return;
+
+    final result = await AuthService.getProfile();
+    final profile = result.data;
+    if (!mounted || profile == null) return;
+
+    final isIncomplete = double.tryParse(profile.age) == null ||
+        double.tryParse(profile.height) == null ||
+        (profile.gender != '男性' && profile.gender != '女性');
+    if (isIncomplete) {
+      _showFirstLoginDialog();
     }
   }
 
@@ -633,9 +653,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         iconPath: 'assets/icons/alert-info.svg',
         content: '請先完成會員資料設定來提供您全方位的氣喘保護措施',
         buttonText: '前往編輯',
-        onButtonPressed: () {
+        onButtonPressed: () async {
           Navigator.pop(context);
-          Navigator.of(context).pushNamed('/profile');
+          await Navigator.of(context).pushNamed('/profile');
+          if (!mounted) return;
+          _checkProfileComplete();
         },
       ),
     );
