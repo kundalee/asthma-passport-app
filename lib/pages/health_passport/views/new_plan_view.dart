@@ -6,6 +6,7 @@ import '../../../theme/app_colors.dart';
 import '../../../components/custom_button.dart';
 import '../../../components/custom_dropdown.dart';
 import '../../../components/card_container.dart';
+import 'plan_report_card.dart';
 
 const List<String> _doseOptions = ['1次', '2次', '3次'];
 
@@ -493,239 +494,30 @@ class _NewPlanViewState extends State<NewPlanView> {
     );
   }
 
+  List<PlanMedicationDisplay> _toDisplayList(List<_MedicationEntry> entries) {
+    return entries
+        .map((e) => PlanMedicationDisplay(
+              name: e.medicationName ?? '',
+              morn: e.daytimeDose ?? '',
+              even: e.nighttimeDose ?? '',
+              note: e.notesController.text,
+            ))
+        .toList();
+  }
+
   Widget _buildPreviewReport() {
-    final levelTitle = levelDescriptions[selectedLevel] ?? '';
-    final levelBgColor = resultColors[selectedLevel] ?? AppColors.honeydew;
-    final levelIconColor =
-        resultIconColors[selectedLevel] ?? AppColors.primaryGreen;
-
-    String levelIconPath;
-    if (selectedLevel == 'partial') {
-      levelIconPath = 'assets/icons/alert-info.svg';
-    } else if (selectedLevel == 'poor') {
-      levelIconPath = 'assets/icons/alert.svg';
-    } else if (selectedLevel == 'acute') {
-      levelIconPath = 'assets/icons/emergency.svg';
-    } else {
-      levelIconPath = 'assets/icons/check.svg';
-    }
-
     return SingleChildScrollView(
       child: Column(
         spacing: 12,
         children: [
-          CardContainer(
-            padding: EdgeInsets.only(left: 11, top: 16, right: 16, bottom: 24),
-            borderRadius: 0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 8,
-              children: [
-                const SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    '行動計畫指派報告',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black,
-                        height: 1.0,
-                        letterSpacing: 0),
-                  ),
-                ),
-                const Divider(height: 4, thickness: 4, color: Colors.black),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 8,
-                    children: [
-                      const Text(
-                        '基本資料',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                            height: 1.5,
-                            letterSpacing: 0),
-                      ),
-                      _buildPreviewRow('病患姓名', widget.info.name),
-                      _buildPreviewRow('填寫日期', dateController.text),
-                    ],
-                  ),
-                ),
-                const Divider(
-                    height: 4, thickness: 4, color: AppColors.sweetGrey),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 8,
-                    children: [
-                      const Text(
-                        '氣喘控制狀況',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                            height: 1.5,
-                            letterSpacing: 0),
-                      ),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 12),
-                        decoration: BoxDecoration(
-                            color: levelBgColor,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Row(
-                          spacing: 8,
-                          children: [
-                            SvgPicture.asset(
-                              levelIconPath,
-                              width: 24,
-                              height: 24,
-                              colorFilter: ColorFilter.mode(
-                                  levelIconColor, BlendMode.srcIn),
-                            ),
-                            Text(
-                              levelTitle,
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: levelIconColor,
-                                  height: 1.5,
-                                  letterSpacing: 0),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Divider(
-                    height: 4, thickness: 4, color: AppColors.sweetGrey),
-                if (selectedLevel == 'acute')
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    child: Image.asset(
-                      'assets/images/emergency_instruction.png',
-                      width: double.infinity,
-                      fit: BoxFit.contain,
-                    ),
-                  )
-                else ...[
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 8,
-                      children: [
-                        const Text(
-                          '控制藥物',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black,
-                              height: 1.5,
-                              letterSpacing: 0),
-                        ),
-                        for (int i = 0;
-                            i < controlMedicationEntries.length;
-                            i++)
-                          _buildPreviewMedicationEntry(
-                              controlMedicationEntries[i], i),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 8,
-                      children: [
-                        const Text(
-                          '緩解藥物',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black,
-                              height: 1.5,
-                              letterSpacing: 0),
-                        ),
-                        for (int i = 0; i < reliefMedicationEntries.length; i++)
-                          _buildPreviewMedicationEntry(
-                              reliefMedicationEntries[i], i),
-                      ],
-                    ),
-                  ),
-                ],
-                const Divider(
-                    height: 4, thickness: 4, color: AppColors.sweetGrey),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 8,
-                    children: [
-                      const Text(
-                        '備註事項',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                            height: 1.5,
-                            letterSpacing: 0),
-                      ),
-                      Text(
-                        notesController.text.isNotEmpty
-                            ? notesController.text
-                            : '無',
-                        style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                            height: 1.71,
-                            letterSpacing: 0),
-                      ),
-                    ],
-                  ),
-                ),
-                const Divider(height: 4, thickness: 4, color: Colors.black),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    spacing: 8,
-                    children: [
-                      const Text(
-                        '醫師確認：',
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black,
-                            height: 1.71,
-                            letterSpacing: 0),
-                      ),
-                      Text(
-                        doctorNameController.text.isNotEmpty
-                            ? doctorNameController.text
-                            : '未確認',
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                          height: 1,
-                          letterSpacing: 0,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+          PlanReportCard(
+            patientName: widget.info.name,
+            recordDate: dateController.text,
+            statusLevel: levelDescriptions[selectedLevel],
+            controlMeds: _toDisplayList(controlMedicationEntries),
+            reliefMeds: _toDisplayList(reliefMedicationEntries),
+            notes: notesController.text,
+            doctorName: doctorNameController.text,
           ),
           Container(
             width: double.infinity,
@@ -773,72 +565,6 @@ class _NewPlanViewState extends State<NewPlanView> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildPreviewRow(String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label,
-            style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-                height: 1.71,
-                letterSpacing: 0)),
-        Text(value,
-            style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
-                height: 1.71,
-                letterSpacing: 0)),
-      ],
-    );
-  }
-
-  Widget _buildPreviewMedicationEntry(_MedicationEntry entry, int index) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 8,
-      children: [
-        Text(
-          '藥物 ${index + 1}',
-          style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-              height: 1.625,
-              letterSpacing: 0),
-        ),
-        _buildPreviewRow('藥物名稱', entry.medicationName ?? '未指派'),
-        if (entry.medicationName != null) ...[
-          _buildPreviewRow('- 使用劑量：白天', entry.daytimeDose ?? '未指派'),
-          _buildPreviewRow('- 使用劑量：夜晚', entry.nighttimeDose ?? '未指派'),
-        ],
-        if (entry.notesController.text.isNotEmpty)
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 8,
-            children: [
-              const Text('備註',
-                  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                      height: 1.71,
-                      letterSpacing: 0)),
-              Text(entry.notesController.text,
-                  style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                      height: 1.71,
-                      letterSpacing: 0)),
-            ],
-          ),
-      ],
     );
   }
 

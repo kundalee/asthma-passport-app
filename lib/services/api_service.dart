@@ -263,6 +263,16 @@ class ApiService {
     return ApiClient.failure(statusCode, data, '無法取得報告下載連結', authenticated: true);
   }
 
+  static Future<ApiResult<PassportPlan>> getPassportPlan(String dateStr) async {
+    final (statusCode, data) = await ApiClient.send('GET', '/passport/load?target_date=$dateStr', authenticated: true);
+
+    if (statusCode == 200) {
+      return ApiResult.success(PassportPlan.fromJson(data));
+    }
+
+    return ApiClient.failure(statusCode, data, '無法取得行動計畫', authenticated: true);
+  }
+
   static Future<ApiResult<SavePlanResult>> savePassportPlan({
     required String recordDate,
     required String? statusLevel,

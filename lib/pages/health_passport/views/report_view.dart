@@ -118,6 +118,17 @@ class _HealthReportViewState extends State<HealthReportView> {
             SizedBox(
               width: double.infinity,
               child: CustomButton(
+                text: '查看計畫',
+                onPressed: () => widget.onSwitchView(3),
+                backgroundColor: AppColors.solidBlue,
+                padding: const EdgeInsets.all(12),
+                borderRadius: 4,
+                height: 37,
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: CustomButton(
                 text: '下載報告',
                 onPressed: _downloadReport,
                 isLoading: isDownloading,

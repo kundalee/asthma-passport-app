@@ -58,6 +58,68 @@ class MedicationOptions {
   }
 }
 
+class PassportPlanMedication {
+  final String name;
+  final String morn;
+  final String even;
+  final String? note;
+
+  const PassportPlanMedication({
+    required this.name,
+    required this.morn,
+    required this.even,
+    required this.note,
+  });
+
+  factory PassportPlanMedication.fromJson(Map<String, dynamic> json) {
+    return PassportPlanMedication(
+      name: json['name'] ?? '',
+      morn: json['morn'] ?? '',
+      even: json['even'] ?? '',
+      note: json['note'] as String?,
+    );
+  }
+}
+
+// /passport/load: the saved action plan for a given month (target_date
+// matches on month, not exact day).
+class PassportPlan {
+  final bool isCompleted;
+  final String? recordDate;
+  final String? statusLevel;
+  final String? notes;
+  final String? doctorName;
+  final List<PassportPlanMedication> controlMeds;
+  final List<PassportPlanMedication> reliefMeds;
+
+  const PassportPlan({
+    required this.isCompleted,
+    required this.recordDate,
+    required this.statusLevel,
+    required this.notes,
+    required this.doctorName,
+    required this.controlMeds,
+    required this.reliefMeds,
+  });
+
+  factory PassportPlan.fromJson(Map<String, dynamic> json) {
+    final data = json['data'] as Map<String, dynamic>? ?? {};
+    return PassportPlan(
+      isCompleted: json['is_completed'] ?? false,
+      recordDate: data['record_date'] as String?,
+      statusLevel: data['status_level'] as String?,
+      notes: data['notes'] as String?,
+      doctorName: data['doctor_name'] as String?,
+      controlMeds: (data['control_meds'] as List<dynamic>? ?? [])
+          .map((e) => PassportPlanMedication.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      reliefMeds: (data['relief_meds'] as List<dynamic>? ?? [])
+          .map((e) => PassportPlanMedication.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+}
+
 // /passport/history: the most recent record's status, as display-ready
 // text from the backend.
 class PassportHistorySummary {

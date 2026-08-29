@@ -7,6 +7,7 @@ import '../../components/app_page_container.dart';
 import 'views/passport_view.dart';
 import 'views/report_view.dart';
 import 'views/new_plan_view.dart';
+import 'views/plan_view.dart';
 
 class HealthPassportPage extends StatefulWidget {
   const HealthPassportPage({super.key});
@@ -19,11 +20,18 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
   final DateTime _today = DateTime.now();
   PassportInfo? passportInfo;
   PassportHistorySummary? passportHistory;
-  int currentView = 0; // 0: passport, 1: report, 2: new_plan
+  int currentView = 0; // 0: passport, 1: report, 2: new_plan, 3: view_plan
   bool isPlanPreview = false;
 
   String get _dateStr {
     return '${_today.year}-${_today.month.toString().padLeft(2, '0')}-${_today.day.toString().padLeft(2, '0')}';
+  }
+
+  // Report/plan download and view should reflect the last submitted plan,
+  // not today's date — target_date only needs to fall in the same month.
+  String _planTargetDateStr(PassportHistorySummary history) {
+    final recordDate = history.recordDate;
+    return recordDate != null ? recordDate.replaceAll('/', '-') : _dateStr;
   }
 
   @override
@@ -54,7 +62,7 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
   Widget build(BuildContext context) {
     return AppPageContainer(
       header: _buildHeader(context),
-      contentPadding: currentView == 2 && isPlanPreview
+      contentPadding: (currentView == 2 && isPlanPreview) || currentView == 3
           ? EdgeInsets.only(top: 12)
           : const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
       content: passportInfo == null || passportHistory == null
@@ -67,13 +75,15 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
     if (currentView == 0) {
       return HealthPassportView(info: info, onLogout: () => _logout(context), onMenuTap: _switchView);
     } else if (currentView == 1) {
-      return HealthReportView(info: info, history: history, dateStr: _dateStr, onSwitchView: _switchView);
-    } else {
+      return HealthReportView(info: info, history: history, dateStr: _planTargetDateStr(history), onSwitchView: _switchView);
+    } else if (currentView == 2) {
       return NewPlanView(
         info: info,
         onSwitchView: _switchView,
         onPreviewChanged: (value) => setState(() => isPlanPreview = value),
       );
+    } else {
+      return PassportPlanView(patientName: info.name, dateStr: _planTargetDateStr(history), onSwitchView: _switchView);
     }
   }
 
@@ -95,6 +105,8 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
             onTap: () {
               if (currentView == 0) {
                 Navigator.pop(context);
+              } else if (currentView == 3) {
+                _switchView(1);
               } else {
                 _switchView(currentView - 1);
               }
