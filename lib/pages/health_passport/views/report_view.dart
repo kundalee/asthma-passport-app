@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:http/http.dart' as http;
-import 'package:printing/printing.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../../models/passport_models.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/custom_button.dart';
@@ -32,18 +34,27 @@ class _HealthReportViewState extends State<HealthReportView> {
   Future<void> _downloadReport() async {
     setState(() => isDownloading = true);
     try {
-      final result = await ApiService.getPassportDownloadUrl(widget.dateStr);
+      final result = await ApiService.downloadPassportFile(widget.dateStr);
       if (!mounted) return;
 
       if (!result.success || result.data == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result.message ?? '無法取得報告下載連結')),
+          SnackBar(content: Text(result.message ?? '無法下載報告')),
         );
         return;
       }
 
-      final response = await http.get(Uri.parse(result.data!));
-      await Printing.sharePdf(bytes: response.bodyBytes, filename: 'action_plan_report.pdf');
+      final dir = await getTemporaryDirectory();
+      final file = File('${dir.path}/action_plan_report.pdf');
+      await file.writeAsBytes(result.data!);
+
+      final openResult = await OpenFilex.open(file.path);
+      if (!mounted) return;
+      if (openResult.type != ResultType.done) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(openResult.message.isNotEmpty ? openResult.message : '無法開啟報告')),
+        );
+      }
     } finally {
       if (mounted) setState(() => isDownloading = false);
     }

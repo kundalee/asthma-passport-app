@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import '../models/act_models.dart';
 import '../models/diary_models.dart';
 import '../models/emergency_contact_models.dart';
@@ -253,14 +256,18 @@ class ApiService {
     return ApiClient.failure(statusCode, data, '無法取得健康護照紀錄', authenticated: true);
   }
 
-  static Future<ApiResult<String>> getPassportDownloadUrl(String dateStr) async {
-    final (statusCode, data) = await ApiClient.send('GET', '/passport/download?target_date=$dateStr', authenticated: true);
+  static Future<ApiResult<Uint8List>> downloadPassportFile(String dateStr) async {
+    final (statusCode, bytes) = await ApiClient.getBytes('/passport/file?target_date=$dateStr', authenticated: true);
 
     if (statusCode == 200) {
-      return ApiResult.success(data['url'] as String);
+      return ApiResult.success(bytes);
     }
 
-    return ApiClient.failure(statusCode, data, '無法取得報告下載連結', authenticated: true);
+    Map<String, dynamic> errorData = {};
+    try {
+      errorData = jsonDecode(utf8.decode(bytes)) as Map<String, dynamic>;
+    } catch (_) {}
+    return ApiClient.failure(statusCode, errorData, '無法下載報告', authenticated: true);
   }
 
   static Future<ApiResult<PassportPlan>> getPassportPlan(String dateStr) async {

@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
-import 'package:printing/printing.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../components/app_page_container.dart';
 import '../../components/card_container.dart';
 import '../../components/custom_dropdown.dart';
@@ -172,7 +175,18 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
       }
 
       final response = await http.get(Uri.parse(result.data!));
-      await Printing.sharePdf(bytes: response.bodyBytes, filename: 'health_summary_report.pdf');
+
+      final dir = await getTemporaryDirectory();
+      final file = File('${dir.path}/health_summary_report.pdf');
+      await file.writeAsBytes(response.bodyBytes);
+
+      final openResult = await OpenFilex.open(file.path);
+      if (!mounted) return;
+      if (openResult.type != ResultType.done) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(openResult.message.isNotEmpty ? openResult.message : '無法開啟報告')),
+        );
+      }
     } finally {
       if (mounted) setState(() => isDownloadingReport = false);
     }

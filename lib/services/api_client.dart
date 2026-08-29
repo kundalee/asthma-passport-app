@@ -93,6 +93,30 @@ class ApiClient {
     }
   }
 
+  // GET variant for binary responses (e.g. PDF downloads) rather than JSON.
+  // Failure bodies are still JSON, so callers decode them themselves.
+  static Future<(int statusCode, Uint8List bytes)> getBytes(
+    String path, {
+    bool authenticated = false,
+  }) async {
+    debugPrint('API GET $path (bytes)');
+    try {
+      final headers = <String, String>{};
+      if (authenticated) {
+        final token = await AuthService.getToken();
+        headers['Authorization'] = 'Bearer $token';
+      }
+
+      final uri = Uri.parse('${ApiConfig.baseUrl}$path');
+      final response = await http.get(uri, headers: headers);
+      debugPrint('API GET $path -> ${response.statusCode} (${response.bodyBytes.length} bytes)');
+      return (response.statusCode, response.bodyBytes);
+    } catch (e) {
+      debugPrint('API GET $path failed: $e');
+      return (0, Uint8List(0));
+    }
+  }
+
   // Multipart variant of send(), for endpoints that accept a file alongside
   // form fields (e.g. avatar upload). Mirrors send()'s error shape so
   // callers handle both the same way.
