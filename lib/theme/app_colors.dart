@@ -28,13 +28,13 @@ class AppColors {
   static const Color glossyGold = Color(0xFFFFE082);
   static const Color tranquilYellow = Color(0xFFFEE685);
   static const Color lightYellow = Color(0xFFFFFFE0);
-  static const Color beeswax = Color(0xFFFEF3C6);
+  static const Color secondaryYellow2 = Color(0xFFFEF3C6); // Secondary/Yellow-2
   static const Color halfSpanishWhite = Color(0xFFFEF5DB);
   static const Color secondaryYellow = Color(0xFFFEFCE8); // Secondary/Yellow
   static const Color butteryWhite = Color(0xFFFFFBEB);
 
   // Oranges & Browns
-  static const Color newAmber = Color(0xFF7B3306);
+  static const Color primaryBrown = Color(0xFF7B3306); // Primary/Brown
   static const Color brown = Color(0xFF973C00);
   static const Color windsorTan = Color(0xFFA65F00);
   static const Color primaryYellow = Color(0xFFBF8915); // Primary/Yellow

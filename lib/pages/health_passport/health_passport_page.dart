@@ -20,6 +20,8 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
   final DateTime _today = DateTime.now();
   PassportInfo? passportInfo;
   PassportHistorySummary? passportHistory;
+  List<String> allergens = [];
+  List<String> medications = [];
   int currentView = 0; // 0: passport, 1: report, 2: new_plan, 3: view_plan
   bool isPlanPreview = false;
 
@@ -56,6 +58,18 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
         passportHistory = historyResult.data;
       });
     }
+
+    final allergensResult = await ApiService.getAllergens();
+    final medicationsResult = await ApiService.getMedications();
+    if (!mounted) return;
+    setState(() {
+      if (allergensResult.success && allergensResult.data != null) {
+        allergens = allergensResult.data!.map((a) => a.name).toList();
+      }
+      if (medicationsResult.success && medicationsResult.data != null) {
+        medications = medicationsResult.data!.map((m) => m.name).toList();
+      }
+    });
   }
 
   @override
@@ -73,7 +87,13 @@ class _HealthPassportPageState extends State<HealthPassportPage> {
 
   Widget _buildContent(PassportInfo info, PassportHistorySummary history) {
     if (currentView == 0) {
-      return HealthPassportView(info: info, onLogout: () => _logout(context), onMenuTap: _switchView);
+      return HealthPassportView(
+        info: info,
+        allergens: allergens,
+        medications: medications,
+        onLogout: () => _logout(context),
+        onMenuTap: _switchView,
+      );
     } else if (currentView == 1) {
       return HealthReportView(info: info, history: history, dateStr: _planTargetDateStr(history), onSwitchView: _switchView);
     } else if (currentView == 2) {

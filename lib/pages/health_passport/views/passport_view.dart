@@ -5,12 +5,16 @@ import '../../../theme/app_colors.dart';
 
 class HealthPassportView extends StatelessWidget {
   final PassportInfo info;
+  final List<String> allergens;
+  final List<String> medications;
   final VoidCallback onLogout;
   final Function(int)? onMenuTap;
 
   const HealthPassportView({
     super.key,
     required this.info,
+    required this.allergens,
+    required this.medications,
     required this.onLogout,
     this.onMenuTap,
   });
@@ -199,19 +203,21 @@ class HealthPassportView extends StatelessWidget {
               ),
             ],
           ),
-          Container(height: 1, color: AppColors.gangsterGold),
+          Container(height: 1, color: AppColors.darkYellow),
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.beeswax,
+              color: AppColors.secondaryYellow2,
               borderRadius: BorderRadius.circular(4),
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 8,
               children: [
-                _buildBarcodeLine(),
-                _buildBarcodeLine(),
+                _buildAllergyGroup('過敏原：', allergens, AppColors.primaryRed, AppColors.secondaryRed, AppColors.darkRed, '尚無添加過敏原'),
+                Container(height: 1, color: AppColors.darkYellow),
+                _buildAllergyGroup('過敏藥物：', medications, AppColors.primaryYellow, AppColors.secondaryYellow, AppColors.darkYellow, '尚無添加過敏藥物'),
               ],
             ),
           ),
@@ -220,14 +226,53 @@ class HealthPassportView extends StatelessWidget {
     );
   }
 
-  Widget _buildBarcodeLine() {
-    return Text(
-      '<' * 200,
-      maxLines: 1,
-      softWrap: false,
-      overflow: TextOverflow.clip,
-      style: const TextStyle(fontSize: 8, fontWeight: FontWeight.w400, color: AppColors.newAmber, height: 1.0, letterSpacing: 2),
-      textAlign: TextAlign.center,
+  Widget _buildAllergyGroup(String label, List<String> items, Color textColor, Color backgroundColor, Color borderColor, String emptyLabel) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 4,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.primaryBrown, height: 1.0, letterSpacing: 0)),
+        Padding(
+          padding: const EdgeInsets.all(4),
+          child: Wrap(
+            spacing: 4,
+            runSpacing: 4,
+            children: items.isEmpty
+                ? [_buildEmptyTag(emptyLabel)]
+                : items.map((item) => _buildAllergyTag(item, textColor, backgroundColor, borderColor)).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAllergyTag(String text, Color textColor, Color backgroundColor, Color borderColor) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: borderColor, width: 1),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: textColor, height: 1.0, letterSpacing: 0),
+      ),
+    );
+  }
+
+  Widget _buildEmptyTag(String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.darkMidGray, width: 2),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.darkMidGray, height: 1.0, letterSpacing: 0),
+      ),
     );
   }
 
@@ -236,7 +281,7 @@ class HealthPassportView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 2,
       children: [
-        Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.newAmber, height: 1.0)),
+        Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.primaryBrown, height: 1.0)),
         Text(value, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black, height: 2.0)),
       ],
     );
