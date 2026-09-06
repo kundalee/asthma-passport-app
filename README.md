@@ -25,10 +25,10 @@ The flavor also drives the API base URL configured in [`lib/config/api_config.da
 flutter run --flavor prod       # or --flavor staging
 
 # Build
-flutter build apk --flavor staging
-flutter build appbundle --flavor staging
-flutter build ios --flavor staging
-flutter build ipa --flavor staging
+flutter build apk --flavor prod
+flutter build appbundle --flavor prod
+flutter build ios --flavor prod
+flutter build ipa --flavor prod
 ```
 
 Add the same `--flavor` flag to your IDE's run/debug configuration. Running/building without `--flavor` (e.g. `flutter test`) defaults to prod.
