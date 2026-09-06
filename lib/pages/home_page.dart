@@ -478,6 +478,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                 onTap: () => Navigator.of(context).pushNamed('/health-passport'),
                 height: 80,
                 isRow: true,
+                subtitle: '醫護專用',
               ),
             ),
             Expanded(
@@ -560,6 +561,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     VoidCallback? onTap,
     double height = 80,
     bool isRow = false,
+    String? subtitle,
   }) {
     return GestureDetector(
       onTap: isLoggedIn
@@ -595,17 +597,46 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                       ),
                     ),
                   ),
-                  Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                      height: 1.6,
-                      letterSpacing: 0,
-                    ),
-                  ),
+                  subtitle == null
+                      ? Text(
+                          title,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            height: 1.6,
+                            letterSpacing: 0,
+                          ),
+                        )
+                      : Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              title,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                                height: 1.6,
+                                letterSpacing: 0,
+                              ),
+                            ),
+                            Text(
+                              subtitle,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                                height: 1.67,
+                                letterSpacing: 0,
+                              ),
+                            ),
+                          ],
+                        ),
                 ],
               )
             : Column(
