@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../theme/app_colors.dart';
 import './card_container.dart';
 import './custom_button.dart';
+import './zhuyin_text.dart';
 
 class FormCard extends StatefulWidget {
   final List<Map<String, dynamic>> questionsData;
@@ -122,7 +123,7 @@ class _FormCardState extends State<FormCard> {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 20,
       children: [
-        Text(
+        ZhuyinText(
           currentQuestionData['title'] ?? '',
           style: const TextStyle(
             fontSize: 16,
@@ -167,23 +168,18 @@ class _FormCardState extends State<FormCard> {
           ),
           borderRadius: BorderRadius.circular(4),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                  height: 1.0,
-                  letterSpacing: 0,
-                ),
-              ),
+        child: Center(
+          child: ZhuyinText(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              height: 1.0,
+              letterSpacing: 0,
             ),
-          ],
+          ),
         ),
       ),
     );
