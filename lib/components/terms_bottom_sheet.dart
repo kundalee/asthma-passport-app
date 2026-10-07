@@ -86,15 +86,18 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                     ),
                   ),
                   if (!widget.readOnly) ...[
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 12,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() => _isAgreed = !_isAgreed);
-                          },
-                          child: Container(
+                    // The whole row (circle and text) toggles agreement, not
+                    // just the circle.
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        setState(() => _isAgreed = !_isAgreed);
+                      },
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 12,
+                        children: [
+                          Container(
                             width: 24,
                             height: 24,
                             decoration: BoxDecoration(
@@ -112,18 +115,18 @@ class _TermsBottomSheetState extends State<TermsBottomSheet> {
                                 )
                               : null,
                           ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            widget.checkboxText,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
+                          Expanded(
+                            child: Text(
+                              widget.checkboxText,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     CustomButton(
                       text: '確認',
