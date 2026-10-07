@@ -18,6 +18,14 @@ class AppColors {
   static const Color honeydew = Color(0xFFF0FDF4);
   static const Color harp = Color(0xFFE6F4EC);
   static const Color secondaryGreen = Color(0xFFD9F4E5); // Secondary/Green
+  static const Color blizzardBlue = Color(0xFFB4F8F2);
+
+  // Primary/Linear
+  static const LinearGradient primaryLinear = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [royalAquamarine, blizzardBlue],
+  );
 
   // Yellows & Golds
   static const Color mustardGold = Color(0xFFF0B100);

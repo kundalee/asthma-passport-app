@@ -199,9 +199,28 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           Row(
             spacing: 8,
             children: [
-              _buildHeaderNavButton('assets/icons/home.svg', AppColors.primaryGreen, true, null),
-              _buildHeaderNavButton('assets/icons/setting.svg', AppColors.primaryGreen, false, () => Navigator.of(context).pushNamed('/system-settings')),
-              _buildHeaderNavButton('assets/icons/emergency.svg', Colors.red, false, () => Navigator.of(context).pushNamed('/emergency-contact')),
+              // Logo is full-color artwork: shown untinted at 36x36, with less
+              // padding so the button matches the 24x24 SVG buttons' size.
+              _buildHeaderNavButton(
+                Image.asset('assets/images/logo.png', width: 36, height: 36),
+                AppColors.primaryGreen,
+                true,
+                null,
+                gradient: AppColors.primaryLinear,
+                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 6),
+              ),
+              _buildHeaderNavButton(
+                _headerNavSvg('assets/icons/setting.svg', AppColors.primaryGreen, false),
+                AppColors.primaryGreen,
+                false,
+                () => Navigator.of(context).pushNamed('/system-settings'),
+              ),
+              _buildHeaderNavButton(
+                _headerNavSvg('assets/icons/emergency.svg', Colors.red, false),
+                Colors.red,
+                false,
+                () => Navigator.of(context).pushNamed('/emergency-contact'),
+              ),
             ],
           ),
           GestureDetector(
@@ -242,23 +261,36 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     );
   }
 
-  Widget _buildHeaderNavButton(String iconPath, Color color, bool isActive, VoidCallback? onTap) {
+  Widget _buildHeaderNavButton(
+    Widget icon,
+    Color color,
+    bool isActive,
+    VoidCallback? onTap, {
+    Gradient? gradient,
+    EdgeInsets padding = const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+        padding: padding,
         decoration: BoxDecoration(
           border: Border.all(color: color, width: 2),
           borderRadius: BorderRadius.circular(4),
-          color: isActive ? color : Colors.transparent,
+          color: gradient == null && isActive ? color : null,
+          gradient: gradient,
         ),
-        child: SvgPicture.asset(
-          iconPath,
-          width: 24,
-          height: 24,
-          colorFilter: ColorFilter.mode(isActive ? Colors.white : color, BlendMode.srcIn),
-        ),
+        child: icon,
       ),
+    );
+  }
+
+  // 24x24 SVG icon for a header nav button, tinted to match its state.
+  Widget _headerNavSvg(String iconPath, Color color, bool isActive) {
+    return SvgPicture.asset(
+      iconPath,
+      width: 24,
+      height: 24,
+      colorFilter: ColorFilter.mode(isActive ? Colors.white : color, BlendMode.srcIn),
     );
   }
 
@@ -531,7 +563,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             Expanded(
               child: _buildFeatureButton(
                 '智能問答',
-                'assets/icons/ai-robot.svg',
+                'assets/icons/ai.svg',
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -549,7 +581,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Future<void> _openSmartAssistant() async {
-    final uri = Uri.parse('https://aiqa-web-sta.deepq.dev/?region=k&variant=cch&platform=web');
+    final uri = Uri.parse('https://aiqa-web-sta.deepq.dev/?region=a&variant=cchasthma&platform=app');
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
