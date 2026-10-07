@@ -177,7 +177,7 @@ class _HistoryRecordsPageState extends State<HistoryRecordsPage> {
       final response = await http.get(Uri.parse(result.data!));
 
       final dir = await getTemporaryDirectory();
-      final file = File('${dir.path}/health_summary_report.pdf');
+      final file = File('${dir.path}/health_summary_report_${selectedMonth.replaceAll('/', '')}.pdf');
       await file.writeAsBytes(response.bodyBytes);
 
       final openResult = await OpenFilex.open(file.path);
