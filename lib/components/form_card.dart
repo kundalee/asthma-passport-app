@@ -11,6 +11,9 @@ class FormCard extends StatefulWidget {
   final Function(List<int?>) onSubmit;
   final List<int?>? initialAnswers;
   final bool readOnly;
+  // Renders "字(ㄓㄨˋ)" annotations as stacked zhuyin. Off for forms aimed at
+  // adults, whose text never carries zhuyin.
+  final bool showZhuyin;
 
   const FormCard({
     super.key,
@@ -19,6 +22,7 @@ class FormCard extends StatefulWidget {
     required this.onSubmit,
     this.initialAnswers,
     this.readOnly = false,
+    this.showZhuyin = true,
   });
 
   @override
@@ -123,7 +127,7 @@ class _FormCardState extends State<FormCard> {
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 20,
       children: [
-        ZhuyinText(
+        _buildText(
           currentQuestionData['title'] ?? '',
           style: const TextStyle(
             fontSize: 16,
@@ -152,6 +156,12 @@ class _FormCardState extends State<FormCard> {
     );
   }
 
+  Widget _buildText(String text, {required TextStyle style, TextAlign textAlign = TextAlign.start}) {
+    return widget.showZhuyin
+        ? ZhuyinText(text, style: style, textAlign: textAlign)
+        : Text(text, style: style, textAlign: textAlign);
+  }
+
   Widget _buildOption(String label, int value, int? selectedValue, Function(int)? onChanged) {
     final isSelected = selectedValue == value;
 
@@ -169,7 +179,7 @@ class _FormCardState extends State<FormCard> {
           borderRadius: BorderRadius.circular(4),
         ),
         child: Center(
-          child: ZhuyinText(
+          child: _buildText(
             label,
             textAlign: TextAlign.center,
             style: const TextStyle(

@@ -17,7 +17,10 @@ class ZhuyinText extends StatelessWidget {
     this.zhuyinScale = 0.34,
   });
 
-  static final RegExp _pattern = RegExp(r'(.)\(([^)]+)\)', dotAll: true);
+  // Only parentheses holding bopomofo (plus tone marks) count as zhuyin, so
+  // ordinary parenthetical text like "症狀(喘鳴、咳嗽…)" in the adult
+  // questionnaire renders inline as written.
+  static final RegExp _pattern = RegExp(r'(.)\(([㄀-ㄯㆠ-ㆿˊˇˋ˙]+)\)', dotAll: true);
   static const Set<String> _toneMarks = {'ˊ', 'ˇ', 'ˋ'};
 
   /// Builds the vertical stack of zhuyin symbols for one character, sized so

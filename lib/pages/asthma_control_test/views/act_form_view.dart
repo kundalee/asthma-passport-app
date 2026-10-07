@@ -67,6 +67,7 @@ class _ActFormViewState extends State<ActFormView> {
 
     return FormCard(
       questionsData: questionsData,
+      showZhuyin: !widget.isAdultTest,
       resultWidget: _buildResultWidget(),
       // Already recorded today: walk through the same questions with the
       // saved answers locked in, instead of presenting a blank test to redo.
