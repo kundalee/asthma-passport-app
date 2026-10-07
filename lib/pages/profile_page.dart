@@ -4,6 +4,7 @@ import '../theme/app_colors.dart';
 import '../components/app_page_container.dart';
 import '../components/card_container.dart';
 import '../components/custom_button.dart';
+import '../components/custom_dialog.dart';
 import '../services/auth_service.dart';
 import '../services/api_service.dart';
 import 'profile_edit_page.dart';
@@ -378,11 +379,23 @@ class _ProfilePageState extends State<ProfilePage> {
     return CustomButton(
       text: '編輯個人資料',
       onPressed: () async {
-        await Navigator.push(
+        final saved = await Navigator.push<bool>(
           context,
           MaterialPageRoute(builder: (context) => const ProfileEditPage()),
         );
-        if (mounted) _loadUserData();
+        if (!mounted) return;
+        _loadUserData();
+        if (saved == true) {
+          showDialog(
+            context: this.context,
+            builder: (context) => const CustomDialog(
+              iconPath: 'assets/icons/checkup.svg',
+              iconColor: null,
+              iconBackgroundColor: AppColors.primaryGreen,
+              content: '您的資料已更新',
+            ),
+          );
+        }
       },
       backgroundColor: AppColors.sportyBlue,
       foregroundColor: Colors.white,

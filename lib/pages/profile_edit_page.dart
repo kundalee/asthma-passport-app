@@ -42,18 +42,26 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   List<MedicationEntry> _medications = [];
   List<String> _editAllergens = [];
   List<String> _editMedications = [];
-
-  // Becomes true after the first save attempt, so required-field errors
-  // only appear once the user has tried to submit, and stay live as they
-  // fix each field (the controller listener below re-renders on typing).
-  bool _submitted = false;
+  // The date picker never takes focus, so this stands in for its focused
+  // state: true while the picker dialog is showing.
+  bool _isDatePickerOpen = false;
+  // Format errors for 身高/體重, set when 儲存編輯 is pressed and cleared as
+  // soon as the user edits that field.
+  String? _heightError;
+  String? _weightError;
+  // Lets a failed save scroll the 身高/體重 row into view.
+  final GlobalKey _measurementsKey = GlobalKey();
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: '')..addListener(_handleRequiredFieldChanged);
-    _heightController = TextEditingController(text: '')..addListener(_handleRequiredFieldChanged);
-    _weightController = TextEditingController(text: '')..addListener(_handleRequiredFieldChanged);
+    _heightController = TextEditingController(text: '')
+      ..addListener(_handleRequiredFieldChanged)
+      ..addListener(() => _heightError = null);
+    _weightController = TextEditingController(text: '')
+      ..addListener(_handleRequiredFieldChanged)
+      ..addListener(() => _weightError = null);
     _emailController = TextEditingController(text: '');
     _selectedGender = null;
     _selectedBloodType = null;
@@ -62,13 +70,9 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     _loadAllergensAndMedications();
   }
 
-  // Keeps the inline "此欄位必填" errors in sync as the user types, once a
-  // save attempt has revealed them.
-  void _handleRequiredFieldChanged() {
-    if (_submitted) setState(() {});
-  }
-
-  String? _requiredError(bool isEmpty) => _submitted && isEmpty ? '此欄位必填' : null;
+  // Re-renders as the user types so 儲存編輯 enables/disables with the
+  // required fields.
+  void _handleRequiredFieldChanged() => setState(() {});
 
   Future<void> _loadProfile() async {
     final result = await AuthService.getProfile();
@@ -425,9 +429,8 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             _nameController,
             '請輸入您的姓名',
             required: true,
-            errorText: _requiredError(_nameController.text.trim().isEmpty),
           ),
-          _buildLabeledDatePicker(context, errorText: _requiredError(_selectedBirthDate == null)),
+          _buildLabeledDatePicker(context),
           Row(
             spacing: 16,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -440,7 +443,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                   (value) => setState(() => _selectedGender = value),
                   '請選擇',
                   required: true,
-                  errorText: _requiredError(_selectedGender == null),
                 ),
               ),
               Expanded(
@@ -451,32 +453,42 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                   (value) => setState(() => _selectedBloodType = value),
                   '請選擇',
                   required: true,
-                  errorText: _requiredError(_selectedBloodType == null),
                 ),
               ),
             ],
           ),
-          Row(
-            spacing: 16,
+          Column(
+            key: _measurementsKey,
             crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 4,
             children: [
-              Expanded(
-                child: _buildLabeledField(
-                  '身高(cm)',
-                  _heightController,
-                  '請輸入您的身高',
-                  required: true,
-                  errorText: _requiredError(_heightController.text.trim().isEmpty),
-                ),
+              Row(
+                spacing: 16,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _buildLabeledField(
+                      '身高(cm)',
+                      _heightController,
+                      '請輸入您的身高',
+                      required: true,
+                      errorText: _heightError,
+                    ),
+                  ),
+                  Expanded(
+                    child: _buildLabeledField(
+                      '體重(kg)',
+                      _weightController,
+                      '請輸入您的體重',
+                      required: true,
+                      errorText: _weightError,
+                    ),
+                  ),
+                ],
               ),
-              Expanded(
-                child: _buildLabeledField(
-                  '體重(kg)',
-                  _weightController,
-                  '請輸入您的體重',
-                  required: true,
-                  errorText: _requiredError(_weightController.text.trim().isEmpty),
-                ),
+              const Text(
+                '＊身高體重可輸入至小數點後一位',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
               ),
             ],
           ),
@@ -614,7 +626,9 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             onChanged: onChanged,
             placeholder: placeholder,
             backgroundColor: hasError ? AppColors.secondaryRed : AppColors.secondaryGray,
-            borderColor: hasError ? AppColors.primaryRed : AppColors.secondaryGray2,
+            borderColor: _fieldBorderColor(hasError: hasError, isFilled: value != null),
+            activeBackgroundColor: hasError ? null : AppColors.secondaryGreen,
+            activeBorderColor: hasError ? null : AppColors.darkGreen,
             textStyle: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -649,30 +663,53 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
   Widget _buildTextField(TextEditingController controller, String placeholder, {String? errorText}) {
     final hasError = errorText != null;
-    final borderSide = BorderSide(color: hasError ? AppColors.primaryRed : AppColors.secondaryGray2, width: 2);
-    return SizedBox(
-      height: 54,
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          hintText: placeholder,
-          hintStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
-            height: 1.625,
-            letterSpacing: 0,
+    // Rebuilds from the controller so the filled border tracks typing, even
+    // for fields whose changes don't otherwise trigger a page rebuild.
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: controller,
+      builder: (context, value, _) {
+        final borderSide = BorderSide(color: _fieldBorderColor(hasError: hasError, isFilled: value.text.trim().isNotEmpty), width: 2);
+        return SizedBox(
+          height: 54,
+          child: TextFormField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: placeholder,
+              hintStyle: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+                height: 1.625,
+                letterSpacing: 0,
+              ),
+              filled: true,
+              // Resolved against the field's state, so it turns green on focus.
+              fillColor: WidgetStateColor.resolveWith((states) {
+                if (hasError) return AppColors.secondaryRed;
+                if (states.contains(WidgetState.focused)) return AppColors.secondaryGreen;
+                return AppColors.secondaryGray;
+              }),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: borderSide),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: borderSide),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: hasError ? borderSide : const BorderSide(color: AppColors.darkGreen, width: 2),
+              ),
+              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+              isDense: true,
+            ),
           ),
-          filled: true,
-          fillColor: hasError ? AppColors.secondaryRed : AppColors.secondaryGray,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: borderSide),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: borderSide),
-          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: borderSide),
-          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-          isDense: true,
-        ),
-      ),
+        );
+      },
     );
+  }
+
+  // Resting border for a field: red on error, Primary/Green once it has a
+  // value, gray when empty. Focused/open fields override this with Dark/Green.
+  Color _fieldBorderColor({required bool hasError, required bool isFilled}) {
+    if (hasError) return AppColors.primaryRed;
+    if (isFilled) return AppColors.primaryGreen;
+    return AppColors.secondaryGray2;
   }
 
 
@@ -680,23 +717,38 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     final hasError = errorText != null;
     return GestureDetector(
       onTap: () async {
+        // Unfocus first: otherwise the dialog hands focus back to the
+        // previously focused text field when it closes.
+        FocusManager.instance.primaryFocus?.unfocus();
+        setState(() => _isDatePickerOpen = true);
         final picked = await showDatePicker(
           context: context,
           initialDate: _selectedBirthDate ?? DateTime.now(),
           firstDate: DateTime(1900),
           lastDate: DateTime.now(),
         );
-        if (picked != null) {
-          setState(() => _selectedBirthDate = picked);
-        }
+        if (!mounted) return;
+        setState(() {
+          _isDatePickerOpen = false;
+          if (picked != null) _selectedBirthDate = picked;
+        });
       },
       child: SizedBox(
         height: 54,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: hasError ? AppColors.secondaryRed : AppColors.secondaryGray,
-            border: Border.all(color: hasError ? AppColors.primaryRed : AppColors.secondaryGray2, width: 2),
+            color: hasError
+                ? AppColors.secondaryRed
+                : _isDatePickerOpen
+                    ? AppColors.secondaryGreen
+                    : AppColors.secondaryGray,
+            border: Border.all(
+              color: !hasError && _isDatePickerOpen
+                  ? AppColors.darkGreen
+                  : _fieldBorderColor(hasError: hasError, isFilled: _selectedBirthDate != null),
+              width: 2,
+            ),
           ),
           padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
           child: Row(
@@ -856,34 +908,59 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         _weightController.text.trim().isNotEmpty;
   }
 
+  // 身高/體重 accept a number with at most one decimal place, e.g. 160 or 160.3.
+  static final _measurementPattern = RegExp(r'^\d+(\.\d)?$');
+
+  bool _validateMeasurementFormats() {
+    const formatError = '格式有誤，請重新輸入';
+    final heightError = _measurementPattern.hasMatch(_heightController.text.trim()) ? null : formatError;
+    final weightError = _measurementPattern.hasMatch(_weightController.text.trim()) ? null : formatError;
+    setState(() {
+      _heightError = heightError;
+      _weightError = weightError;
+    });
+    return heightError == null && weightError == null;
+  }
+
   Widget _buildSaveButton() {
     return CustomButton(
       text: '儲存編輯',
-      onPressed: () async {
-        setState(() => _submitted = true);
-        if (_validateRequiredFields()) {
-          final result = await AuthService.updateProfile(
-            name: _nameController.text,
-            gender: _selectedGender,
-            birthday: _selectedBirthDate,
-            height: _heightController.text,
-            weight: _weightController.text,
-            bloodType: _selectedBloodType,
-          );
-          if (!mounted) return;
-          if (!result.success) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(result.message ?? '更新個人資料失敗')),
-            );
-            return;
-          }
-          final syncedTags = await _syncAllergensAndMedications();
-          if (!mounted) return;
-          if (syncedTags) {
-            Navigator.pop(context);
-          }
-        }
-      },
+      onPressed: !_validateRequiredFields()
+          ? null
+          : () async {
+              if (!_validateMeasurementFormats()) {
+                final measurementsContext = _measurementsKey.currentContext;
+                if (measurementsContext != null) {
+                  Scrollable.ensureVisible(
+                    measurementsContext,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                }
+                return;
+              }
+              final result = await AuthService.updateProfile(
+                name: _nameController.text,
+                gender: _selectedGender,
+                birthday: _selectedBirthDate,
+                height: _heightController.text,
+                weight: _weightController.text,
+                bloodType: _selectedBloodType,
+              );
+              if (!mounted) return;
+              if (!result.success) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(result.message ?? '更新個人資料失敗')),
+                );
+                return;
+              }
+              final syncedTags = await _syncAllergensAndMedications();
+              if (!mounted) return;
+              if (syncedTags) {
+                // Tells ProfilePage the save succeeded so it can confirm it.
+                Navigator.pop(context, true);
+              }
+            },
       backgroundColor: AppColors.primaryGreen,
       foregroundColor: Colors.white,
       borderRadius: 4,
