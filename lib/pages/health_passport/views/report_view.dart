@@ -45,7 +45,7 @@ class _HealthReportViewState extends State<HealthReportView> {
       }
 
       final dir = await getTemporaryDirectory();
-      final file = File('${dir.path}/action_plan_report.pdf');
+      final file = File('${dir.path}/action_plan_report_${widget.dateStr.replaceAll('-', '')}.pdf');
       await file.writeAsBytes(result.data!);
 
       final openResult = await OpenFilex.open(file.path);

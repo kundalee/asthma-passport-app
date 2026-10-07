@@ -47,7 +47,7 @@ class _PassportPlanViewState extends State<PassportPlanView> {
 
   List<PlanMedicationDisplay> _toDisplayList(List<PassportPlanMedication> medications) {
     return medications
-        .map((m) => PlanMedicationDisplay(name: m.name, morn: m.morn, even: m.even, note: m.note))
+        .map((m) => PlanMedicationDisplay(name: m.name, morn: m.morn, even: m.even, info: m.info, note: m.note))
         .toList();
   }
 

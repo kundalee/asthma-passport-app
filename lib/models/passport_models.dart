@@ -62,12 +62,15 @@ class PassportPlanMedication {
   final String name;
   final String morn;
   final String even;
+  // Relief meds only: usage text (e.g. 需要的時候使用) instead of morn/even doses.
+  final String? info;
   final String? note;
 
   const PassportPlanMedication({
     required this.name,
     required this.morn,
     required this.even,
+    required this.info,
     required this.note,
   });
 
@@ -76,6 +79,7 @@ class PassportPlanMedication {
       name: json['name'] ?? '',
       morn: json['morn'] ?? '',
       even: json['even'] ?? '',
+      info: json['info'] as String?,
       note: json['note'] as String?,
     );
   }

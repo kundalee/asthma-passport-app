@@ -3,16 +3,22 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../theme/app_colors.dart';
 import '../../../components/card_container.dart';
 
+// Usage text for relief meds, which are taken as needed rather than on a
+// day/night schedule. Sent as `info` when saving a plan.
+const String reliefMedicationInfo = '需要的時候使用';
+
 class PlanMedicationDisplay {
   final String name;
   final String morn;
   final String even;
+  final String? info;
   final String? note;
 
   const PlanMedicationDisplay({
     required this.name,
     required this.morn,
     required this.even,
+    this.info,
     this.note,
   });
 }
@@ -134,7 +140,7 @@ class PlanReportCard extends StatelessWidget {
             )
           else ...[
             _buildMedicationList('控制藥物', controlMeds),
-            _buildMedicationList('緩解藥物', reliefMeds),
+            _buildMedicationList('緩解藥物', reliefMeds, asNeeded: true),
           ],
           const Divider(height: 4, thickness: 4, color: AppColors.sweetGrey),
           Container(
@@ -178,7 +184,7 @@ class PlanReportCard extends StatelessWidget {
     );
   }
 
-  Widget _buildMedicationList(String title, List<PlanMedicationDisplay> medications) {
+  Widget _buildMedicationList(String title, List<PlanMedicationDisplay> medications, {bool asNeeded = false}) {
     return Container(
       padding: const EdgeInsets.all(8),
       child: Column(
@@ -187,22 +193,24 @@ class PlanReportCard extends StatelessWidget {
         children: [
           Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.5, letterSpacing: 0)),
           if (medications.isEmpty)
-            _buildRow('藥物名稱', '未指派')
+            _buildMedicationEntry(const PlanMedicationDisplay(name: '', morn: '', even: ''), 0)
           else
-            for (int i = 0; i < medications.length; i++) _buildMedicationEntry(medications[i], i),
+            for (int i = 0; i < medications.length; i++) _buildMedicationEntry(medications[i], i, asNeeded: asNeeded),
         ],
       ),
     );
   }
 
-  Widget _buildMedicationEntry(PlanMedicationDisplay medication, int index) {
+  Widget _buildMedicationEntry(PlanMedicationDisplay medication, int index, {bool asNeeded = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 8,
       children: [
         Text('藥物 ${index + 1}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black, height: 1.625, letterSpacing: 0)),
         _buildRow('藥物名稱', medication.name.isNotEmpty ? medication.name : '未指派'),
-        if (medication.name.isNotEmpty) ...[
+        if (medication.name.isNotEmpty && asNeeded)
+          Text('＊${medication.info?.isNotEmpty == true ? medication.info : reliefMedicationInfo}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0))
+        else if (medication.name.isNotEmpty) ...[
           _buildRow('- 使用劑量：白天', medication.morn.isNotEmpty ? medication.morn : '未指派'),
           _buildRow('- 使用劑量：夜晚', medication.even.isNotEmpty ? medication.even : '未指派'),
         ],

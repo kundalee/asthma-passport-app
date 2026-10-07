@@ -139,6 +139,10 @@ class _NewPlanViewState extends State<NewPlanView> {
   void _setShowPreview(bool value) {
     setState(() => showPreview = value);
     widget.onPreviewChanged?.call(value);
+    // The page-level scroll view (AppPageContainer) owns the scroll offset,
+    // so without this switching between the form and the preview keeps the
+    // previous offset instead of starting at the top.
+    Scrollable.maybeOf(context)?.position.jumpTo(0);
   }
 
   void _toggleLevelDropdown() {
@@ -178,8 +182,14 @@ class _NewPlanViewState extends State<NewPlanView> {
         .map((entry) => {
               'med_type': medType,
               'name': entry.medicationName,
-              'morn': entry.daytimeDose ?? '',
-              'even': entry.nighttimeDose ?? '',
+              // Relief meds are taken as needed rather than on a day/night
+              // schedule, so the API takes an `info` field instead of doses.
+              if (medType == 'relief')
+                'info': reliefMedicationInfo
+              else ...{
+                'morn': entry.daytimeDose ?? '',
+                'even': entry.nighttimeDose ?? '',
+              },
               'note': entry.notesController.text.isNotEmpty
                   ? entry.notesController.text
                   : null,
@@ -458,6 +468,7 @@ class _NewPlanViewState extends State<NewPlanView> {
               options: reliefMedications,
               onAdd: _addReliefMedication,
               onDelete: _deleteReliefMedication,
+              asNeeded: true,
             ),
           ],
           if (selectedLevel == 'acute') _buildEmergencySection(),
@@ -663,6 +674,7 @@ class _NewPlanViewState extends State<NewPlanView> {
     required List<String> options,
     required VoidCallback onAdd,
     required void Function(int) onDelete,
+    bool asNeeded = false,
   }) {
     return CardContainer(
       child: Column(
@@ -671,7 +683,7 @@ class _NewPlanViewState extends State<NewPlanView> {
         children: [
           _buildMedicationSectionHeader(title),
           for (int i = 0; i < entries.length; i++) ...[
-            _buildMedicationEntry(entries, options, i),
+            _buildMedicationEntry(entries, options, i, asNeeded: asNeeded),
             if (i > 0) _buildDeleteMedicationButton(() => onDelete(i)),
             if (i < entries.length - 1)
               const Divider(height: 2, color: AppColors.sweetGrey),
@@ -735,7 +747,8 @@ class _NewPlanViewState extends State<NewPlanView> {
   }
 
   Widget _buildMedicationEntry(
-      List<_MedicationEntry> entries, List<String> options, int index) {
+      List<_MedicationEntry> entries, List<String> options, int index,
+      {bool asNeeded = false}) {
     final medication = entries[index];
 
     return Column(
@@ -788,59 +801,78 @@ class _NewPlanViewState extends State<NewPlanView> {
           onChanged: (value) =>
               setState(() => medication.medicationName = value),
         ),
-        Row(
-          spacing: 8,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 8,
-                children: [
-                  const Text(
-                    '白天',
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.mirage,
-                        height: 1.71,
-                        letterSpacing: 0),
-                  ),
-                  _buildSelectableDropdown(
-                    value: medication.daytimeDose,
-                    hint: '次數',
-                    options: _doseOptions,
-                    onChanged: (value) =>
-                        setState(() => medication.daytimeDose = value),
-                  ),
-                ],
-              ),
+        if (asNeeded)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            decoration: BoxDecoration(
+              border: Border.all(color: AppColors.primaryGray, width: 1),
             ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 8,
-                children: [
-                  const Text(
-                    '夜晚',
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.mirage,
-                        height: 1.71,
-                        letterSpacing: 0),
-                  ),
-                  _buildSelectableDropdown(
-                    value: medication.nighttimeDose,
-                    hint: '次數',
-                    options: _doseOptions,
-                    onChanged: (value) =>
-                        setState(() => medication.nighttimeDose = value),
-                  ),
-                ],
-              ),
+            child: const Text(
+              reliefMedicationInfo,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.mirage,
+                  height: 1.6,
+                  letterSpacing: 0),
             ),
-          ],
-        ),
+          )
+        else
+          Row(
+            spacing: 8,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 8,
+                  children: [
+                    const Text(
+                      '白天',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.mirage,
+                          height: 1.71,
+                          letterSpacing: 0),
+                    ),
+                    _buildSelectableDropdown(
+                      value: medication.daytimeDose,
+                      hint: '次數',
+                      options: _doseOptions,
+                      onChanged: (value) =>
+                          setState(() => medication.daytimeDose = value),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 8,
+                  children: [
+                    const Text(
+                      '夜晚',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.mirage,
+                          height: 1.71,
+                          letterSpacing: 0),
+                    ),
+                    _buildSelectableDropdown(
+                      value: medication.nighttimeDose,
+                      hint: '次數',
+                      options: _doseOptions,
+                      onChanged: (value) =>
+                          setState(() => medication.nighttimeDose = value),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 8,
