@@ -174,22 +174,10 @@ class _LoginFormState extends State<LoginForm> {
     final email = emailController.text.trim();
     final password = passwordController.text;
 
-    String? newEmailError;
-    String? newPasswordError;
-
-    if (email.isEmpty) {
-      newEmailError = '此欄位為必填';
-    } else if (!_isValidEmail(email)) {
-      newEmailError = '您輸入的信箱格式有誤，請重新輸入';
-    }
-    if (password.isEmpty) {
-      newPasswordError = '此欄位為必填';
-    }
-
-    if (newEmailError != null || newPasswordError != null) {
+    if (!_isValidEmail(email)) {
       setState(() {
-        emailError = newEmailError;
-        passwordError = newPasswordError;
+        emailError = '您輸入的信箱有誤，請重新輸入';
+        passwordError = null;
       });
       return;
     }
@@ -246,11 +234,17 @@ class _LoginFormState extends State<LoginForm> {
         ),
         _buildPasswordSection(),
         // Login Button
-        CustomButton(
-          text: '登入',
-          onPressed: _handleLogin,
-          backgroundColor: AppColors.primaryGreen,
-          isLoading: isLoading,
+        ListenableBuilder(
+          listenable: Listenable.merge([emailController, passwordController]),
+          builder: (context, _) {
+            final canSubmit = emailController.text.trim().isNotEmpty && passwordController.text.isNotEmpty;
+            return CustomButton(
+              text: '登入',
+              onPressed: canSubmit ? _handleLogin : null,
+              backgroundColor: AppColors.primaryGreen,
+              isLoading: isLoading,
+            );
+          },
         ),
         // Divider
         Row(

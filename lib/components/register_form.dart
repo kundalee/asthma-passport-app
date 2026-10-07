@@ -22,7 +22,6 @@ class _RegisterFormState extends State<RegisterForm> {
   late TextEditingController emailController;
   late TextEditingController passwordController;
   late TextEditingController confirmPasswordController;
-  String? nameError;
   String? emailError;
   String? passwordError;
   String? confirmPasswordError;
@@ -34,7 +33,6 @@ class _RegisterFormState extends State<RegisterForm> {
     emailController = TextEditingController();
     passwordController = TextEditingController();
     confirmPasswordController = TextEditingController();
-    nameController.addListener(_onNameChanged);
     emailController.addListener(_onEmailChanged);
     passwordController.addListener(_onPasswordChanged);
     confirmPasswordController.addListener(_onConfirmPasswordChanged);
@@ -42,7 +40,6 @@ class _RegisterFormState extends State<RegisterForm> {
 
   @override
   void dispose() {
-    nameController.removeListener(_onNameChanged);
     emailController.removeListener(_onEmailChanged);
     passwordController.removeListener(_onPasswordChanged);
     confirmPasswordController.removeListener(_onConfirmPasswordChanged);
@@ -51,12 +48,6 @@ class _RegisterFormState extends State<RegisterForm> {
     passwordController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
-  }
-
-  void _onNameChanged() {
-    if (nameController.text.isNotEmpty && nameError != null) {
-      setState(() => nameError = null);
-    }
   }
 
   void _onEmailChanged() {
@@ -86,43 +77,31 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   bool _validate() {
-    final name = nameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text;
     final confirmPassword = confirmPasswordController.text;
 
-    String? newNameError;
     String? newEmailError;
     String? newPasswordError;
     String? newConfirmPasswordError;
 
-    if (name.isEmpty) {
-      newNameError = '此欄位為必填';
+    if (!_isValidEmail(email)) {
+      newEmailError = '您輸入的信箱有誤，請重新輸入';
     }
-    if (email.isEmpty) {
-      newEmailError = '此欄位為必填';
-    } else if (!_isValidEmail(email)) {
-      newEmailError = '您輸入的信箱格式有誤，請重新輸入';
-    }
-    if (password.isEmpty) {
-      newPasswordError = '此欄位為必填';
-    } else if (!_isValidPassword(password)) {
+    if (!_isValidPassword(password)) {
       newPasswordError = '您輸入的密碼格式有誤，請重新輸入';
     }
-    if (confirmPassword.isEmpty) {
-      newConfirmPasswordError = '此欄位為必填';
-    } else if (password != confirmPassword) {
+    if (password != confirmPassword) {
       newConfirmPasswordError = '您輸入的密碼不符，請重新輸入';
     }
 
     setState(() {
-      nameError = newNameError;
       emailError = newEmailError;
       passwordError = newPasswordError;
       confirmPasswordError = newConfirmPasswordError;
     });
 
-    return newNameError == null && newEmailError == null && newPasswordError == null && newConfirmPasswordError == null;
+    return newEmailError == null && newPasswordError == null && newConfirmPasswordError == null;
   }
 
   void _showTermsAndRegister() {
@@ -162,6 +141,8 @@ class _RegisterFormState extends State<RegisterForm> {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const HomePage()),
       );
+    } else if (result.message == '此信箱已註冊過') {
+      setState(() => emailError = '該電子郵件已註冊，請重新輸入');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result.message ?? '註冊失敗')),
@@ -189,7 +170,6 @@ class _RegisterFormState extends State<RegisterForm> {
             height: 24,
             colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
           ),
-          errorText: nameError,
         ),
         // Email Field
         CustomTextField(
@@ -204,23 +184,32 @@ class _RegisterFormState extends State<RegisterForm> {
           errorText: emailError,
         ),
         // Password Field
-        CustomTextField(
-          controller: passwordController,
-          hintText: '密碼',
-          prefixIcon: SvgPicture.asset(
-            'assets/icons/password.svg',
-            width: 24,
-            height: 24,
-            colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
-          ),
-          isPassword: true,
-          obscureText: obscurePassword,
-          onToggleVisibility: () {
-            setState(() {
-              obscurePassword = !obscurePassword;
-            });
-          },
-          errorText: passwordError,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            CustomTextField(
+              controller: passwordController,
+              hintText: '密碼',
+              prefixIcon: SvgPicture.asset(
+                'assets/icons/password.svg',
+                width: 24,
+                height: 24,
+                colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+              ),
+              isPassword: true,
+              obscureText: obscurePassword,
+              onToggleVisibility: () {
+                setState(() {
+                  obscurePassword = !obscurePassword;
+                });
+              },
+              errorText: passwordError,
+            ),
+            const Text(
+              '．需為 6-20 位英數組合，且含至少 1 個大寫字母',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
+            ),
+          ],
         ),
         // Confirm Password Field
         CustomTextField(
@@ -242,11 +231,20 @@ class _RegisterFormState extends State<RegisterForm> {
           errorText: confirmPasswordError,
         ),
         // Register Button
-        CustomButton(
-          text: '註冊',
-          onPressed: _showTermsAndRegister,
-          backgroundColor: AppColors.primaryGreen,
-          isLoading: isLoading,
+        ListenableBuilder(
+          listenable: Listenable.merge([nameController, emailController, passwordController, confirmPasswordController]),
+          builder: (context, _) {
+            final canSubmit = nameController.text.trim().isNotEmpty &&
+                emailController.text.trim().isNotEmpty &&
+                passwordController.text.isNotEmpty &&
+                confirmPasswordController.text.isNotEmpty;
+            return CustomButton(
+              text: '註冊',
+              onPressed: canSubmit ? _showTermsAndRegister : null,
+              backgroundColor: AppColors.primaryGreen,
+              isLoading: isLoading,
+            );
+          },
         ),
       ],
     );
