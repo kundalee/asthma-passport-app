@@ -457,13 +457,21 @@ class _PeakFlowResultsViewState extends State<PeakFlowResultsView> {
         children: [
           SizedBox(
             width: double.infinity,
-            child: CustomButton(
-              text: _statusResult == null ? '確認' : '完成紀錄',
-              onPressed: _statusResult == null ? _previewMeasurement : _confirmMeasurement,
-              backgroundColor: AppColors.primaryGreen,
-              padding: const EdgeInsets.all(12),
-              borderRadius: 4,
-              height: 37,
+            child: ListenableBuilder(
+              listenable: _inputController,
+              builder: (context, _) {
+                final isEmpty = _inputController.text.trim().isEmpty;
+                return CustomButton(
+                  text: _statusResult == null ? '確認' : '完成紀錄',
+                  onPressed: _statusResult == null
+                      ? (isEmpty ? null : _previewMeasurement)
+                      : _confirmMeasurement,
+                  backgroundColor: AppColors.primaryGreen,
+                  padding: const EdgeInsets.all(12),
+                  borderRadius: 4,
+                  height: 37,
+                );
+              },
             ),
           ),
           if (_statusResult != null && !_showCompletedButtons)
