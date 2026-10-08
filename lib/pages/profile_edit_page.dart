@@ -912,9 +912,8 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   static final _measurementPattern = RegExp(r'^\d+(\.\d)?$');
 
   bool _validateMeasurementFormats() {
-    const formatError = '格式有誤，請重新輸入';
-    final heightError = _measurementPattern.hasMatch(_heightController.text.trim()) ? null : formatError;
-    final weightError = _measurementPattern.hasMatch(_weightController.text.trim()) ? null : formatError;
+    final heightError = _measurementPattern.hasMatch(_heightController.text.trim()) ? null : '請正確填寫身高';
+    final weightError = _measurementPattern.hasMatch(_weightController.text.trim()) ? null : '請正確填寫體重';
     setState(() {
       _heightError = heightError;
       _weightError = weightError;
