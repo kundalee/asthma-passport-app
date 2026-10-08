@@ -45,10 +45,10 @@ class CustomDialog extends StatelessWidget {
             Text(
               content,
               style: const TextStyle(
-                fontSize: 16,
+                fontSize: 20,
                 fontWeight: FontWeight.w500,
                 color: Colors.black,
-                height: 1.5,
+                height: 1.6,
                 letterSpacing: 0,
               ),
               textAlign: TextAlign.center,
