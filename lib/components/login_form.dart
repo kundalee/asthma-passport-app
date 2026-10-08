@@ -9,6 +9,7 @@ import 'custom_button.dart';
 import 'terms_bottom_sheet.dart';
 import '../services/auth_service.dart';
 import '../pages/home_page.dart';
+import '../pages/forgot_password_page.dart';
 import '../config/google_auth_config.dart';
 
 class LoginForm extends StatefulWidget {
@@ -317,7 +318,10 @@ class _LoginFormState extends State<LoginForm> {
         Align(
           alignment: Alignment.centerRight,
           child: TextButton(
-            onPressed: () {},
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
+            ),
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
               minimumSize: Size.zero,
