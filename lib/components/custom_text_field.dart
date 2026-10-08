@@ -112,7 +112,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   )
                 : null,
               filled: true,
-              fillColor: widget.backgroundColor,
+              fillColor: hasError ? AppColors.secondaryRed : widget.backgroundColor,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(widget.borderRadius),
                 borderSide: BorderSide(color: currentBorderColor, width: 2),
