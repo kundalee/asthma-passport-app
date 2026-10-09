@@ -5,13 +5,15 @@ import '../components/app_page_container.dart';
 import '../components/card_container.dart';
 import '../components/custom_button.dart';
 import '../components/custom_text_field.dart';
+import '../services/auth_service.dart';
 import 'password_changed_page.dart';
 
 class ResetPasswordPage extends StatefulWidget {
-  // The account whose password is being reset.
-  final String email;
+  // Issued by /user/verify once the emailed code checks out; authorizes
+  // /user/reset for that account.
+  final String resetToken;
 
-  const ResetPasswordPage({super.key, required this.email});
+  const ResetPasswordPage({super.key, required this.resetToken});
 
   @override
   State<ResetPasswordPage> createState() => _ResetPasswordPageState();
@@ -24,6 +26,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   bool _obscureConfirmPassword = false;
   String? _passwordError;
   String? _confirmPasswordError;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -48,17 +51,26 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     return RegExp(r'^(?=.*[A-Z])[A-Za-z0-9]{6,20}$').hasMatch(password);
   }
 
-  void _handleSubmit() {
+  Future<void> _handleSubmit() async {
     final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
     final passwordError = _isValidPassword(password) ? null : '您輸入的密碼格式有誤，請重新輸入';
-    final confirmPasswordError = password == _confirmPasswordController.text ? null : '您輸入的密碼不符，請重新輸入';
+    final confirmPasswordError = password == confirmPassword ? null : '您輸入的密碼不符，請重新輸入';
     setState(() {
       _passwordError = passwordError;
       _confirmPasswordError = confirmPasswordError;
     });
     if (passwordError != null || confirmPasswordError != null) return;
-    // TODO: call the reset-password API once the backend provides it, and
-    // only continue on success.
+
+    setState(() => _isLoading = true);
+    final result = await AuthService.resetPassword(widget.resetToken, password, confirmPassword);
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+
+    if (!result.success) {
+      setState(() => _passwordError = result.message);
+      return;
+    }
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const PasswordChangedPage()),
@@ -153,6 +165,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 text: '送出',
                 onPressed: canSubmit ? _handleSubmit : null,
                 backgroundColor: AppColors.primaryGreen,
+                isLoading: _isLoading,
               );
             },
           ),

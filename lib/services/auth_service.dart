@@ -70,6 +70,55 @@ class AuthService {
     return ApiClient.failure(statusCode, data, '註冊失敗');
   }
 
+  // Emails a verification code to start the forgot-password flow.
+  static Future<ApiResult<void>> sendResetCode(String email) async {
+    final (statusCode, data) = await ApiClient.send(
+      'POST',
+      '/user/send',
+      body: {'email': email},
+    );
+
+    if (statusCode == 200) {
+      return const ApiResult.success();
+    }
+
+    return ApiClient.failure(statusCode, data, '驗證碼寄送失敗');
+  }
+
+  // Checks the emailed code and returns the reset_token that /user/reset needs.
+  static Future<ApiResult<String>> verifyResetCode(String email, String code) async {
+    final (statusCode, data) = await ApiClient.send(
+      'POST',
+      '/user/verify',
+      body: {'email': email, 'otp_code': code},
+    );
+
+    final resetToken = data['reset_token'];
+    if (statusCode == 200 && resetToken is String) {
+      return ApiResult.success(resetToken);
+    }
+
+    return ApiClient.failure(statusCode, data, '您輸入的驗證碼有誤，請重新輸入');
+  }
+
+  static Future<ApiResult<void>> resetPassword(String resetToken, String password, String confirmPassword) async {
+    final (statusCode, data) = await ApiClient.send(
+      'POST',
+      '/user/reset',
+      body: {
+        'reset_token': resetToken,
+        'password': password,
+        'confirm_password': confirmPassword,
+      },
+    );
+
+    if (statusCode == 200) {
+      return const ApiResult.success();
+    }
+
+    return ApiClient.failure(statusCode, data, '密碼重設失敗');
+  }
+
   static Future<ApiResult<UserProfile>> getProfile() async {
     final (statusCode, data) = await ApiClient.send('GET', '/user/profile', authenticated: true);
 

@@ -5,6 +5,7 @@ import '../components/app_page_container.dart';
 import '../components/card_container.dart';
 import '../components/custom_button.dart';
 import '../components/custom_text_field.dart';
+import '../services/auth_service.dart';
 import 'reset_password_page.dart';
 
 class VerifyCodePage extends StatefulWidget {
@@ -20,6 +21,7 @@ class VerifyCodePage extends StatefulWidget {
 class _VerifyCodePageState extends State<VerifyCodePage> {
   final TextEditingController _codeController = TextEditingController();
   String? _codeError;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -35,16 +37,19 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
     super.dispose();
   }
 
-  void _handleSubmit() {
-    // TODO: verify the code via the forgot-password API once the backend
-    // provides it; until then 123456 is the only accepted test code.
-    if (_codeController.text.trim() != '123456') {
+  Future<void> _handleSubmit() async {
+    setState(() => _isLoading = true);
+    final result = await AuthService.verifyResetCode(widget.email, _codeController.text.trim());
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+
+    if (!result.success) {
       setState(() => _codeError = '您輸入的驗證碼有誤，請重新輸入');
       return;
     }
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ResetPasswordPage(email: widget.email)),
+      MaterialPageRoute(builder: (context) => ResetPasswordPage(resetToken: result.data!)),
     );
   }
 
@@ -118,6 +123,7 @@ class _VerifyCodePageState extends State<VerifyCodePage> {
                 text: '送出',
                 onPressed: _codeController.text.trim().isNotEmpty ? _handleSubmit : null,
                 backgroundColor: AppColors.primaryGreen,
+                isLoading: _isLoading,
               );
             },
           ),

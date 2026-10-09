@@ -6,6 +6,7 @@ import '../components/card_container.dart';
 import '../components/custom_button.dart';
 import '../components/custom_dialog.dart';
 import '../components/custom_text_field.dart';
+import '../services/auth_service.dart';
 import 'verify_code_page.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -18,6 +19,7 @@ class ForgotPasswordPage extends StatefulWidget {
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final TextEditingController _emailController = TextEditingController();
   String? _emailError;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -37,13 +39,23 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     return RegExp(r'^[\w.-]+@[\w.-]+\.\w+$').hasMatch(email);
   }
 
-  void _handleSubmit() {
-    if (!_isValidEmail(_emailController.text.trim())) {
+  Future<void> _handleSubmit() async {
+    final email = _emailController.text.trim();
+    if (!_isValidEmail(email)) {
       setState(() => _emailError = '您輸入的信箱有誤，請重新輸入');
       return;
     }
-    // TODO: call the forgot-password API once the backend provides it.
-    final email = _emailController.text.trim();
+
+    setState(() => _isLoading = true);
+    final result = await AuthService.sendResetCode(email);
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+
+    if (!result.success) {
+      setState(() => _emailError = result.message);
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (dialogContext) => CustomDialog(
@@ -138,6 +150,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 text: '送出',
                 onPressed: _emailController.text.trim().isNotEmpty ? _handleSubmit : null,
                 backgroundColor: AppColors.primaryGreen,
+                isLoading: _isLoading,
               );
             },
           ),
