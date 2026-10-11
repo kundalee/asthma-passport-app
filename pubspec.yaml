@@ -47,6 +47,9 @@ dependencies:
   flutter_line_sdk: ^2.6.2
   open_filex: ^4.7.0
   path_provider: ^2.1.5
+  webview_flutter: ^4.13.0
+  webview_flutter_android: ^4.10.0
+  webview_flutter_wkwebview: ^3.23.0
 
 dev_dependencies:
   flutter_test:
