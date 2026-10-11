@@ -7,6 +7,7 @@ class AppPageContainer extends StatelessWidget {
   final Widget? bottomNavigation;
   final EdgeInsets contentPadding;
   final EdgeInsets bottomNavigationPadding;
+  final bool scrollable;
 
   const AppPageContainer({
     super.key,
@@ -15,6 +16,7 @@ class AppPageContainer extends StatelessWidget {
     this.contentPadding = const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
     this.bottomNavigation,
     this.bottomNavigationPadding = const EdgeInsets.symmetric(horizontal: 12.0),
+    this.scrollable = true,
   });
 
   @override
@@ -28,12 +30,17 @@ class AppPageContainer extends StatelessWidget {
             Expanded(
               child: Container(
                 color: AppColors.harp,
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: contentPadding,
-                    child: content,
-                  ),
-                ),
+                child: scrollable
+                    ? SingleChildScrollView(
+                        child: Padding(
+                          padding: contentPadding,
+                          child: content,
+                        ),
+                      )
+                    : Padding(
+                        padding: contentPadding,
+                        child: content,
+                      ),
               ),
             ),
             if (bottomNavigation != null)
