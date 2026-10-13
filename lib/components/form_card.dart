@@ -223,21 +223,20 @@ class _FormCardState extends State<FormCard> {
           height: 37,
           borderRadius: 4,
         ),
-        CustomButton(
-          text: '上一題',
-          onPressed: currentStep > 0
-              ? () {
-                  setState(() {
-                    currentStep--;
-                  });
-                }
-              : null,
-          foregroundColor: Colors.black,
-          backgroundColor: Colors.white,
-          border: BorderSide(color: AppColors.secondaryGrayW, width: 1),
-          height: 37,
-          borderRadius: 4,
-        ),
+        if (currentStep > 0)
+          CustomButton(
+            text: '上一題',
+            onPressed: () {
+              setState(() {
+                currentStep--;
+              });
+            },
+            foregroundColor: Colors.black,
+            backgroundColor: Colors.white,
+            border: BorderSide(color: AppColors.secondaryGrayW, width: 1),
+            height: 37,
+            borderRadius: 4,
+          ),
       ],
     );
   }
