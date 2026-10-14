@@ -126,36 +126,37 @@ class _HealthReportViewState extends State<HealthReportView> {
                 height: 37,
               ),
             ),
-            SizedBox(
-              width: double.infinity,
-              child: CustomButton(
-                text: '查看計畫',
-                onPressed: () => widget.onSwitchView(3),
-                backgroundColor: AppColors.solidBlue,
-                padding: const EdgeInsets.all(12),
-                borderRadius: 4,
-                height: 37,
+            if (recordDate != null) ...[
+              SizedBox(
+                width: double.infinity,
+                child: CustomButton(
+                  text: '查看計畫',
+                  onPressed: () => widget.onSwitchView(3),
+                  backgroundColor: AppColors.solidBlue,
+                  padding: const EdgeInsets.all(12),
+                  borderRadius: 4,
+                  height: 37,
+                ),
               ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: CustomButton(
-                text: '下載報告',
-                onPressed: _downloadReport,
-                isLoading: isDownloading,
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
-                border: const BorderSide(color: AppColors.secondaryGrayW, width: 1),
-                padding: const EdgeInsets.all(12),
-                borderRadius: 4,
-                height: 37,
+              SizedBox(
+                width: double.infinity,
+                child: CustomButton(
+                  text: '下載報告',
+                  onPressed: _downloadReport,
+                  isLoading: isDownloading,
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  border: const BorderSide(color: AppColors.secondaryGrayW, width: 1),
+                  padding: const EdgeInsets.all(12),
+                  borderRadius: 4,
+                  height: 37,
+                ),
               ),
-            ),
-            if (recordDate != null)
               Text(
                 '前一次填寫日期：$recordDate',
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black, height: 1.71, letterSpacing: 0),
               ),
+            ],
           ],
         ),
     );
