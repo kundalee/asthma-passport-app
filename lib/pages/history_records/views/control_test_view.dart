@@ -51,6 +51,11 @@ class _ControlTestViewState extends State<ControlTestView> {
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
+    // /act/history returns a placeholder row for every month in its window,
+    // so an empty history shows up as all-incomplete rows, not an empty list.
+    if (!monthResults.values.any((m) => m.isCompleted)) {
+      return const SizedBox.shrink();
+    }
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
