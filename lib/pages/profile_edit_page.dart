@@ -258,6 +258,21 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     }
   }
 
+  Future<void> _handleAvatarRemoved() async {
+    final result = await AuthService.removeAvatar();
+    if (!mounted) return;
+
+    if (result.success) {
+      setState(() {
+        avatarUrl = '';
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result.message ?? '移除頭像失敗')),
+      );
+    }
+  }
+
   Future<void> _pickImage() async {
     try {
       final imagePicker = ImagePicker();
@@ -324,6 +339,24 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                 ),
               ),
             ),
+            if (avatarUrl.startsWith('http'))
+              CupertinoActionSheetAction(
+                isDestructiveAction: true,
+                onPressed: () async {
+                  Navigator.pop(context);
+                  await _handleAvatarRemoved();
+                },
+                child: Text(
+                  '移除圖片',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.darkRed,
+                    height: 1.2,
+                    letterSpacing: 0.38,
+                  ),
+                ),
+              ),
           ],
           cancelButton: CupertinoActionSheetAction(
             isDefaultAction: true,

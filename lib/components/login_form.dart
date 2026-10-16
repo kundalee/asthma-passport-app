@@ -199,13 +199,10 @@ class _LoginFormState extends State<LoginForm> {
           builder: (context) => HomePage(showFirstLoginDialog: isFirstLogin),
         ),
       );
-    } else if (result.message == '帳號不存在或此信箱尚未註冊') {
+    } else if (result.message == '信箱錯誤') {
       setState(() => emailError = '您輸入的信箱有誤，請重新輸入');
-    } else if (result.message == '帳號或密碼錯誤') {
-      setState(() {
-        emailError = '您輸入的信箱有誤，請重新輸入';
-        passwordError = '您輸入的密碼有誤，請重新輸入';
-      });
+    } else if (result.message == '密碼錯誤') {
+      setState(() => passwordError = '您輸入的密碼有誤，請重新輸入');
     } else {
       setState(() => passwordError = result.message ?? '您輸入的密碼有誤，請重新輸入');
     }

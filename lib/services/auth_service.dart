@@ -139,6 +139,16 @@ class AuthService {
     );
   }
 
+  static Future<ApiResult<void>> removeAvatar() async {
+    final (statusCode, data) = await ApiClient.send('DELETE', '/user/remove', authenticated: true);
+
+    if (statusCode == 200) {
+      return const ApiResult.success();
+    }
+
+    return ApiClient.failure(statusCode, data, '移除頭像失敗', authenticated: true);
+  }
+
   static Future<ApiResult<String?>> updateProfile({
     String? name,
     String? gender,

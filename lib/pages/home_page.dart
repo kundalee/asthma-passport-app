@@ -706,16 +706,20 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void _showFirstLoginDialog() {
     showDialog(
       context: context,
-      builder: (context) => CustomDialog(
-        iconPath: 'assets/icons/alert-info.svg',
-        content: '請先完成會員資料設定來提供您全方位的氣喘保護措施',
-        buttonText: '前往編輯',
-        onButtonPressed: () async {
-          Navigator.pop(context);
-          await Navigator.of(context).pushNamed('/profile');
-          if (!mounted) return;
-          _checkProfileComplete();
-        },
+      barrierDismissible: false,
+      builder: (context) => PopScope(
+        canPop: false,
+        child: CustomDialog(
+          iconPath: 'assets/icons/alert-info.svg',
+          content: '請先完成會員資料設定來提供您全方位的氣喘保護措施',
+          buttonText: '前往編輯',
+          onButtonPressed: () async {
+            Navigator.pop(context);
+            await Navigator.of(context).pushNamed('/profile');
+            if (!mounted) return;
+            _checkProfileComplete();
+          },
+        ),
       ),
     );
   }
