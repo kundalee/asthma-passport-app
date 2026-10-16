@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../components/app_page_container.dart';
 import '../../components/custom_tab_bar.dart';
+import 'views/knowledge_base_view.dart';
 import 'views/knowledge_list_view.dart';
 
 class AsthmaKnowledgePage extends StatefulWidget {
@@ -12,28 +13,33 @@ class AsthmaKnowledgePage extends StatefulWidget {
 }
 
 class _AsthmaKnowledgePageState extends State<AsthmaKnowledgePage> {
-  int selectedLanguageIndex = 0;
-  final List<String> languages = ['國語', '台語'];
+  int selectedTabIndex = 0;
+  final List<String> tabs = ['氣喘知識庫', '國語', '台語'];
 
-  void _switchLanguage(int index) {
+  void _switchTab(int index) {
     setState(() {
-      selectedLanguageIndex = index;
+      selectedTabIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final isKnowledgeBase = selectedTabIndex == 0;
     return AppPageContainer(
       header: _buildHeader(context),
+      scrollable: !isKnowledgeBase,
       content: Column(
         spacing: 8,
         children: [
           CustomTabBar(
-            tabs: languages,
-            selectedTabIndex: selectedLanguageIndex,
-            onTabChanged: _switchLanguage,
+            tabs: tabs,
+            selectedTabIndex: selectedTabIndex,
+            onTabChanged: _switchTab,
           ),
-          KnowledgeListView(selectedLanguageIndex: selectedLanguageIndex),
+          if (isKnowledgeBase)
+            const Expanded(child: KnowledgeBaseView())
+          else
+            KnowledgeListView(selectedLanguageIndex: selectedTabIndex - 1),
         ],
       ),
     );
