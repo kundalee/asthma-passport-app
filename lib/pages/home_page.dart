@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../services/location_service.dart';
@@ -569,7 +568,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   end: Alignment.bottomRight,
                   colors: [AppColors.dodgerBlue, AppColors.adonis],
                 ),
-                onTap: () => _openSmartAssistant(),
+                onTap: () => Navigator.of(context).pushNamed('/smart-assistant'),
                 padding: const EdgeInsets.all(8),
                 height: 108,
               ),
@@ -578,11 +577,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         ),
       ],
     );
-  }
-
-  Future<void> _openSmartAssistant() async {
-    final uri = Uri.parse('https://aiqa-web-sta.deepq.dev/?region=a&variant=cchasthma&platform=app');
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
   Widget _buildFeatureButton(
