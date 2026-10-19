@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../theme/app_colors.dart';
 import '../components/app_page_container.dart';
 import '../components/card_container.dart';
-import '../components/terms_bottom_sheet.dart';
+import 'service_terms_page.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
@@ -120,13 +120,9 @@ class AboutPage extends StatelessWidget {
   }
 
   void _showTerms(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => const TermsBottomSheet(
-        title: '服務約定',
-        readOnly: true,
-      ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ServiceTermsPage()),
     );
   }
 }
